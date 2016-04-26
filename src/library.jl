@@ -31,7 +31,7 @@ function construct_library(N::Int64, coverage::Int64)
 
         # Generate knockdown-phenotype relationship for this gene
         gene_class = phenotype_class_names[rand(phenotype_class_dist)]
-        params = [rand(phenotype_dists[gene_class]), rand(slope_model),rand(inflection_model)]
+        params = (rand(phenotype_dists[gene_class]), rand(slope_model),rand(inflection_model))
         gene_response(x) = sigmoid(x, params...)
 
         for i in 1:coverage
