@@ -20,7 +20,6 @@ function construct_library(N::Int64, coverage::Int64)
     inflection_model = TruncatedNormal(0.8, 0.2, 0, 1)
     
     barcodes = Barcode[]
-    graphs = []
     
     for gene in 1:N
         
