@@ -12,8 +12,8 @@ function construct_library(N::Int64, coverage::Int64)
     # delta-like function centered a 0. A subset of these will be our "negative"
     # controls.
     phenotype_dists = Dict(
-        :inactive => Normal(0, eps()),
-        :negcontrol => Normal(0, eps()),
+        :inactive => Delta(0.0),
+        :negcontrol => Delta(0.0),
         :increasing => TruncatedNormal(0.8, 0.2, 0.1, 1),
         :decreasing => TruncatedNormal(-0.8, 0.2, -1, -0.1)
     )
@@ -38,7 +38,6 @@ function construct_library(N::Int64, coverage::Int64)
             barcode_knockdown = rand(knockdown_model)
             # phenotype of barcode given its knockdown efficiency
             barcode_phenotype = gene_response(barcode_knockdown)
-            (gene_class == :inactive || gene_class == :negcontrol) && (barcode_phenotype = 0.0)
             behavior = params[2] < 10 ? :linear : :sigmoidal
             push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype, behavior, gene_class))
         end
@@ -57,3 +56,12 @@ Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
 """
 sigmoid(x, l, k, p) = clamp(l./(1 + e.^(-k.*(x - p))), min(0, l), max(0, l))
+
+"""
+Constructs a delta function at a given δ value
+"""
+type Delta <: Distributions.Sampleable{Univariate, Discrete}
+    δ::Float64
+end
+
+Base.rand(d::Delta) = d.δ
