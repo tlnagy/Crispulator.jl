@@ -1,3 +1,5 @@
+using StatsBase
+
 function counts_to_freqs(samples::Vector{Int64}...)
     results = Vector{Float64}[]
     for sample in samples
