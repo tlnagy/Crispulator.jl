@@ -23,14 +23,14 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
     auroc, tprs, fprs = compute_roc(genes, :pvalmeanprod, 50)
 
     if gen_plots
-        draw(PDF("plots/volcano_plot_by_behavior.pdf", 12cm, 10cm),
+        draw(PNG("plots/volcano_plot_by_behavior.png", 12cm, 10cm, dpi=300),
         plot(genes, x=:mean, y=:pvalue, color=:behavior, Guide.xlabel("mean log2 FC"),
         Guide.ylabel("-log10 pvalue"), Theme(highlight_width=0pt)))
-        draw(PDF("plots/volcano_plot_by_class.pdf", 12cm, 10cm),
+        draw(PNG("plots/volcano_plot_by_class.png", 12cm, 10cm, dpi=300),
         plot(genes, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt)))
-        draw(PDF("plots/distributions_of_observed_phenotypes.pdf", 12cm, 6cm),
+        draw(PNG("plots/distributions_of_observed_phenotypes.png", 12cm, 6cm, dpi=300),
         plot(combined, x=:obs_phenotype, color=:class, Geom.density))
-        draw(PDF("plots/roc.pdf", 12cm, 10cm),
+        draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
         plot(x=fprs, y=tprs, Geom.line, Coord.cartesian(fixed=true),
         Guide.xlabel("fpr"), Guide.ylabel("tpr")))
     end
