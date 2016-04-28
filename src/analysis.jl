@@ -33,6 +33,9 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
         draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
         plot(x=fprs, y=tprs, Geom.line, Coord.cartesian(fixed=true),
         Guide.xlabel("fpr"), Guide.ylabel("tpr")))
+        draw(PNG("plots/freq_scatter.png", 12cm, 10cm, dpi=300),
+        plot(combined, x=:freqs1, y=:freqs2, color=:class, Scale.x_log10, Scale.y_log10,
+        Theme(highlight_width=0pt)))
     end
     auroc
 end
