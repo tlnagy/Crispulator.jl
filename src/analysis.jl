@@ -21,6 +21,6 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
         draw(PDF("plots/volcano_plot_by_class.pdf", 12cm, 10cm),
         plot(df, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt)))
         draw(PDF("plots/distributions_of_observed_phenotypes.pdf", 12cm, 6cm),
-        plot(combined, x=:obs_phenotype, color=:class, Geom.density, Geom.histogram(density=true)))
+        plot(combined, x=:obs_phenotype, color=:class, Geom.density))
     end
 end
