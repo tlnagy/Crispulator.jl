@@ -1,5 +1,8 @@
 function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
     map(x -> sort!(x, cols=[:barcodeid]), raw_data);
+    # add a pseudocount of 0.5 to every value to prevent -Inf's when
+    # taking the log
+    map(x -> x[:counts] += 0.5, raw_data);
     map(x -> x[:freqs] = x[:counts]./sum(x[:counts]), raw_data);
 
     combined = copy(raw_data[1])
