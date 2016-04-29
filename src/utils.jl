@@ -1,16 +1,16 @@
 function compute_roc(df::DataFrame, score_column::Symbol, numsteps::Int64)
     tprs = zeros(numsteps)
     fprs = zeros(numsteps)
-    @time auroc = compute_roc!(Vector(df[score_column]), Vector(df[:class]) , numsteps, tprs, fprs)
+    auroc = compute_roc!(Vector(df[score_column]), Vector(df[:class]) , numsteps, tprs, fprs)
     return auroc, tprs, fprs
 end
 
 """
 Optimized function for computing the receiver operator characteristic curve.
 """
-function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64, 
+function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64,
                       tprs::Vector{Float64}, fprs::Vector{Float64})
-    
+
     num_scores = length(scores)
     min_value, max_value = extrema(scores)
     thresholds = linspace(max_value, min_value, numsteps)
@@ -18,7 +18,7 @@ function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps
 
     @inbounds for (idx, threshold) in enumerate(thresholds)
         tp, fp, tn, fn = 0,0,0,0
-        
+
         for i in 1:num_scores
             if scores[i] >= threshold
                 if classes[i] != :inactive
@@ -28,7 +28,7 @@ function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps
                 end
             else
                 if classes[i] == :inactive
-                   tn += 1 
+                   tn += 1
                 else
                     fn += 1
                 end
@@ -49,7 +49,7 @@ Optimized function for computing the area under the receiver operator characteri
 curve.
 """
 function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64)
-    
+
     num_scores, idx = length(scores), 1
     min_value, max_value = extrema(scores)
     thresholds = linspace(max_value, min_value, numsteps)
@@ -57,7 +57,7 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
 
     @inbounds for threshold in thresholds
         tp, fp, tn, fn = 0,0,0,0
-        
+
         for i in 1:num_scores
             if scores[i] >= threshold
                 if classes[i] != :inactive
@@ -67,7 +67,7 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
                 end
             else
                 if classes[i] == :inactive
-                    tn += 1 
+                    tn += 1
                 else
                     fn += 1
                 end
