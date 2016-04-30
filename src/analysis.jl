@@ -20,7 +20,7 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
     genes[:absmean] = abs(genes[:mean])
     genes[:pvalmeanprod] = genes[:absmean] .* genes[:pvalue]
 
-    auroc, tprs, fprs = compute_roc(genes, :pvalmeanprod, 50)
+    auroc = compute_auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), 50)
 
     if gen_plots
         draw(PNG("plots/volcano_plot_by_behavior.png", 12cm, 10cm, dpi=300),
@@ -34,12 +34,21 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
 
         draw(PNG("plots/distributions_of_observed_phenotypes.png", 12cm, 6cm, dpi=300),
         plot(filtered, x=:obs_phenotype, color=:class, Geom.density))
-        draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
-        plot(x=fprs, y=tprs, Geom.line, Coord.cartesian(fixed=true),
-        Guide.xlabel("fpr"), Guide.ylabel("tpr")))
         draw(PNG("plots/freq_scatter.png", 12cm, 10cm, dpi=300),
         plot(filtered, x=:freqs1, y=:freqs2, color=:class, Scale.x_log10, Scale.y_log10,
         Theme(highlight_width=0pt)))
+
+        # ROC plots
+
+        _, s_tprs, s_fprs = compute_roc(genes[genes[:class] .== :sigmoid, :], :pvalmeanprod, 50)
+        _, l_tprs, l_fprs = compute_roc(genes[genes[:class] .== :linear, :], :pvalmeanprod, 50)
+
+        data = DataFrame(tprs=vcat(s_tprs, l_tprs), fprs = vcat(s_fprs, l_fprs),
+               class=vcat(rep(:sigmoid,50), rep(:linear, 50)))
+
+        draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
+        plot(data, x=fprs, y=tprs, color=class, Geom.line, Coord.cartesian(fixed=true),
+        Guide.xlabel("fpr"), Guide.ylabel("tpr")))
     end
     auroc
 end
