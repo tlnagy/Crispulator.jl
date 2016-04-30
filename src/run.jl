@@ -23,7 +23,7 @@ function run_exp()
     cell_count = N*coverage*representation
     guide_freqs_dist = Categorical(guide_freqs)
 
-    cells = transfect(guide_freqs_dist, cell_count, moi)
+    cells = transfect(guides, guide_freqs_dist, cell_count, moi)
 
     bin_info = Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0))
     bin_cells = facs_sort(cells, guides, bin_info, 0.5)
