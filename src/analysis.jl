@@ -28,13 +28,17 @@ function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
         Guide.ylabel("-log10 pvalue"), Theme(highlight_width=0pt)))
         draw(PNG("plots/volcano_plot_by_class.png", 12cm, 10cm, dpi=300),
         plot(genes, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt)))
+
+        # remove guides that weren't observed during sorting
+        filtered = combined[isfinite(combined[:obs_phenotype]), :]
+
         draw(PNG("plots/distributions_of_observed_phenotypes.png", 12cm, 6cm, dpi=300),
-        plot(combined, x=:obs_phenotype, color=:class, Geom.density))
+        plot(filtered, x=:obs_phenotype, color=:class, Geom.density))
         draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
         plot(x=fprs, y=tprs, Geom.line, Coord.cartesian(fixed=true),
         Guide.xlabel("fpr"), Guide.ylabel("tpr")))
         draw(PNG("plots/freq_scatter.png", 12cm, 10cm, dpi=300),
-        plot(combined, x=:freqs1, y=:freqs2, color=:class, Scale.x_log10, Scale.y_log10,
+        plot(filtered, x=:freqs1, y=:freqs2, color=:class, Scale.x_log10, Scale.y_log10,
         Theme(highlight_width=0pt)))
     end
     auroc

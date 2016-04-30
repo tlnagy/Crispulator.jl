@@ -14,7 +14,8 @@ include("analysis.jl")
 const N = 500 # number of target genes
 const coverage = 5 # number of guides per gene
 const representation = 1000 # Number of cells with each guide
-const moi = 0.25
+const moi = 0.25 # multiplicity of infection
+const σ = 1.0 # std dev expected for cells during facs sorting (in phenotype units)
 
 function run_exp()
 
@@ -26,7 +27,7 @@ function run_exp()
     cells = transfect(guides, guide_freqs_dist, cell_count, moi)
 
     bin_info = Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0))
-    bin_cells = facs_sort(cells, guides, bin_info, 0.5)
+    bin_cells = facs_sort(cells, guides, bin_info, σ)
 
     freqs = counts_to_freqs([bin_cells[binname] for binname in keys(bin_cells)]...)
     raw_data = sequencing([10^7, 10^7], guides, freqs...)
