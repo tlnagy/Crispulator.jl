@@ -43,14 +43,14 @@ function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false)
 
         # ROC plots
 
-        _, s_tprs, s_fprs = compute_roc(genes[genes[:class] .== :sigmoid, :], :pvalmeanprod, 50)
-        _, l_tprs, l_fprs = compute_roc(genes[genes[:class] .== :linear, :], :pvalmeanprod, 50)
+        _, s_tprs, s_fprs = compute_roc(genes[genes[:behavior] .== :sigmoidal, :], :pvalmeanprod, 50)
+        _, l_tprs, l_fprs = compute_roc(genes[genes[:behavior] .== :linear, :], :pvalmeanprod, 50)
 
         data = DataFrame(tprs=vcat(s_tprs, l_tprs), fprs = vcat(s_fprs, l_fprs),
-               class=vcat(rep(:sigmoid,50), rep(:linear, 50)))
+               behavior=vcat(rep(:sigmoidal,50), rep(:linear, 50)))
 
         draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
-        plot(data, x=fprs, y=tprs, color=class, Geom.line, Coord.cartesian(fixed=true),
+        plot(data, x=:fprs, y=:tprs, color=:behavior, Geom.line, Coord.cartesian(fixed=true),
         Guide.xlabel("fpr"), Guide.ylabel("tpr")))
     end
     auroc
