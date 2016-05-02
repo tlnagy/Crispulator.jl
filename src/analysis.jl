@@ -9,8 +9,9 @@ function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false)
     @assert length(keys(raw_data)) == 2 "exactly two bins needed"
 
     combined = copy(raw_data[:bin1])
-    rename!(combined, Dict(:freqs => :freqs1))
+    rename!(combined, Dict(:freqs => :freqs1, :counts => :counts1))
     combined[:freqs2] = raw_data[:bin2][:freqs]
+    combined[:counts2] = raw_data[:bin2][:counts]
     combined[:log2fc] = log2(combined[:freqs1]./combined[:freqs2])
 
     nonnegs = combined[combined[:class] .!= :negcontrol, :]
