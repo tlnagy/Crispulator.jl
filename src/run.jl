@@ -29,8 +29,8 @@ function run_exp()
     bin_info = Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0))
     bin_cells = facs_sort(cells, guides, bin_info, σ)
 
-    freqs = counts_to_freqs([bin_cells[binname] for binname in keys(bin_cells)]...)
-    raw_data = sequencing([10^7, 10^7], guides, freqs...)
+    freqs = counts_to_freqs(bin_cells)
+    raw_data = sequencing(Dict(:bin1=>10^7,:bin2=>10^7), guides, freqs)
 
     auroc = analyze(raw_data, gen_plots=false)
 

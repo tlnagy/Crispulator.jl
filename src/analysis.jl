@@ -1,13 +1,16 @@
-function analyze(raw_data::Vector{DataFrame}; gen_plots=false)
-    map(x -> sort!(x, cols=[:barcodeid]), raw_data);
-    # add a pseudocount of 0.5 to every value to prevent -Inf's when
-    # taking the log
-    map(x -> x[:counts] += 0.5, raw_data);
-    map(x -> x[:freqs] = x[:counts]./sum(x[:counts]), raw_data);
+function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false)
+    for (bin, seq_data) in raw_data
+        sort!(seq_data, cols=[:barcodeid])
+        # add a pseudocount of 0.5 to every value to prevent -Inf's when
+        # taking the log
+        seq_data[:counts] += 0.5
+        seq_data[:freqs] = seq_data[:counts]./sum(seq_data[:counts])
+    end
+    @assert length(keys(raw_data)) == 2 "exactly two bins needed"
 
-    combined = copy(raw_data[1])
+    combined = copy(raw_data[:bin1])
     rename!(combined, Dict(:freqs => :freqs1))
-    combined[:freqs2] = raw_data[2][:freqs]
+    combined[:freqs2] = raw_data[:bin2][:freqs]
     combined[:log2fc] = log2(combined[:freqs1]./combined[:freqs2])
 
     nonnegs = combined[combined[:class] .!= :negcontrol, :]
