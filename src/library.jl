@@ -31,15 +31,28 @@ function construct_library(N::Int64, coverage::Int64)
 
         # Generate knockdown-phenotype relationship for this gene
         gene_class = phenotype_class_names[rand(phenotype_class_dist)]
-        params = (rand(phenotype_dists[gene_class]), rand(slope_model),rand(inflection_model))
-        gene_response(x) = sigmoid(x, params...)
+
+        # Maximum phenotype expected from 100% KD of gene
+        max_phenotype = rand(phenotype_dists[gene_class])
+        # Slope of curve, larger values indicate steep sigmoids
+        slope_steepness = rand(slope_model)
+
+        if slope_steepness < 10 # linear
+            gene_response(x) = linear(x, max_phenotype)
+            gene_phenotype = :linear
+        else # sigmoid
+            inflection_point = rand(inflection_model)
+            gene_response(x) = sigmoid(x, max_phenotype, slope_steepness,
+                                       inflection_point)
+            gene_phenotype = :sigmoidal
+        end
 
         for i in 1:coverage
             barcode_knockdown = rand(knockdown_model)
             # phenotype of barcode given its knockdown efficiency
             barcode_phenotype = gene_response(barcode_knockdown)
-            behavior = params[2] < 10 ? :linear : :sigmoidal
-            push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype, behavior, gene_class))
+            push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype,
+                  gene_phenotype, gene_class))
         end
     end
 
@@ -56,6 +69,11 @@ Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
 """
 sigmoid(x, l, k, p) = clamp(l./(1 + e.^(-k.*(x - p))), min(0, l), max(0, l))
+
+"""
+Given value(s) `x` apply a simple linear function with maximum value `l`
+"""
+linear(x, l) = clamp(l.*x, 0, l)
 
 """
 Constructs a delta function at a given δ value
