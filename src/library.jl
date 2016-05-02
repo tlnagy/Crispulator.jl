@@ -4,7 +4,7 @@ gene. Returns a tuple of guides and their relative frequencies (assigned randoml
 """
 function construct_library(N::Int64, coverage::Int64)
     # Assuming a high quality library has mostly good guides with some bad ones
-    knockdown_model = MixtureModel([TruncatedNormal(0.97, 0.05, 0, 1),
+    knockdown_model = MixtureModel([TruncatedNormal(0.90, 0.1, 0, 1),
                                     TruncatedNormal(0.05, 0.07, 0, 1)], [0.9, 0.1])
 
     # The maximum expected phenotype is drawn from a mixture of four models.
@@ -14,14 +14,14 @@ function construct_library(N::Int64, coverage::Int64)
     phenotype_dists = Dict(
         :inactive => Delta(0.0),
         :negcontrol => Delta(0.0),
-        :increasing => TruncatedNormal(0.8, 0.2, 0.1, 1),
-        :decreasing => TruncatedNormal(-0.8, 0.2, -1, -0.1)
+        :increasing => TruncatedNormal(0.55, 0.2, 0.1, 1),
+        :decreasing => TruncatedNormal(-0.55, 0.2, -1, -0.1)
     )
     phenotype_class_dist = Categorical([0.75, 0.05, 0.1, 0.1])
     phenotype_class_names = [:inactive, :negcontrol, :increasing, :decreasing]
     # for the slopes we have equal chance for sigmoidal and linear options
     slope_model = MixtureModel([TruncatedNormal(2, 1.5, 0, 10),
-                                TruncatedNormal(30, 5, 10, Inf)])
+                                TruncatedNormal(30, 5, 10, Inf)], [0.75, 0.25])
     # inflections in the sigmoids occurs at high knockdowns
     inflection_model = TruncatedNormal(0.8, 0.2, 0, 1)
 
