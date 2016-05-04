@@ -1,9 +1,7 @@
-using StatsBase
-
-function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int64}})
+function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int64}}, guide_count::Int64)
     results = Dict{Symbol, Vector{Float64}}()
     for (bin, cells) in bin_cells
-        counts = StatsBase.counts(cells, 1:N*coverage)
+        counts = StatsBase.counts(cells, 1:guide_count)
         results[bin] = counts ./ sum(counts)
     end
     results
