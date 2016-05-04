@@ -25,7 +25,8 @@ end
                                seq_depth = 10^7
                             )
 
-    guides, guide_freqs = construct_library(num_genes, coverage)
+    lib = Library()
+    guides, guide_freqs = construct_library(lib, num_genes, coverage)
 
     guide_count = num_genes * coverage
     cell_count = guide_count*representation
