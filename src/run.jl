@@ -1,9 +1,22 @@
 using DataFrames
 using Distributions
-using Gadfly
 using HypothesisTests
+using StatsBase
+@everywhere using DataFrames
+@everywhere using Distributions
+@everywhere using HypothesisTests
+@everywhere using StatsBase
 
-function run_exp()
+@everywhere function include_all()
+    filenames = ["common.jl", "utils.jl", "library.jl", "transfection.jl",
+                 "selection.jl", "sequencing.jl", "analysis.jl"]
+    for filename in filenames
+        include(filename)
+    end
+end
+@everywhere include_all()
+
+@everywhere function run_exp()
     num_genes = 500 # number of target genes
     coverage = 5 # number of guides per gene
     representation = 100 # Number of cells with each guide
@@ -25,9 +38,9 @@ function run_exp()
     freqs = counts_to_freqs(bin_cells, guide_count)
     raw_data = sequencing(Dict(:bin1=>10^7,:bin2=>10^7), guides, freqs)
 
-    auroc = analyze(raw_data, gen_plots=true)
+    auroc = analyze(raw_data, gen_plots=false)
 
     auroc
 end
 
-auroc = run_exp()
+@everywhere println(run_exp())
