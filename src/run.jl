@@ -22,6 +22,7 @@ end
                                moi = 0.25, # multiplicity of infection
                                σ = 1.0, # std dev expected for cells during facs sorting
                                bin_info = Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)),
+                               num_cells_per_bin = 2e6,
                                seq_depth = 10^7
                             )
 
@@ -33,7 +34,10 @@ end
 
     guide_freqs_dist = Categorical(guide_freqs)
 
-    cells = transfect(guides, guide_freqs_dist, cell_count, moi)
+    min_perc = minimum([range[2] - range[1] for (binname, range) in bin_info])
+    expand_to = round(Int64, num_cells_per_bin/min_perc)
+
+    cells = transfect(guides, guide_freqs_dist, cell_count, moi, expand_to)
 
     bin_cells = facs_sort(cells, guides, bin_info, σ)
 
@@ -49,7 +53,7 @@ function run_wrapper()
     representations = [1, 5, 10, 50, 100, 500, 1000]
     num_runs = 10
 
-    runs = vec([(rep,run) for rep in representations, run in 1:num_runs])
+    runs = vec([(rep,run) for run in 1:num_runs, rep in representations])
 
     results = @time pmap(args -> run_exp(; representation = args[1]), runs)
     results = collect(zip(results...))
