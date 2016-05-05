@@ -46,15 +46,14 @@ end
 end
 
 function run_wrapper()
-    representations = [1000]
-    # representations = [1, 5, 10, 50, 100, 500, 1000]
+    representations = [1, 5, 10, 50, 100, 500, 1000]
     num_runs = 10
 
     runs = vec([(rep,run) for rep in representations, run in 1:num_runs])
 
     results = @time pmap(args -> run_exp(; representation = args[1]), runs)
-
-    for val in results; println(val) end
+    results = collect(zip(results...))
+    writetable("../data/output.csv", DataFrame(auroc=[results[1]...], representation=[results[2]...]))
 end
 
 # fire up simulation if run using command line
