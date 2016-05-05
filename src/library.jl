@@ -1,34 +1,4 @@
 """
-Constructs the guide library for `N` genes with `coverage` number of guides per
-gene. Returns a tuple of guides and their relative frequencies (assigned randomly).
-"""
-function construct_library(lib::Library, N::Int64, coverage::Int64)
-    barcodes = Barcode[]
-
-    for gene in 1:N
-
-        gene_class, max_phenotype, gene_behavior, relationship = rand_gene(lib)
-        # get this gene's KD-phenotype relationship
-        kd_response = response(relationship)
-
-        for i in 1:coverage
-            barcode_knockdown = rand(lib.knockdown_dist)
-            # phenotype of barcode given its knockdown efficiency
-            barcode_phenotype = kd_response(barcode_knockdown, max_phenotype)
-            push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype,
-                  gene_behavior, gene_class))
-        end
-    end
-
-    # the expected z-score for a 90% confidence interval is 2x1.645=3.29
-    # construct a normal distribution with a σ = 1/3.29 so that there is
-    # a 10-fold difference between the 95th/5th percentiles
-    vals = 10.^rand(Normal(0, 1/3.29), N*coverage)
-    guide_freqs = vals/sum(vals)
-    barcodes, guide_freqs
-end
-
-"""
 Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
 """
@@ -131,6 +101,36 @@ function rand_gene(lib::Library)
     max_phenotype = rand(dist)
     behavior, relationship = lib.kd_phenotype_relationships[rand(lib.relationship_probs)]
     class, max_phenotype, behavior, relationship
+end
+
+"""
+Constructs the guide library for `N` genes with `coverage` number of guides per
+gene. Returns a tuple of guides and their relative frequencies (assigned randomly).
+"""
+function construct_library(lib::Library, N::Int64, coverage::Int64)
+    barcodes = Barcode[]
+
+    for gene in 1:N
+
+        gene_class, max_phenotype, gene_behavior, relationship = rand_gene(lib)
+        # get this gene's KD-phenotype relationship
+        kd_response = response(relationship)
+
+        for i in 1:coverage
+            barcode_knockdown = rand(lib.knockdown_dist)
+            # phenotype of barcode given its knockdown efficiency
+            barcode_phenotype = kd_response(barcode_knockdown, max_phenotype)
+            push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype,
+                  gene_behavior, gene_class))
+        end
+    end
+
+    # the expected z-score for a 90% confidence interval is 2x1.645=3.29
+    # construct a normal distribution with a σ = 1/3.29 so that there is
+    # a 10-fold difference between the 95th/5th percentiles
+    vals = 10.^rand(Normal(0, 1/3.29), N*coverage)
+    guide_freqs = vals/sum(vals)
+    barcodes, guide_freqs
 end
 
 """
