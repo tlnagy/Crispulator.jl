@@ -12,7 +12,8 @@ function transfect(guides::Vector{Barcode}, guide_freqs_dist::Distributions.Cate
         end
         cells = expansion
     else
-        warn("targeted expansion is smaller than initial cell count, using initial")
+        warn("targeted expansion is smaller than initial cell count" *
+             ", using $num_cells instead of $expand_to")
     end
 
     initial_freqs = StatsBase.counts(cells, 1:length(guides)) ./ length(cells)

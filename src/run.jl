@@ -16,51 +16,60 @@ using StatsBase
 end
 @everywhere include_all()
 
-@everywhere function run_exp(; num_genes = 500, # number of target genes
-                               coverage = 5, # number of guides per gene
-                               representation = 100, # Number of cells with each guide
-                               moi = 0.25, # multiplicity of infection
-                               σ = 1.0, # std dev expected for cells during facs sorting
-                               bin_info = Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)),
-                               num_cells_per_bin = 2e6,
-                               seq_depth = 10^7
-                            )
+@everywhere function run_exp(setup::ScreenSetup; run_idx=-1)
 
     lib = Library()
-    guides, guide_freqs = construct_library(lib, num_genes, coverage)
+    guides, guide_freqs = construct_library(lib, setup.num_genes, setup.coverage)
 
-    guide_count = num_genes * coverage
-    cell_count = guide_count*representation
+    guide_count = setup.num_genes * setup.coverage
+    cell_count = guide_count*setup.representation
 
     guide_freqs_dist = Categorical(guide_freqs)
 
-    min_perc = minimum([range[2] - range[1] for (binname, range) in bin_info])
-    expand_to = round(Int64, num_cells_per_bin/min_perc)
+    min_perc = minimum([range[2] - range[1] for (binname, range) in setup.bin_info])
+    expand_to = round(Int64, setup.num_cells_per_bin/min_perc)
 
-    cells = transfect(guides, guide_freqs_dist, cell_count, moi, expand_to)
+    cells = transfect(guides, guide_freqs_dist, cell_count, setup.moi, expand_to)
 
-    bin_cells = facs_sort(cells, guides, bin_info, σ)
+    bin_cells = facs_sort(cells, guides, setup.bin_info, setup.σ)
 
     freqs = counts_to_freqs(bin_cells, guide_count)
-    raw_data = sequencing(Dict(:bin1=>seq_depth,:bin2=>seq_depth), guides, freqs)
+    raw_data = sequencing(Dict(:bin1=>setup.seq_depth,:bin2=>setup.seq_depth), guides, freqs)
 
     auroc = analyze(raw_data, gen_plots=false)
 
-    auroc, representation
+    [auroc; as_array(setup)...; run_idx]
 end
 
-function run_wrapper()
-    representations = [1, 5, 10, 50, 100, 500, 1000]
+function run_wrapper(filepath)
+    representations = logspace(0, 3, 10)
+    bin_sizes = 2*logspace(4,6,10)
+    noises = [0.5, 1, 2]
     num_runs = 10
 
-    runs = vec([(rep,run) for run in 1:num_runs, rep in representations])
+    runs = []
+    for rep in representations, min_bin in bin_sizes, noise in noises
+        for run in 1:num_runs
+            setup = ScreenSetup()
+            setup.representation = round(Int64, rep)
+            setup.num_cells_per_bin = round(Int64, min_bin)
+            setup.σ = noise
+            push!(runs, (setup, run))
+        end
+    end
 
-    results = @time pmap(args -> run_exp(; representation = args[1]), runs)
+    results = @time pmap(args -> run_exp(args[1]; run_idx=args[2]), runs)
     results = collect(zip(results...))
-    writetable("../data/output.csv", DataFrame(auroc=[results[1]...], representation=[results[2]...]))
+
+    col_names = [:auroc; fieldnames(ScreenSetup)...; :run]
+
+    results = DataFrame(Any[map(collect, results)...], col_names)
+    delete!(results, :bin_info)
+
+    writetable(filepath, results)
 end
 
 # fire up simulation if run using command line
 if !isinteractive()
-    run_wrapper()
+    run_wrapper("../data/output.csv")
 end
