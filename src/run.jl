@@ -43,7 +43,7 @@ end
 
 function run_wrapper(filepath)
     representations = logspace(0, 3, 10)
-    bin_sizes = 2*logspace(4,6,10)
+    bin_sizes = 2.5*logspace(4,6,10)
     noises = [0.5, 1, 2]
     num_runs = 10
 
