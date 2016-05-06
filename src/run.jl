@@ -59,11 +59,11 @@ function run_wrapper(filepath)
     end
 
     results = @time pmap(args -> run_exp(args[1]; run_idx=args[2]), runs)
-    results = collect(zip(results...))
+    results = DataFrame(hcat(results...)')
 
-    col_names = [:auroc; fieldnames(ScreenSetup)...; :run]
-
-    results = DataFrame(Any[map(collect, results)...], col_names)
+    names!(results, [:auroc; fieldnames(ScreenSetup)...; :run])
+    # remove bin_info for now because there isn't a good way to encode
+    # that information
     delete!(results, :bin_info)
 
     writetable(filepath, results)
