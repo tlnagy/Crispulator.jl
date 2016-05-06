@@ -2,6 +2,7 @@ using DataFrames
 using Distributions
 using HypothesisTests
 using StatsBase
+using Iterators
 @everywhere using DataFrames
 @everywhere using Distributions
 @everywhere using HypothesisTests
@@ -41,22 +42,29 @@ end
     [auroc; as_array(setup)...; run_idx]
 end
 
-function run_wrapper(filepath)
-    representations = logspace(0, 3, 10)
-    bin_sizes = 2.5*logspace(4,6,10)
-    noises = [0.5, 1, 2]
-    num_runs = 10
-
+function build_parameter_space(parameters::Dict{Symbol, Vector}, num_runs::Int)
+    fields = collect(keys(parameters))
+    n_fields = length(fields)
     runs = []
-    for rep in representations, min_bin in bin_sizes, noise in noises
+    for vals in Iterators.product([parameters[field] for field in fields]...)
         for run in 1:num_runs
             setup = ScreenSetup()
-            setup.representation = round(Int64, rep)
-            setup.num_cells_per_bin = round(Int64, min_bin)
-            setup.σ = noise
+            for idx in 1:n_fields
+                setfield!(setup, fields[idx], vals[idx])
+            end
             push!(runs, (setup, run))
         end
     end
+    runs
+end
+
+function run_wrapper(filepath)
+    parameters = Dict{Symbol, Vector}(
+        :representation => map(x->round(Int64, x), logspace(0, 3, 10)),
+        :num_cells_per_bin => map(x->round(Int64, x),  2.5*logspace(4,6,10)),
+        :σ => [0.5, 1, 2]
+    )
+    runs = build_parameter_space(parameters, 10)
 
     results = @time pmap(args -> run_exp(args[1]; run_idx=args[2]), runs)
     results = DataFrame(hcat(results...)')
