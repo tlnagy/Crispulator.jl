@@ -1,4 +1,4 @@
-function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false)
+function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false, testmethod=false)
     for (bin, seq_data) in raw_data
         sort!(seq_data, cols=[:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
@@ -24,7 +24,12 @@ function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false)
     genes[:absmean] = abs(genes[:mean])
     genes[:pvalmeanprod] = genes[:absmean] .* genes[:pvalue]
 
-    auroc = compute_auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), 50)
+    get_auroc = x -> compute_auroc(Vector(genes[x]), Vector(genes[:class]), 100)
+    if testmethod
+        auroc = map(get_auroc, [:pvalue, :absmean, :pvalmeanprod])
+    else
+        auroc = get_auroc(:pvalmeanprod)
+    end
 
     if gen_plots
         draw(PNG("plots/volcano_plot_by_behavior.png", 12cm, 10cm, dpi=300),
