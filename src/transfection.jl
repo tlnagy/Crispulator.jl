@@ -12,8 +12,7 @@ function transfect(guides::Vector{Barcode}, guide_freqs_dist::Distributions.Cate
         end
         cells = expansion
     else
-        warn("targeted expansion is smaller than initial cell count" *
-             ", using $num_cells instead of $expand_to")
+        cells = sample(cells, expand_to)
     end
 
     initial_freqs = StatsBase.counts(cells, 1:length(guides)) ./ length(cells)
@@ -22,4 +21,37 @@ function transfect(guides::Vector{Barcode}, guide_freqs_dist::Distributions.Cate
         @inbounds guides[i].initial_freq = initial_freqs[i]
     end
     cells
+end
+
+function transfect(setup::GrowthScreen,
+                   guides::Vector{Barcode},
+                   guide_freqs_dist::Categorical)
+
+    num_guides = length(guides)
+    cell_count = num_guides * setup.representation
+    initial_cells = rand(guide_freqs_dist, round(Int64, pdf(Poisson(setup.moi), 1)*cell_count))
+    target = num_guides * setup.bottleneck_representation
+
+    if target < length(initial_cells)
+        cells = sample(initial_cells, target)
+        num_doublings = -1
+    else
+        cells = copy(initial_cells)
+        num_inserted = length(cells)
+        num_doublings = 0
+        output = Array(Int64, target*4);
+
+        while num_inserted < target
+            num_inserted = grow!(cells, guides, output)
+            cells = copy(sub(output, 1:num_inserted))
+            num_doublings += 1
+        end
+    end
+
+    initial_freqs = counts(cells, 1:length(guides)) ./ length(cells)
+
+    for i in 1:length(guides)
+        @inbounds guides[i].initial_freq = initial_freqs[i]
+    end
+    cells, num_doublings
 end

@@ -83,6 +83,6 @@ type GrowthScreen <: ScreenSetup
     num_bottlenecks::Int64
 
     function GrowthScreen()
-        new(500, 5, 100, 0.25, 10^7, 0.5, 3)
+        new(500, 5, 100, 0.25, 10^7, 1000, 3)
     end
 end
