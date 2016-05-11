@@ -4,7 +4,6 @@ packages = [:DataFrames,
             :StatsBase,
             :Iterators]
 all_workers = packages[1:4]
-installed = Pkg.installed()
 for package in packages
     try
         Pkg.installed(string(package))
