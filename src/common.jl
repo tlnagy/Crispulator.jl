@@ -36,7 +36,14 @@ end
 
 as_array(bc::Barcode) = [getfield(bc, fld) for fld in fieldnames(bc)]
 
-type ScreenSetup
+"""
+A description of screen parameters
+"""
+abstract ScreenSetup
+
+as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
+
+type FacsScreen <: ScreenSetup
     "Number of target genes"
     num_genes::Int64
     "Number of guides per gene"
@@ -53,14 +60,29 @@ type ScreenSetup
     num_cells_per_bin::Int64
     "Sequencing depth"
     seq_depth::Int64
-    "For growth screens, how much of a bottleneck is applied"
-    bottleneck_perc::Float64
-    "For growth screens, how many bottlenecks are applied"
-    num_bottlenecks::Int64
 
-    function ScreenSetup()
-        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 2e6, 10^7, 0.5, 3)
+    function FacsScreen()
+        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 2e6, 10^7)
     end
 end
 
-as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
+type GrowthScreen <: ScreenSetup
+    "Number of target genes"
+    num_genes::Int64
+    "Number of guides per gene"
+    coverage::Int64
+    "Number of cells with each guide"
+    representation::Int64
+    "Multiplicity of infection"
+    moi::Float64
+    "Sequencing depth"
+    seq_depth::Int64
+    "For growth screens, how much of a bottleneck is applied"
+    bottleneck_representation::Int64
+    "For growth screens, how many bottlenecks are applied"
+    num_bottlenecks::Int64
+
+    function GrowthScreen()
+        new(500, 5, 100, 0.25, 10^7, 0.5, 3)
+    end
+end
