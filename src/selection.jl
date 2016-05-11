@@ -24,3 +24,34 @@ function facs_sort(cells::Vector{Int64}, guides::Vector{Barcode},
     end
     results
 end
+
+function grow!(cells::AbstractArray{Int64}, guides::Vector{Float64}, output)
+    num_inserted::Int = 0
+    @inbounds for i in 1:length(cells)
+        id::Int64 = cells[i]
+        ρ::Float64 = guides[id]
+        decision = abs(ρ) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ))
+        output[num_inserted+1:num_inserted+decision] = id
+        num_inserted+=decision
+    end
+    num_inserted
+end
+
+function growth_assay(initial_cells::AbstractArray{Int64},
+                      guides::Vector{Float64},
+                      num_bottlenecks::Int64,
+                      bottleneck_perc::Float64)
+
+    bottleneck_count = min(round(Int64, bottleneck_perc*2*length(initial_cells)), length(initial_cells))
+    # all cells at all timepoints
+    cellmat = zeros(Int64, bottleneck_count, num_bottlenecks)
+    output = Array(Int64, length(initial_cells)*4);
+    cells = initial_cells # 1st timepoint slice
+
+    for k in 1:num_bottlenecks
+        num_inserted = grow!(cells, guides, output)
+        cells = sub(cellmat, :, k)
+        sample!(sub(output, 1:num_inserted), cells, replace=false)
+    end
+    Dict(:bin1 => initial_cells, :bin2 => cellmat[:, num_bottlenecks])
+end

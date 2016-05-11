@@ -53,9 +53,13 @@ type ScreenSetup
     num_cells_per_bin::Int64
     "Sequencing depth"
     seq_depth::Int64
+    "For growth screens, how much of a bottleneck is applied"
+    bottleneck_perc::Float64
+    "For growth screens, how many bottlenecks are applied"
+    num_bottlenecks::Int64
 
     function ScreenSetup()
-        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 2e6, 10^7)
+        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 2e6, 10^7, 0.5, 3)
     end
 end
 
