@@ -1,15 +1,21 @@
-using DataFrames
-using Distributions
-using HypothesisTests
-using StatsBase
-using Iterators
-
-# these packages are used in the simulations and must be loaded on
-# all workers
-@everywhere using DataFrames
-@everywhere using Distributions
-@everywhere using HypothesisTests
-@everywhere using StatsBase
+packages = [:DataFrames,
+            :Distributions,
+            :HypothesisTests,
+            :StatsBase,
+            :Iterators]
+all_workers = packages[1:4]
+installed = Pkg.installed()
+for package in packages
+    try
+        Pkg.installed(string(package))
+        eval(:(using $package))
+        if package in all_workers
+            eval(:(@everywhere using $package))
+        end
+    catch
+        Pkg.add(string(package))
+    end
+end
 
 # load all simulations files on all workers
 @everywhere function include_all()
