@@ -12,7 +12,7 @@ function difference_between_two_bins(raw_data::Dict{Symbol, DataFrame})
     rename!(combined, Dict(:freqs => :freqs1, :counts => :counts1))
     combined[:freqs2] = raw_data[:bin2][:freqs]
     combined[:counts2] = raw_data[:bin2][:counts]
-    combined[:log2fc] = log2(combined[:freqs1]./combined[:freqs2])
+    combined[:log2fc] = log2(combined[:freqs2]./combined[:freqs1])
 
     nonnegs = combined[combined[:class] .!= :negcontrol, :]
     negcontrols = combined[combined[:class] .== :negcontrol, :log2fc]
