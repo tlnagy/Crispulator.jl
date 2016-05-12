@@ -1,10 +1,10 @@
-function build_parameter_space(parameters::Dict{Symbol, Vector}, num_runs::Int)
+function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
     for vals in Iterators.product([parameters[field] for field in fields]...)
         for run in 1:num_runs
-            setup = ScreenSetup()
+            setup = T()
             for idx in 1:n_fields
                 setfield!(setup, fields[idx], vals[idx])
             end
@@ -21,12 +21,12 @@ function scan_best_methods(filepath)
         :seq_depth => map(x->round(Int64, x),  logspace(5,7,2)),
         :σ => [0.5, 1, 2]
     )
-    runs = build_parameter_space(parameters, 10)
+    runs = build_parameter_space(FacsScreen(), parameters, 10)
 
     results = @time pmap(args -> run_exp(args[1], Library(); run_idx=args[2], testalg=true), runs)
     results = DataFrame(hcat(results...)')
 
-    names!(results, [:pval_auroc; :mean_auroc; :pvalmeanprod_auroc ; fieldnames(ScreenSetup)...; :run])
+    names!(results, [:pval_auroc; :mean_auroc; :pvalmeanprod_auroc ; fieldnames(FacsScreen)...; :run])
     # remove bin_info for now because there isn't a good way to encode
     # that information
     delete!(results, :bin_info)
