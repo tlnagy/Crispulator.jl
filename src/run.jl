@@ -19,7 +19,7 @@ end
 # load all simulations files on all workers
 @everywhere function include_all()
     filenames = ["common.jl", "utils.jl", "library.jl", "transfection.jl",
-                 "selection.jl", "sequencing.jl", "analysis.jl",
+                 "selection.jl", "sequencing.jl", "processing.jl",
                  "designs.jl"]
     for filename in filenames
         include(filename)
