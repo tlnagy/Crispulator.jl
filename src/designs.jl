@@ -7,16 +7,19 @@ end
 function teardown_screen(setup::ScreenSetup,
                          guides::Vector{Barcode},
                          bin_cells::Dict{Symbol,Vector{Int64}},
-                         testalg::Bool)
+                         processing_func::Function)
 
     freqs = counts_to_freqs(bin_cells, length(guides))
     raw_data = sequencing(Dict(:bin1=>setup.seq_depth,:bin2=>setup.seq_depth), guides, freqs)
-
-    analyze(raw_data, gen_plots=false, testmethod=testalg)
-
+    genes = difference_between_two_bins(raw_data)
+    processing_func(genes)
 end
 
-function run_exp(setup::FacsScreen, lib::Library; run_idx=-1, testalg=false)
+"""
+Runs a FACS screen given the parameters specified in `setup` using the
+library `lib` and applies the `processing_func` function to the result.
+"""
+function run_exp(setup::FacsScreen, lib::Library, processing_func::Function; run_idx=-1)
 
     guides, guide_freqs_dist = setup_screen(setup, lib)
 
@@ -27,10 +30,14 @@ function run_exp(setup::FacsScreen, lib::Library; run_idx=-1, testalg=false)
 
     bin_cells = facs_sort(cells, guides, setup.bin_info, setup.σ)
 
-    [teardown_screen(setup, guides, bin_cells, testalg)...; as_array(setup)...; run_idx]
+    [teardown_screen(setup, guides, bin_cells, processing_func)...; as_array(setup)...; run_idx]
 end
 
-function run_exp(setup::GrowthScreen, lib::Library; run_idx=-1, testalg=false)
+"""
+Runs a growth screen given the parameters specified in `setup` using the
+library `lib` and applies the `processing_func` function to the result.
+"""
+function run_exp(setup::GrowthScreen, lib::Library, processing_func::Function; run_idx=-1)
 
     guides, guide_freqs_dist = setup_screen(setup, lib)
 
@@ -38,5 +45,5 @@ function run_exp(setup::GrowthScreen, lib::Library; run_idx=-1, testalg=false)
 
     bin_cells = growth_assay(cells, guides, setup.num_bottlenecks, setup.bottleneck_representation)
 
-    [teardown_screen(setup, guides, bin_cells, testalg)...; as_array(setup)...; run_idx]
+    [teardown_screen(setup, guides, bin_cells, processing_func)...; as_array(setup)...; run_idx]
 end

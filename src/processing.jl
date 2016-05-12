@@ -1,4 +1,4 @@
-function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false, testmethod=false)
+function difference_between_two_bins(raw_data::Dict{Symbol, DataFrame})
     for (bin, seq_data) in raw_data
         sort!(seq_data, cols=[:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
@@ -24,40 +24,5 @@ function analyze(raw_data::Dict{Symbol, DataFrame}; gen_plots=false, testmethod=
     genes[:absmean] = abs(genes[:mean])
     genes[:pvalmeanprod] = genes[:absmean] .* genes[:pvalue]
 
-    get_auroc = x -> compute_auroc(Vector(genes[x]), Vector(genes[:class]), 100)
-    if testmethod
-        auroc = map(get_auroc, [:pvalue, :absmean, :pvalmeanprod])
-    else
-        auroc = get_auroc(:pvalmeanprod)
-    end
-
-    if gen_plots
-        draw(PNG("plots/volcano_plot_by_behavior.png", 12cm, 10cm, dpi=300),
-        plot(genes, x=:mean, y=:pvalue, color=:behavior, Guide.xlabel("mean log2 FC"),
-        Guide.ylabel("-log10 pvalue"), Theme(highlight_width=0pt)))
-        draw(PNG("plots/volcano_plot_by_class.png", 12cm, 10cm, dpi=300),
-        plot(genes, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt)))
-
-        # remove guides that weren't observed during sorting
-        filtered = combined[isfinite(combined[:obs_phenotype]), :]
-
-        draw(PNG("plots/distributions_of_observed_phenotypes.png", 12cm, 6cm, dpi=300),
-        plot(filtered, x=:obs_phenotype, color=:class, Geom.density))
-        draw(PNG("plots/freq_scatter.png", 12cm, 10cm, dpi=300),
-        plot(filtered, x=:freqs1, y=:freqs2, color=:class, Scale.x_log10, Scale.y_log10,
-        Theme(highlight_width=0pt)))
-
-        # ROC plots
-
-        _, s_tprs, s_fprs = compute_roc(genes[genes[:behavior] .== :sigmoidal, :], :pvalmeanprod, 50)
-        _, l_tprs, l_fprs = compute_roc(genes[genes[:behavior] .== :linear, :], :pvalmeanprod, 50)
-
-        data = DataFrame(tprs=vcat(s_tprs, l_tprs), fprs = vcat(s_fprs, l_fprs),
-               behavior=vcat(rep(:sigmoidal,50), rep(:linear, 50)))
-
-        draw(PNG("plots/roc.png", 12cm, 10cm, dpi=300),
-        plot(data, x=:fprs, y=:tprs, color=:behavior, Geom.line, Coord.cartesian(fixed=true),
-        Guide.xlabel("fpr"), Guide.ylabel("tpr")))
-    end
-    auroc
+    genes
 end
