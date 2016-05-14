@@ -40,7 +40,8 @@ end
 function growth_assay(initial_cells::AbstractArray{Int64},
                       guides::Vector{Barcode},
                       num_bottlenecks::Int64,
-                      bottleneck_representation::Int64)
+                      bottleneck_representation::Int64;
+                      debug=false)
 
     # all cells at all timepoints
     cellmat = zeros(Int64, length(guides)*bottleneck_representation, num_bottlenecks)
@@ -52,5 +53,11 @@ function growth_assay(initial_cells::AbstractArray{Int64},
         cells = sub(cellmat, :, k)
         sample!(sub(output, 1:num_inserted), cells, replace=false)
     end
-    Dict(:bin1 => initial_cells, :bin2 => cellmat[:, num_bottlenecks])
+    if debug
+        d = Dict([symbol("bin", i+1)=>cellmat[:, i] for i in 1:num_bottlenecks])
+        d[:bin1] = initial_cells
+        return d
+    else
+        return Dict(:bin1 => initial_cells, :bin2 => cellmat[:, num_bottlenecks])
+    end
 end

@@ -1,4 +1,7 @@
-function difference_between_two_bins(raw_data::Dict{Symbol, DataFrame})
+function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
+                                  first_bin=:bin1,
+                                  last_bin=maximum(keys(raw_data)))
+
     for (bin, seq_data) in raw_data
         sort!(seq_data, cols=[:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
@@ -10,24 +13,29 @@ function difference_between_two_bins(raw_data::Dict{Symbol, DataFrame})
         med = median(seq_data[seq_data[:class] .== :negcontrol, :freqs])
         seq_data[:rel_freqs] = seq_data[:freqs] ./ med
     end
-    @assert length(keys(raw_data)) == 2 "exactly two bins needed"
 
-    combined = copy(raw_data[:bin1])
-    rename!(combined, Dict(:freqs => :freqs1,
-                           :counts => :counts1,
-                           :rel_freqs => :rel_freqs1))
+    combined = copy(raw_data[first_bin])
+    rename!(combined, Dict(:freqs => symbol("freqs_", first_bin),
+                           :counts => symbol("counts_", first_bin),
+                           :rel_freqs => symbol("rel_freqs_", first_bin)))
 
-    combined[:freqs2] = raw_data[:bin2][:freqs]
-    combined[:counts2] = raw_data[:bin2][:counts]
-    combined[:rel_freqs2] = raw_data[:bin2][:rel_freqs]
-    combined[:log2fc] = log2(combined[:rel_freqs2]./combined[:rel_freqs1])
+    for (bin, seq_data) in raw_data
+        (bin == first_bin) && continue
+
+        combined[symbol("freqs_", bin)] = seq_data[:freqs]
+        combined[symbol("counts_", bin)] = seq_data[:counts]
+        combined[symbol("rel_freqs_", bin)] = seq_data[:rel_freqs]
+        combined[symbol("log2fc_", bin)] =
+        log2(combined[symbol("rel_freqs_", bin)]./combined[symbol("rel_freqs_", first_bin)])
+    end
 
     nonnegs = combined[combined[:class] .!= :negcontrol, :]
-    negcontrols = combined[combined[:class] .== :negcontrol, :log2fc]
+    negcontrols = combined[combined[:class] .== :negcontrol, symbol("log2fc_", last_bin)]
 
     genes = by(nonnegs, [:gene, :behavior, :class]) do barcodes
-        result = MannWhitneyUTest(barcodes[:log2fc], negcontrols)
-        DataFrame(pvalue = -log10(pvalue(result)), mean= mean(barcodes[:log2fc]))
+        log2fcs = barcodes[symbol("log2fc_", last_bin)]
+        result = MannWhitneyUTest(log2fcs, negcontrols)
+        DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
     end
     genes[:absmean] = abs(genes[:mean])
     genes[:pvalmeanprod] = genes[:absmean] .* genes[:pvalue]
