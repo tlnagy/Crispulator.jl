@@ -17,7 +17,7 @@ function sequencing(depths::Dict{Symbol, Int64}, guides::Vector{Barcode}, sample
     num_guides = length(guides)
 
     for (bin, freqs) in samples
-        reads = rand(Categorical(freqs), depths[bin])
+        reads = rand(Categorical(freqs), depths[bin]*length(guides))
 
         raw_counts = StatsBase.counts(reads, 1:num_guides)
 

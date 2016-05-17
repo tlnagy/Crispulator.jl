@@ -62,7 +62,7 @@ type FacsScreen <: ScreenSetup
     seq_depth::Int64
 
     function FacsScreen()
-        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 2e6, 10^7)
+        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 1000, 1000)
     end
 end
 
@@ -83,6 +83,6 @@ type GrowthScreen <: ScreenSetup
     num_bottlenecks::Int64
 
     function GrowthScreen()
-        new(500, 5, 100, 0.25, 10^7, 1000, 3)
+        new(500, 5, 100, 0.25, 1000, 1000, 3)
     end
 end

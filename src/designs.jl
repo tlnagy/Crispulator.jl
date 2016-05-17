@@ -26,7 +26,7 @@ function run_exp(setup::FacsScreen, lib::Library, processing_func::Function; run
     guides, guide_freqs_dist = setup_screen(setup, lib)
 
     min_perc = minimum([range[2] - range[1] for (binname, range) in setup.bin_info])
-    expand_to = round(Int64, setup.num_cells_per_bin/min_perc)
+    expand_to = round(Int64, (setup.num_cells_per_bin * length(guides))/min_perc)
 
     cells = transfect(guides, guide_freqs_dist, length(guides)*setup.representation, setup.moi, expand_to)
 
