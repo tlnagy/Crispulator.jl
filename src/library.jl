@@ -68,16 +68,20 @@ type Library
 end
 
 function Library()
-    # Assuming a high quality library has mostly good guides with some bad ones
-    knockdown_dist = MixtureModel([TruncatedNormal(0.90, 0.1, 0, 1),
-                                   TruncatedNormal(0.05, 0.07, 0, 1)], [0.9, 0.1])
-
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (0.75, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
         :increasing => (0.1, TruncatedNormal(0.55, 0.2, 0.1, 1)),
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
+    Library(max_phenotype_dists)
+end
+
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}})
+    # Assuming a high quality library has mostly good guides with some bad ones
+    knockdown_dist = MixtureModel([TruncatedNormal(0.90, 0.1, 0, 1),
+                                   TruncatedNormal(0.05, 0.07, 0, 1)], [0.9, 0.1])
+
     kd_phenotype_relationships = Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}}(
         :linear => (0.75, Linear()),
         :sigmoidal => (0.25, Sigmoidal())

@@ -38,10 +38,17 @@ function scan_perf_of_diff_cat_in_growth(filepath)
     parameters = Dict{Symbol, Vector}(
         :representation => map(x->round(Int64, x), logspace(0, 3, 10)),
         :bottleneck_representation => map(x->round(Int64, x),  logspace(0,3,10)),
-        :num_bottlenecks => map(x->round(Int64, x), linspace(1, 25, 10)),
-        :seq_depth => map(x->round(Int64, x),  logspace(5,7,10))
+        :num_bottlenecks => collect(2:2:20)
     )
-    runs = build_parameter_space(GrowthScreen(), parameters, 25)
+    runs = build_parameter_space(GrowthScreen(), parameters, 10)
+
+    max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
+        :inactive => (0.83, Delta(0.0)),
+        :negcontrol => (0.05, Delta(0.0)),
+        :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+        :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+    )
+    lib = Library(max_phenotype_dists)
 
     # computes the aurocs of increasing and decreasing genes separately
     get_aurocs = genes -> begin
@@ -52,7 +59,7 @@ function scan_perf_of_diff_cat_in_growth(filepath)
         (d, i)
     end
 
-    results = @time pmap(args -> run_exp(args[1], Library(), get_aurocs; run_idx=args[2]), runs)
+    results = @time pmap(args -> run_exp(args[1], lib, get_aurocs; run_idx=args[2]), runs)
     results = DataFrame(hcat(results...)')
 
     names!(results, [:decreasing; :increasing; fieldnames(GrowthScreen)...; :run])
