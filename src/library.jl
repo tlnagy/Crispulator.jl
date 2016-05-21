@@ -36,12 +36,24 @@ function response(sig::Sigmoidal)
     (x, l) -> sigmoid(x, l, slope, inflection)
 end
 
+abstract Cas9Behavior
+
+type CRISPRi <: Cas9Behavior end
+
+type CRISPRKO <: Cas9Behavior
+    knockout_dist::Categorical
+
+    CRISPRKO(dist::Categorical) = new(dist)
+end
+CRISPRKO() = CRISPRKO(Categorical([1/9, 4/9, 4/9]))
+
 """
 Wrapper containing all library construction parameters
 """
 type Library
     "Distribution of guide knockdown efficiencies"
-    knockdown_dist::Distribution
+    knockdown_dist::Dict{Int64, Tuple{Symbol, Sampleable}}
+    knockdown_probs::Categorical
 
     """
     Maximum phenotype categories mapped to their probability of being
@@ -57,36 +69,63 @@ type Library
     kd_phenotype_relationships::Dict{Int64, Tuple{Symbol, KDPhenotypeRelationship}}
     relationship_probs::Categorical
 
-    function Library(knockdown_dist::Distribution,
-                     max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
-                     kd_phenotype_relationships::Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}})
+    """
+    Whether this library is CRISPRi or CRISPR cutting.
+    """
+    cas9_behavior::Cas9Behavior
 
+    function Library(knockdown_dist::Dict{Symbol, Tuple{Float64, Sampleable}},
+                     max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+                     kd_phenotype_relationships::Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}},
+                     cas9_behavior::Cas9Behavior)
+
+        kd = unroll(knockdown_dist)
         max_p = unroll(max_phenotype_dists)
         rela = unroll(kd_phenotype_relationships)
-        new(knockdown_dist, max_p[1], max_p[2], rela[1], rela[2])
+        new(kd[1], kd[2], max_p[1], max_p[2], rela[1], rela[2], cas9_behavior)
     end
 end
 
-function Library()
+function Library(cas9_behavior::Cas9Behavior)
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (0.75, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
         :increasing => (0.1, TruncatedNormal(0.55, 0.2, 0.1, 1)),
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
-    Library(max_phenotype_dists)
+    Library(max_phenotype_dists, cas9_behavior)
 end
 
-function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}})
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+                 cas9_behavior::CRISPRi)
     # Assuming a high quality library has mostly good guides with some bad ones
-    knockdown_dist = MixtureModel([TruncatedNormal(0.90, 0.1, 0, 1),
-                                   TruncatedNormal(0.05, 0.07, 0, 1)], [0.9, 0.1])
+    knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
+        :high => (0.9, TruncatedNormal(0.90, 0.1, 0, 1)),
+        :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+    )
+    Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
+end
+
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+                 cas9_behavior::CRISPRKO)
+    # For CRISPR KO assume that if guide is "high quality" than it will a
+    # maximum knockdown of 100%
+    knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
+        :high => (0.9, Delta(1.0)),
+        :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+    )
+    Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
+end
+
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+                 knockdown_dist::Dict{Symbol, Tuple{Float64, Sampleable}},
+                 cas9_behavior::Cas9Behavior)
 
     kd_phenotype_relationships = Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}}(
         :linear => (0.75, Linear()),
         :sigmoidal => (0.25, Sigmoidal())
     )
-    Library(knockdown_dist, max_phenotype_dists, kd_phenotype_relationships)
+    Library(knockdown_dist, max_phenotype_dists, kd_phenotype_relationships, cas9_behavior)
 end
 
 function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
@@ -121,7 +160,8 @@ function construct_library(lib::Library, N::Int64, coverage::Int64)
         kd_response = response(relationship)
 
         for i in 1:coverage
-            barcode_knockdown = rand(lib.knockdown_dist)
+            barcode_quality, barcode_knockdown_dist = lib.knockdown_dist[rand(lib.knockdown_probs)]
+            barcode_knockdown = rand(barcode_knockdown_dist)
             # phenotype of barcode given its knockdown efficiency
             barcode_phenotype = kd_response(barcode_knockdown, max_phenotype)
             push!(barcodes, Barcode(gene, barcode_knockdown, barcode_phenotype,

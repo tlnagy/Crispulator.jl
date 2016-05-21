@@ -28,9 +28,9 @@ function run_exp(setup::FacsScreen, lib::Library, processing_func::Function; run
     min_perc = minimum([range[2] - range[1] for (binname, range) in setup.bin_info])
     expand_to = round(Int64, (setup.num_cells_per_bin * length(guides))/min_perc)
 
-    cells = transfect(guides, guide_freqs_dist, length(guides)*setup.representation, setup.moi, expand_to)
+    cells, cell_phenotypes = transfect(lib, guides, guide_freqs_dist, length(guides)*setup.representation, setup.moi, expand_to)
 
-    bin_cells = facs_sort(cells, guides, setup.bin_info, setup.σ)
+    bin_cells = facs_sort(cells, cell_phenotypes, guides, setup.bin_info, setup.σ)
 
     [teardown_screen(setup, guides, bin_cells, processing_func)...; as_array(setup)...; run_idx]
 end
@@ -43,9 +43,9 @@ function run_exp(setup::GrowthScreen, lib::Library, processing_func::Function; r
 
     guides, guide_freqs_dist = setup_screen(setup, lib)
 
-    cells, num_doublings = transfect(setup, guides, guide_freqs_dist)
+    cells, cell_phenotypes = transfect(setup, lib, guides, guide_freqs_dist)
 
-    bin_cells = growth_assay(cells, guides, setup.num_bottlenecks, setup.bottleneck_representation)
+    bin_cells = growth_assay(cells, cell_phenotypes, guides, setup.num_bottlenecks, setup.bottleneck_representation)
 
     [teardown_screen(setup, guides, bin_cells, processing_func)...; as_array(setup)...; run_idx]
 end
