@@ -7,7 +7,7 @@ sigmoid(x, l, k, p) = clamp(l./(1 + e.^(-k.*(x - p))), min(0, l), max(0, l))
 """
 Given value(s) `x` apply a simple linear function with maximum value `l`
 """
-linear(x, l) = clamp(l.*x, 0, l)
+linear(x, l) = clamp(l.*x, min(0, l), max(0, l))
 
 abstract KDPhenotypeRelationship
 
