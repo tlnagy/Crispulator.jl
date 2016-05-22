@@ -150,8 +150,10 @@ end
 Constructs the guide library for `N` genes with `coverage` number of guides per
 gene. Returns a tuple of guides and their relative frequencies (assigned randomly).
 """
-function construct_library(lib::Library, N::Int64, coverage::Int64)
+function construct_library(setup::ScreenSetup, lib::Library)
     barcodes = Barcode[]
+    N = setup.num_genes
+    coverage = setup.coverage
 
     for gene in 1:N
 
@@ -174,7 +176,7 @@ function construct_library(lib::Library, N::Int64, coverage::Int64)
     # a 10-fold difference between the 95th/5th percentiles
     vals = 10.^rand(Normal(0, 1/3.29), N*coverage)
     guide_freqs = vals/sum(vals)
-    barcodes, guide_freqs
+    barcodes, Categorical(guide_freqs)
 end
 
 """

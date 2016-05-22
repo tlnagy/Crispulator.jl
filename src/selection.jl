@@ -3,10 +3,14 @@ Given `cells`, a vector of integers, and `guides`, a vector of barcodes
 performs simulated facs sorting of the cells into `bins` with the given
 cutoffs. `σ` refers to the spread of the phenotype during the FACS screen.
 """
-function facs_sort(cells::Vector{Int64}, cell_phenotypes::Vector{Float64},
-                   guides::Vector{Barcode},
-                   bins::Dict{Symbol, Tuple{Float64, Float64}}, σ::Float64)
+function select(setup::FacsScreen,
+                cells::Vector{Int64},
+                cell_phenotypes::Vector{Float64},
+                guides::Vector{Barcode};
+                debug = false)
 
+    σ = setup.σ
+    bins = setup.bin_info
     @assert size(cells) == size(cell_phenotypes)
     n_cells = length(cells)
     observed = zeros(n_cells)
@@ -40,13 +44,17 @@ function grow!(cells::AbstractArray{Int64}, cell_phenotypes::AbstractArray{Float
     num_inserted
 end
 
-function growth_assay(initial_cells::AbstractArray{Int64},
-                      initial_cell_phenotypes::AbstractArray{Float64},
-                      guides::Vector{Barcode},
-                      num_bottlenecks::Int64,
-                      bottleneck_representation::Int64;
-                      debug=false)
+"""
+Growth Screen selection
+"""
+function select(setup::GrowthScreen,
+                initial_cells::AbstractArray{Int64},
+                initial_cell_phenotypes::AbstractArray{Float64},
+                guides::Vector{Barcode};
+                debug=false)
 
+    bottleneck_representation = setup.bottleneck_representation
+    num_bottlenecks = setup.num_bottlenecks
     # all cells at all timepoints
     cellmat = zeros(Int64, length(guides)*bottleneck_representation, num_bottlenecks)
     cpmat = zeros(Float64, size(cellmat))

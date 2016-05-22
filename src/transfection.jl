@@ -21,8 +21,16 @@ function build_cells(behav::CRISPRKO, guides::Vector{Barcode},
     cells, phenotypes
 end
 
-function transfect(lib::Library, guides::Vector{Barcode}, guide_freqs_dist::Categorical,
-                   cell_count::Int64, moi::Float64, expand_to::Int64)
+function transfect(setup::FacsScreen,
+                   lib::Library,
+                   guides::Vector{Barcode},
+                   guide_freqs_dist::Categorical)
+
+    moi = setup.moi
+    num_guides = length(guides)
+    cell_count = num_guides * setup.representation
+    min_perc = minimum([range[2] - range[1] for (binname, range) in setup.bin_info])
+    expand_to = round(Int64, (setup.num_cells_per_bin * length(guides))/min_perc)
 
     cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist,
                                          round(Int64, pdf(Poisson(moi), 1)*cell_count) )
@@ -44,9 +52,9 @@ function transfect(lib::Library, guides::Vector{Barcode}, guide_freqs_dist::Cate
         cells, cell_phenotypes = cells[picked], cell_phenotypes[picked]
     end
 
-    initial_freqs = StatsBase.counts(cells, 1:length(guides)) ./ length(cells)
+    initial_freqs = StatsBase.counts(cells, 1:num_guides) ./ length(cells)
 
-    for i in 1:length(guides)
+    for i in 1:num_guides
         @inbounds guides[i].initial_freq = initial_freqs[i]
     end
     cells, cell_phenotypes
