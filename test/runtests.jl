@@ -8,7 +8,9 @@ using DataStructures
 include("../src/load.jl")
 
 println("Running tests:")
-filenames = ["kdrelationships.jl", "diffcrisprtransfection.jl"]
+filenames = ["kdrelationships.jl",
+             "diffcrisprtransfection.jl",
+             "growth.jl"]
 for filename in filenames
     try
         include(filename)
