@@ -16,3 +16,11 @@ the `src/` directory and run
 ```
 julia -p N run.jl scan_best_methods ../data/output.csv
 ```
+
+## Testing
+
+To run the unit tests do
+
+```
+julia test/runtests.jl
+```
