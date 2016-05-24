@@ -2,7 +2,21 @@
 Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
 """
-sigmoid(x, l, k, p) = clamp(l./(1 + e.^(-k.*(x - p))), min(0, l), max(0, l))
+function sigmoid(x::Float64, l, k, p)
+    k = min(p, min(1-p, k))
+    (x <= p-k) && return 0
+    (x >= p+k) && return l
+    x = (x-p)/k
+    l/2*(sign(x).*21abs(x)./(20*abs(x)+1)+1)
+end
+
+function sigmoid(xs::AbstractArray{Float64}, l, k, p)
+    result = Array(Float64, size(xs))
+    @inbounds @fastmath for i in eachindex(xs)
+        result[i] = sigmoid(xs[i], l, k, p)
+    end
+    result
+end
 
 """
 Given value(s) `x` apply a simple linear function with maximum value `l`
@@ -15,25 +29,24 @@ type Linear <: KDPhenotypeRelationship end
 
 type Sigmoidal <: KDPhenotypeRelationship
     "Slopes of the sigmoid are pulled from this distribution"
-    slope_dist::Distribution
+    width_dist::Distribution
 
     "Inflection points are pulled from this distribution"
     inflection_dist::Distribution
 
     function Sigmoidal()
-        # slopes are pretty steep so that there is clear differentiation
-        # between linear and sigmoidal
-        slopes = TruncatedNormal(30, 5, 10, Inf)
+        # width of sigmoidal region
+        width = Normal(0.1, 0.05)
         # inflections are centered at high KD
         inflections = TruncatedNormal(0.8, 0.2, 0, 1)
-        new(slopes, inflections)
+        new(width, inflections)
     end
 end
 
 response(::Linear) = linear
 function response(sig::Sigmoidal)
-    slope, inflection = rand(sig.slope_dist), rand(sig.inflection_dist)
-    (x, l) -> sigmoid(x, l, slope, inflection)
+    width, inflection = rand(sig.width_dist), rand(sig.inflection_dist)
+    (x, l) -> sigmoid(x, l, width, inflection)
 end
 
 abstract Cas9Behavior
