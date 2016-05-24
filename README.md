@@ -10,7 +10,7 @@ interpretation.
 ## Usage
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org) installed and your PATH. Then navigate into
+[Julia](http://julialang.org) installed and in your PATH. Then navigate into
 the `src/` directory and run
 
 ```
