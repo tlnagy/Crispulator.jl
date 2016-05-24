@@ -1,25 +1,23 @@
-function testfacs(σ, quant, width)
-    N = 3
-    setup = FacsScreen()
-    setup.num_genes = N
-    setup.coverage = 1
-    setup.representation = 10
-    setup.num_cells_per_bin = 10000
-    setup.bin_info = Dict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0, width), :bin2 => (1-width, 1))
-    setup.σ = σ
-
+function testselection(setup, expansion_func)
+    N = setup.num_genes
     guides = Barcode[]
 
     for (gene, categ) in zip(1:N, [:decreasing, :inactive, :increasing])
         push!(guides, Barcode(gene, 1, gene-2, :linear, categ))
     end
 
-    expand_to = calc_expansion(setup, guides)
+    expand_to = expansion_func(setup, guides)
+
     initial_cells = Array(Int64, expand_to)
     cell_phenotypes = Array(Float64, size(initial_cells))
-    for i in 1:expand_to
+    for i in 1:length(initial_cells)
         initial_cells[i] = mod1(i, N)
         cell_phenotypes[i] = guides[initial_cells[i]].theo_phenotype
+    end
+
+    # ensure guide level phenotype isn't used so that CRISPRKO works
+    for guide in guides
+        guide.theo_phenotype = -Inf
     end
 
     num_runs = 100
@@ -31,6 +29,20 @@ function testfacs(σ, quant, width)
         data2 = StatsBase.counts(data[:bin2], 1:N)
         results[:, i] = log2(data2 ./ data1)
     end
+    results
+end
+
+function testfacs(σ, quant, width)
+    N = 3
+    setup = FacsScreen()
+    setup.num_genes = N
+    setup.coverage = 1
+    setup.num_cells_per_bin = 10000
+    setup.bin_info = Dict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0, width), :bin2 => (1-width, 1))
+    setup.σ = σ
+
+    results = testselection(setup, calc_expansion)
+
     ideal = log2(cdf(Normal(-1, σ), quant)/cdf(Normal(1,σ), quant))
     tocompare = collect(zip(mean(results, 2), [-ideal, 0.0, ideal]))
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
@@ -39,3 +51,20 @@ end
 @test testfacs(0.5, -0.50138209, 1/3)
 @test testfacs(0.5, 0, 1/2)
 @test testfacs(1, -0.58093999, 1/3)
+
+function testgrowth(ideal, num)
+    N = 3
+    setup = GrowthScreen()
+    setup.num_genes = N
+    setup.coverage = 1
+    setup.num_bottlenecks = num
+    setup.bottleneck_representation = 100
+
+    expansion_func = (setup,guides) -> setup.num_genes*setup.bottleneck_representation
+    results = testselection(setup, expansion_func)
+    tocompare = collect(zip(mean(results, 2), log2(ideal)))
+    all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
+end
+
+@test testgrowth([1/7, 2/7, 4/7]./(1/3), 1)
+@test testgrowth([1/21, 4/21,16/21]./(1/3), 2)
