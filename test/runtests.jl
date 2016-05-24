@@ -11,7 +11,8 @@ println("Running tests:")
 filenames = ["kdrelationships.jl",
              "qualitymetrics.jl",
              "diffcrisprtransfection.jl",
-             "growth.jl"]
+             "growth.jl",
+             "selectionmethods.jl"]
 for filename in filenames
     try
         include(filename)

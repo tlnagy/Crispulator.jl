@@ -1,0 +1,41 @@
+function testfacs(σ, quant, width)
+    N = 3
+    setup = FacsScreen()
+    setup.num_genes = N
+    setup.coverage = 1
+    setup.representation = 10
+    setup.num_cells_per_bin = 10000
+    setup.bin_info = Dict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0, width), :bin2 => (1-width, 1))
+    setup.σ = σ
+
+    guides = Barcode[]
+
+    for (gene, categ) in zip(1:N, [:decreasing, :inactive, :increasing])
+        push!(guides, Barcode(gene, 1, gene-2, :linear, categ))
+    end
+
+    expand_to = calc_expansion(setup, guides)
+    initial_cells = Array(Int64, expand_to)
+    cell_phenotypes = Array(Float64, size(initial_cells))
+    for i in 1:expand_to
+        initial_cells[i] = mod1(i, N)
+        cell_phenotypes[i] = guides[initial_cells[i]].theo_phenotype
+    end
+
+    num_runs = 100
+    results = Array(Float64, N, num_runs)
+
+    for i in 1:num_runs
+        data = select(setup, initial_cells, cell_phenotypes, guides)
+        data1 = StatsBase.counts(data[:bin1], 1:N)
+        data2 = StatsBase.counts(data[:bin2], 1:N)
+        results[:, i] = log2(data2 ./ data1)
+    end
+    ideal = log2(cdf(Normal(-1, σ), quant)/cdf(Normal(1,σ), quant))
+    tocompare = collect(zip(mean(results, 2), [-ideal, 0.0, ideal]))
+    all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
+end
+
+@test testfacs(0.5, -0.50138209, 1/3)
+@test testfacs(0.5, 0, 1/2)
+@test testfacs(1, -0.58093999, 1/3)

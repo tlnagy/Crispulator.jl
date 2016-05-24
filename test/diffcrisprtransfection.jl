@@ -39,5 +39,5 @@ for (idx, guide) in enumerate(nonzeros)
     end
 end
 
-@test abs(mean(results[1, :] ./ results[2, :]) - 1) < 0.025
-@test abs(mean(results[1, :] ./ results[3, :])/4 - 1) < 0.025
+@test isapprox(mean(results[1, :] ./ results[2, :]), 1, atol=0.025)
+@test isapprox(mean(results[1, :] ./ results[3, :]), 4, atol=0.025)
