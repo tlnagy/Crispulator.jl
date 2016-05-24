@@ -9,6 +9,7 @@ include("../src/load.jl")
 
 println("Running tests:")
 filenames = ["kdrelationships.jl",
+             "qualitymetrics.jl",
              "diffcrisprtransfection.jl",
              "growth.jl"]
 for filename in filenames
