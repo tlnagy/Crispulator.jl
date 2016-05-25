@@ -5,6 +5,27 @@ function compute_roc(df::DataFrame, score_column::Symbol, numsteps::Int64)
     return auroc, tprs, fprs
 end
 
+function _binary_classifier(scores, classes, threshold)
+    tp, fp, tn, fn = 0,0,0,0
+
+    @inbounds @fastmath for i in 1:length(scores)
+        if scores[i] >= threshold
+            if classes[i] != :inactive
+                tp += 1
+            else
+                fp += 1
+            end
+        else
+            if classes[i] == :inactive
+                tn += 1
+            else
+                fn += 1
+            end
+        end
+    end
+    tp, fp, tn, fn
+end
+
 """
 Optimized function for computing the receiver operator characteristic curve.
 """
@@ -17,23 +38,8 @@ function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps
     auroc = 0.0
 
     @inbounds for (idx, threshold) in enumerate(thresholds)
-        tp, fp, tn, fn = 0,0,0,0
 
-        for i in 1:num_scores
-            if scores[i] >= threshold
-                if classes[i] != :inactive
-                    tp += 1
-                else
-                    fp += 1
-                end
-            else
-                if classes[i] == :inactive
-                   tn += 1
-                else
-                    fn += 1
-                end
-            end
-        end
+        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
 
         tprs[idx] = tp/(tp+fn)
         fprs[idx] = fp/(fp+tn)
@@ -56,23 +62,8 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
     auroc, prev_tpr, prev_fpr = 0.0, 0.0, 0.0
 
     @inbounds for threshold in thresholds
-        tp, fp, tn, fn = 0,0,0,0
 
-        for i in 1:num_scores
-            if scores[i] >= threshold
-                if classes[i] != :inactive
-                    tp += 1
-                else
-                    fp += 1
-                end
-            else
-                if classes[i] == :inactive
-                    tn += 1
-                else
-                    fn += 1
-                end
-            end
-        end
+        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
 
         tpr = tp/(tp+fn)
         fpr = fp/(fp+tn)
@@ -84,4 +75,27 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
         idx += 1
     end
     auroc
+end
+
+function compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64)
+
+    num_scores, idx = length(scores), 1
+    min_value, max_value = extrema(scores)
+    thresholds = linspace(max_value, min_value, numsteps)
+    auprc = 0.0
+    precision = Array(Float64, numsteps)
+    recall = Array(Float64, numsteps)
+
+    @inbounds for threshold in thresholds
+
+        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
+
+        precision[idx] = tp/(tp+fp)
+        recall[idx] = tp/(tp+fn)
+        if idx > 1
+            auprc += (precision[idx] + precision[idx-1])/2 * (recall[idx] - recall[idx-1])
+        end
+        idx += 1
+    end
+    auprc, precision, recall
 end
