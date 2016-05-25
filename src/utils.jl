@@ -77,25 +77,47 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
     auroc
 end
 
-function compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64)
+"""
+compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol})
 
-    num_scores, idx = length(scores), 1
-    min_value, max_value = extrema(scores)
-    thresholds = linspace(max_value, min_value, numsteps)
-    auprc = 0.0
-    precision = Array(Float64, numsteps)
-    recall = Array(Float64, numsteps)
+Computes the area under the Precision-Recall curve using a lower
+trapezoidal estimator, which is more accurate for skewed datasets.
 
-    @inbounds for threshold in thresholds
 
-        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
+K. Boyd, K. H. Eng, and C. D. Page, “Area under the Precision-Recall
+Curve: Point Estimates and Confidence Intervals,” in Machine Learning
+and Knowledge Discovery in Databases, H. Blockeel, K. Kersting,
+S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
+pp. 451–466.
+"""
+function compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol})
 
-        precision[idx] = tp/(tp+fp)
-        recall[idx] = tp/(tp+fn)
-        if idx > 1
-            auprc += (precision[idx] + precision[idx-1])/2 * (recall[idx] - recall[idx-1])
+    num_scores = length(scores)
+    thresholds = sort(scores, rev=true)
+    auprc, prev_recall, pmin,pmax = 0.0, -1.0, -Inf, Inf
+    precision = Array(Float64, num_scores)
+    recall = Array(Float64, num_scores)
+    tp, fp, tn, fn = _binary_classifier(scores, classes, thresholds[num_scores])
+
+    precision[num_scores] = tp/(tp+fp)
+    recall[num_scores] = tp/(tp+fn)
+    prev_recall = recall[num_scores]
+    pmin = precision[num_scores]
+
+    @inbounds for i in num_scores-1:-1:1
+
+        tp, fp, tn, fn = _binary_classifier(scores, classes, thresholds[i])
+
+        precision[i] = tp/(tp+fp)
+        recall[i] = tp/(tp+fn)
+
+        if recall[i] == prev_recall
+            pmax = precision[i]
+        else
+            pmin = precision[i]
+            auprc += (pmin + pmax)/2*(prev_recall - recall[i])
+            prev_recall = recall[i]
         end
-        idx += 1
     end
     auprc, precision, recall
 end
