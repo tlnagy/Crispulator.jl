@@ -1,84 +1,49 @@
-function compute_roc(df::DataFrame, score_column::Symbol, numsteps::Int64)
-    tprs = zeros(numsteps)
-    fprs = zeros(numsteps)
-    auroc = compute_roc!(Vector(df[score_column]), Vector(df[:class]) , numsteps, tprs, fprs)
-    return auroc, tprs, fprs
-end
-
-function _binary_classifier(scores, classes, threshold)
-    tp, fp, tn, fn = 0,0,0,0
-
-    @inbounds @fastmath for i in 1:length(scores)
-        if scores[i] >= threshold
-            if classes[i] != :inactive
-                tp += 1
-            else
-                fp += 1
-            end
+function count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+    num_pos, num_neg = 0, 0
+    for label in labels
+        if label in pos_labels
+            num_pos += 1
         else
-            if classes[i] == :inactive
-                tn += 1
-            else
-                fn += 1
-            end
+            num_neg += 1
         end
     end
-    tp, fp, tn, fn
+    num_pos, num_neg
 end
-
-"""
-Optimized function for computing the receiver operator characteristic curve.
-"""
-function compute_roc!(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64,
-                      tprs::Vector{Float64}, fprs::Vector{Float64})
-
-    num_scores = length(scores)
-    min_value, max_value = extrema(scores)
-    thresholds = linspace(max_value, min_value, numsteps)
-    auroc = 0.0
-
-    @inbounds for (idx, threshold) in enumerate(thresholds)
-
-        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
-
-        tprs[idx] = tp/(tp+fn)
-        fprs[idx] = fp/(fp+tn)
-        if idx > 1
-            auroc += (tprs[idx] + tprs[idx-1])/2 * (fprs[idx] - fprs[idx-1])
-        end
-    end
-    auroc
-end
-
 """
 Optimized function for computing the area under the receiver operator characteristic
 curve.
 """
-function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numsteps::Int64)
+function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+    num_scores = length(scores)
+    ordering = sortperm(scores, rev=true)
+    labels = classes[ordering]
+    num_pos, num_neg = count(labels, pos_labels)
 
-    num_scores, idx = length(scores), 1
-    min_value, max_value = extrema(scores)
-    thresholds = linspace(max_value, min_value, numsteps)
-    auroc, prev_tpr, prev_fpr = 0.0, 0.0, 0.0
+    tprs = Array(Float64, num_scores)
+    fprs = Array(Float64, num_scores)
 
-    @inbounds for threshold in thresholds
+    auroc = 0.0
+    tp = labels[1] in pos_labels ? 1 : 0
+    fp = 1-tp
+    tn, fn = num_neg - fp, num_pos - tp
+    tprs[1] = tp/(tp+fn)
+    fprs[1] = fp/(fp+tn)
 
-        tp, fp, tn, fn = _binary_classifier(scores, classes, threshold)
-
-        tpr = tp/(tp+fn)
-        fpr = fp/(fp+tn)
-        if idx > 1
-            auroc += (tpr + prev_tpr)/2 * (fpr - prev_fpr)
-        end
-        prev_tpr = tpr
-        prev_fpr = fpr
-        idx += 1
+    for i in 2:num_scores
+        dtp = labels[i] in pos_labels ? 1 : 0
+        tp += dtp
+        fp += 1-dtp
+        tn = num_neg - fp
+        fn = num_pos - tp
+        tprs[i] = tp/(tp+fn)
+        fprs[i] = fp/(fp+tn)
+        auroc += (tprs[i] + tprs[i-1])/2*(fprs[i] - fprs[i-1])
     end
-    auroc
+    auroc, tprs, fprs
 end
 
 """
-fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
 
 Computes the area under the Precision-Recall curve using a lower
 trapezoidal estimator, which is more accurate for skewed datasets.
@@ -90,19 +55,11 @@ and Knowledge Discovery in Databases, H. Blockeel, K. Kersting,
 S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
 pp. 451–466.
 """
-function fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_scores = length(scores)
     ordering = sortperm(scores, rev=true)
     labels = classes[ordering]
-
-    num_pos, num_neg = 0, 0
-    for label in labels
-        if label in pos_labels
-            num_pos += 1
-        else
-            num_neg += 1
-        end
-    end
+    num_pos, num_neg = count(labels, pos_labels)
 
     tn, fn, tp, fp = 0, 0, num_pos, num_neg
 

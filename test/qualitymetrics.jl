@@ -3,27 +3,20 @@ tprs = zeros(101)
 fprs = zeros(101)
 
 scores = collect(1:-0.01:0)
-classes = [:inactive,:a,:a,:a,:inactive,:a,:a,:inactive,:inactive,:inactive,
-    :a,:a,:inactive,:inactive,:inactive,:inactive,:a,:inactive,:a,:a,:a,
-    :inactive,:a,:a,:inactive,:a,:inactive,:a,:a,:a,:inactive,:inactive,:a,:a,
-    :a,:a,:a,:inactive,:inactive,:inactive,:a,:inactive,:a,:a,:inactive,:a,:a,
-    :a,:a,:inactive,:a,:a,:inactive,:a,:a,:a,:a,:a,:inactive,:a,:inactive,
-    :inactive,:a,:inactive,:a,:a,:a,:inactive,:inactive,:a,:a,:inactive,
-    :inactive,:a,:inactive,:inactive,:inactive,:a,:inactive,:a,:inactive,
-    :inactive,:a,:a,:inactive,:inactive,:inactive,:a,:inactive,:inactive,
-    :inactive,:a,:a,:a,:a,:a,:a,:inactive,:a,:a,:inactive]
-@test isapprox(compute_auroc(scores, classes, 101), 0.513556, atol=1e-6)
-@test isapprox(compute_roc!(scores, classes, 101, tprs, fprs), 0.513556, atol=1e-6)
+classes = [:b,:a,:a,:a,:b,:a,:a,:b,:b,:b,:a,:a,:b,:b,:b,:b,:a,:b,:a,:a,
+    :a,:b,:a,:a,:b,:a,:b,:a,:a,:a,:b,:b,:a,:a,:a,:a,:a,:b,:b,:b,:a,:b,
+    :a,:a,:b,:a,:a,:a,:a,:b,:a,:a,:b,:a,:a,:a,:a,:a,:b,:a,:b,:b,:a,:b,
+    :a,:a,:a,:b,:b,:a,:a,:b,:b,:a,:b,:b,:b,:a,:b,:a,:b,:b,:a,:a,:b,:b,
+    :b,:a,:b,:b,:b,:a,:a,:a,:a,:a,:a,:b,:a,:a,:b]
+@test isapprox(auroc(scores, classes, Set([:a]))[1], 0.513556, atol=1e-6)
 
 scores = collect(1:-0.1:0)
-classes = [:inactive, :inactive, :inactive, :inactive, :a, :a, :a, :a, :a, :a, :a]
-@test compute_auroc(scores, classes, 10) == 0.0
-@test compute_roc!(scores, classes, 10, tprs, fprs) == 0.0
+classes = [:b, :b, :b, :b, :a, :a, :a, :a, :a, :a, :a]
+@test auroc(scores, classes, Set([:a]))[1] == 0.0
 
 scores = collect(1:-0.1:0)
-classes = [:a, :a, :a, :a, :a, :a, :a, :a, :inactive, :inactive, :inactive]
-@test compute_auroc(scores, classes, 10) == 1.0
-@test compute_roc!(scores, classes, 10, tprs, fprs) == 1.0
+classes = [:a, :a, :a, :a, :a, :a, :a, :a, :b, :b, :b]
+@test auroc(scores, classes, Set([:a]))[1] == 1.0
 
 function compute_bias(recalls, precisions, X, Y)
     true_auprc = 0.0
@@ -38,7 +31,7 @@ function compute_bias(recalls, precisions, X, Y)
         cat = rand(cat_dist, 10^3)
         x, y = StatsBase.counts(cat, 1:2)
         scores = [rand(X, x); rand(Y, y)]
-        auprc_sum += fast_auprc(scores, [repmat(classes[1:1], x); repmat(classes[2:2], y)], Set([:b]))[1]
+        auprc_sum += auprc(scores, [repmat(classes[1:1], x); repmat(classes[2:2], y)], Set([:b]))[1]
     end
     isapprox(auprc_sum/num_runs, true_auprc, atol=0.025)
 end
