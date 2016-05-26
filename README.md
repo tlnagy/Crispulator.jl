@@ -1,5 +1,7 @@
 # Pooled Screen Optimization
 
+[![Build Status](https://travis-ci.com/tlnagy/pooled-screen-optimization.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/pooled-screen-optimization)
+
 ## Motivation
 
 Pooled screens are very useful, but they are also extraordinarily complex.

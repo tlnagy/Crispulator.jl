@@ -1,0 +1,8 @@
+language: julia
+julia:
+    - release
+notifications:
+    email: false
+script:
+    - julia -e "Pkg.update()"
+    - julia --check-bounds=yes test/runtests.jl
