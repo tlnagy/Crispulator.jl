@@ -78,7 +78,7 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
 end
 
 """
-fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_label::Symbol)
+fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
 
 Computes the area under the Precision-Recall curve using a lower
 trapezoidal estimator, which is more accurate for skewed datasets.
@@ -90,14 +90,14 @@ and Knowledge Discovery in Databases, H. Blockeel, K. Kersting,
 S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
 pp. 451–466.
 """
-function fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_label::Symbol)
+function fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_scores = length(scores)
     ordering = sortperm(scores, rev=true)
     labels = classes[ordering]
 
     num_pos, num_neg = 0, 0
     for label in labels
-        if label == pos_label
+        if label in pos_labels
             num_pos += 1
         else
             num_neg += 1
@@ -115,7 +115,7 @@ function fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbo
 
     # traverse scores from lowest to highest
     for i in num_scores-1:-1:1
-        dtn = labels[i+1] != pos_label ? 1 : 0
+        dtn = labels[i+1] in pos_labels ? 0 : 1
         tn += dtn
         fn += 1-dtn
         tp = num_pos - fn

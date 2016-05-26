@@ -38,7 +38,7 @@ function compute_bias(recalls, precisions, X, Y)
         cat = rand(cat_dist, 10^3)
         x, y = StatsBase.counts(cat, 1:2)
         scores = [rand(X, x); rand(Y, y)]
-        auprc_sum += fast_auprc(scores, [repmat(classes[1:1], x); repmat(classes[2:2], y)], :b)[1]
+        auprc_sum += fast_auprc(scores, [repmat(classes[1:1], x); repmat(classes[2:2], y)], Set([:b]))[1]
     end
     isapprox(auprc_sum/num_runs, true_auprc, atol=0.025)
 end
