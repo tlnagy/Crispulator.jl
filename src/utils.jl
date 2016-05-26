@@ -78,7 +78,7 @@ function compute_auroc(scores::Vector{Float64}, classes::Vector{Symbol}, numstep
 end
 
 """
-compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol})
+fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_label::Symbol)
 
 Computes the area under the Precision-Recall curve using a lower
 trapezoidal estimator, which is more accurate for skewed datasets.
@@ -90,34 +90,47 @@ and Knowledge Discovery in Databases, H. Blockeel, K. Kersting,
 S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
 pp. 451–466.
 """
-function compute_auprc(scores::Vector{Float64}, classes::Vector{Symbol})
-
+function fast_auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_label::Symbol)
     num_scores = length(scores)
-    thresholds = sort(scores, rev=true)
-    auprc, prev_recall, pmin,pmax = 0.0, -1.0, -Inf, Inf
-    precision = Array(Float64, num_scores)
-    recall = Array(Float64, num_scores)
-    tp, fp, tn, fn = _binary_classifier(scores, classes, thresholds[num_scores])
+    ordering = sortperm(scores, rev=true)
+    labels = classes[ordering]
 
-    precision[num_scores] = tp/(tp+fp)
-    recall[num_scores] = tp/(tp+fn)
-    prev_recall = recall[num_scores]
-    pmin = precision[num_scores]
-
-    @inbounds for i in num_scores-1:-1:1
-
-        tp, fp, tn, fn = _binary_classifier(scores, classes, thresholds[i])
-
-        precision[i] = tp/(tp+fp)
-        recall[i] = tp/(tp+fn)
-
-        if recall[i] == prev_recall
-            pmax = precision[i]
+    num_pos, num_neg = 0, 0
+    for label in labels
+        if label == pos_label
+            num_pos += 1
         else
-            pmin = precision[i]
-            auprc += (pmin + pmax)/2*(prev_recall - recall[i])
-            prev_recall = recall[i]
+            num_neg += 1
         end
     end
-    auprc, precision, recall
+
+    tn, fn, tp, fp = 0, 0, num_pos, num_neg
+
+    p = Array(Float64, num_scores)
+    r = Array(Float64, num_scores)
+    p[num_scores] = tp/(tp+fp)
+    r[num_scores] = tp/(tp+fn)
+    auprc, prev_r = 0.0, r[num_scores]
+    pmin, pmax = p[num_scores], p[num_scores]
+
+    # traverse scores from lowest to highest
+    for i in num_scores-1:-1:1
+        dtn = labels[i+1] != pos_label ? 1 : 0
+        tn += dtn
+        fn += 1-dtn
+        tp = num_pos - fn
+        fp = num_neg - tn
+        p[i] = tp/(tp+fp)
+        r[i] = tp/(tp+fn)
+
+        # update max precision observed for current recall value
+        if r[i] == prev_r
+            pmax = p[i]
+        else
+            pmin = p[i] # min precision is always at recall switch
+            auprc += (pmin + pmax)/2*(prev_r - r[i])
+            prev_r = r[i]
+        end
+    end
+    auprc, p, r
 end
