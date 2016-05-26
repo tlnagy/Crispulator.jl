@@ -3,6 +3,7 @@ quiet = length(ARGS) > 0 && ARGS[1] == "-q"
 errorfound = false
 
 using Base.Test
+(!isdir(Pkg.dir("DataStructures"))) && Pkg.add("DataStructures")
 using DataStructures
 
 include("../src/load.jl")
