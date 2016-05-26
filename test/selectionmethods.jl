@@ -58,7 +58,7 @@ function testgrowth(ideal, num)
     setup.num_genes = N
     setup.coverage = 1
     setup.num_bottlenecks = num
-    setup.bottleneck_representation = 100
+    setup.bottleneck_representation = 1000
 
     expansion_func = (setup,guides) -> setup.num_genes*setup.bottleneck_representation
     results = testselection(setup, expansion_func)
