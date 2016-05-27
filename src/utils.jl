@@ -58,7 +58,7 @@ S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
 pp. 451–466.
 """
 function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
-    num_scores = length(scores)
+    num_scores = length(scores) + 1
     ordering = sortperm(scores, rev=true)
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
@@ -74,12 +74,12 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, p
 
     # traverse scores from lowest to highest
     for i in num_scores-1:-1:1
-        dtn = labels[i+1] in pos_labels ? 0 : 1
+        dtn = labels[i] in pos_labels ? 0 : 1
         tn += dtn
         fn += 1-dtn
         tp = num_pos - fn
         fp = num_neg - tn
-        p[i] = tp/(tp+fp)
+        p[i] = (tp+fp) == 0 ? 1-dtn : tp/(tp+fp)
         r[i] = tp/(tp+fn)
 
         # update max precision observed for current recall value
@@ -89,6 +89,7 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, p
             pmin = p[i] # min precision is always at recall switch
             auprc += (pmin + pmax)/2*(prev_r - r[i])
             prev_r = r[i]
+            pmax = p[i]
         end
     end
     auprc, p, r

@@ -21,6 +21,19 @@ classes = [:a, :a, :a, :a, :a, :a, :a, :a, :b, :b, :b]
 @test auroc(scores, classes, Set([:a]))[1] == 1.0
 @test venn(scores, classes, Set([:a])) == 1.0
 
+# this algorithm is a direct implementation from the Boyd paper
+function compute_auprc_posthoc(p, r)
+    unqs = unique(r)
+    pmins = p[[findlast(r, unq) for unq in unqs]]
+    pmaxes = p[[findfirst(r, unq) for unq in unqs]]
+    n = length(unqs)
+    auprc = 0.0
+    for i in n-1:-1:1
+        auprc += (pmins[i] + pmaxes[i+1])/2 * (unqs[i+1] - unqs[i])
+    end
+    auprc
+end
+
 # Test multiple positive labels
 classes = [:c,:a,:a,:b,:b,:b,:c,:c,:a,:c,:a,:a]
 scores = Float64[80,5,157,169,158,166,115,18,6,78,31,5]
@@ -31,6 +44,12 @@ scores = Float64[80,5,157,169,158,166,115,18,6,78,31,5]
 @test auroc(scores, classes, Set([:a]))[1] == 0.14285714285714288
 @test auroc(scores, classes, Set([:b]))[1] == 1.0
 @test auroc(scores, classes, Set([:a, :b]))[1] == 0.53125
+
+@test auprc(scores, classes, Set([:b]))[1] == 1.0
+a, p, r = auprc(scores, classes, Set([:a, :b]))
+@test a == compute_auprc_posthoc(p, r)
+a, p, r = auprc(scores, classes, Set([:a]))
+@test a == compute_auprc_posthoc(p, r)
 
 function compute_bias(recalls, precisions, X, Y)
     true_auprc = 0.0
