@@ -48,15 +48,13 @@ function scan_perf_of_diff_cat_in_growth(filepath)
         :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
-    lib = Library(max_phenotype_dists)
+    lib = Library(max_phenotype_dists, CRISPRi())
 
     # computes the aurocs of increasing and decreasing genes separately
     get_aurocs = genes -> begin
-        notincreasing = genes[genes[:class] .!= :increasing, :]
-        notdecreasing = genes[genes[:class] .!= :decreasing, :]
-        d = compute_auroc(Vector(notincreasing[:pvalmeanprod]), Vector(notincreasing[:class]), 100)
-        i = compute_auroc(Vector(notdecreasing[:pvalmeanprod]), Vector(notdecreasing[:class]), 100)
-        (d, i)
+        d = auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), Set([:decreasing]))
+        i = auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), Set([:increasing]))
+        (d[1], i[1])
     end
 
     results = @time pmap(args -> run_exp(args[1], lib, get_aurocs; run_idx=args[2]), runs)
