@@ -10,6 +10,8 @@ function count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_pos, num_neg
 end
 """
+auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+
 Optimized function for computing the area under the receiver operator characteristic
 curve.
 """
@@ -90,4 +92,25 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, p
         end
     end
     auprc, p, r
+end
+
+"""
+venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+
+Given `N` positive examples, computes the percentage of the top `N/2`
+hits that are correct
+"""
+function venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+    num_scores = length(scores)
+    ordering = sortperm(scores, rev=true)
+    labels = classes[ordering]
+    num_pos, num_neg = count(labels, pos_labels)
+
+    n_venn = round(Int, num_pos/2)
+    n_correct = 0
+
+    for i in 1:n_venn
+        (labels[i] in pos_labels) && (n_correct += 1)
+    end
+    n_correct/n_venn
 end

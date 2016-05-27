@@ -9,14 +9,28 @@ classes = [:b,:a,:a,:a,:b,:a,:a,:b,:b,:b,:a,:a,:b,:b,:b,:b,:a,:b,:a,:a,
     :a,:a,:a,:b,:b,:a,:a,:b,:b,:a,:b,:b,:b,:a,:b,:a,:b,:b,:a,:a,:b,:b,
     :b,:a,:b,:b,:b,:a,:a,:a,:a,:a,:a,:b,:a,:a,:b]
 @test isapprox(auroc(scores, classes, Set([:a]))[1], 0.513556, atol=1e-6)
+@test venn(scores, classes, Set([:a])) == 0.5357142857142857
 
 scores = collect(1:-0.1:0)
 classes = [:b, :b, :b, :b, :a, :a, :a, :a, :a, :a, :a]
 @test auroc(scores, classes, Set([:a]))[1] == 0.0
+@test venn(scores, classes, Set([:a])) == 0.0
 
 scores = collect(1:-0.1:0)
 classes = [:a, :a, :a, :a, :a, :a, :a, :a, :b, :b, :b]
 @test auroc(scores, classes, Set([:a]))[1] == 1.0
+@test venn(scores, classes, Set([:a])) == 1.0
+
+# Test multiple positive labels
+classes = [:c,:a,:a,:b,:b,:b,:c,:c,:a,:c,:a,:a]
+scores = Float64[80,5,157,169,158,166,115,18,6,78,31,5]
+@test venn(scores, classes, Set([:a])) == 0.0
+@test venn(scores, classes, Set([:b])) == 1.0
+@test venn(scores, classes, Set([:a, :b])) == 1.0
+
+@test auroc(scores, classes, Set([:a]))[1] == 0.14285714285714288
+@test auroc(scores, classes, Set([:b]))[1] == 1.0
+@test auroc(scores, classes, Set([:a, :b]))[1] == 0.53125
 
 function compute_bias(recalls, precisions, X, Y)
     true_auprc = 0.0
