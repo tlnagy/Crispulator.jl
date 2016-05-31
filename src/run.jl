@@ -1,4 +1,4 @@
-println("Using $CPU_CORES cores")
+println("Using $(nprocs()) threads")
 include("load.jl")
 
 function main()
