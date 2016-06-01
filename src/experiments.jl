@@ -52,8 +52,8 @@ function scan_perf_of_diff_cat_in_growth(filepath)
 
     # computes the aurocs of increasing and decreasing genes separately
     get_aurocs = genes -> begin
-        d = auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), Set([:decreasing]))
-        i = auroc(Vector(genes[:pvalmeanprod]), Vector(genes[:class]), Set([:increasing]))
+        d = auroc(genes[:pvalmeanprod], genes[:class], Set([:decreasing]))
+        i = auroc(genes[:pvalmeanprod], genes[:class], Set([:increasing]))
         (d[1], i[1])
     end
 
