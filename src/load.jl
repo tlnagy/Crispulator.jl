@@ -5,13 +5,10 @@ packages = [:DataFrames,
             :HypothesisTests,
             :StatsBase,
             :Iterators]
-all_workers = packages[1:4]
 for package in packages
     !(isdir(Pkg.dir(string(package)))) && Pkg.add(string(package))
     eval(:(using $package))
-    if package in all_workers
-        eval(:(@everywhere using $package))
-    end
+    eval(:(@everywhere using $package))
 end
 
 # Load all simulations files on all workers
