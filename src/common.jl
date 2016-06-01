@@ -56,8 +56,8 @@ type FacsScreen <: ScreenSetup
     σ::Float64
     "Range of guide phenotypes to collect in each bin"
     bin_info::Dict{Symbol, Tuple{Float64, Float64}}
-    "Minimum number of cells per bin"
-    num_cells_per_bin::Int64
+    "Number of cells sorted"
+    bottleneck_representation::Int64
     "Sequencing depth"
     seq_depth::Int64
 

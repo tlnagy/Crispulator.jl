@@ -21,11 +21,6 @@ function build_cells(behav::CRISPRKO, guides::Vector{Barcode},
     cells, phenotypes
 end
 
-function calc_expansion(setup::FacsScreen, guides::AbstractArray{Barcode})
-    min_perc = minimum([range[2] - range[1] for (binname, range) in setup.bin_info])
-    round(Int64, (setup.num_cells_per_bin * length(guides))/min_perc)
-end
-
 function transfect(setup::FacsScreen,
                    lib::Library,
                    guides::Vector{Barcode},
@@ -34,7 +29,7 @@ function transfect(setup::FacsScreen,
     moi = setup.moi
     num_guides = length(guides)
     cell_count = num_guides * setup.representation
-    expand_to = calc_expansion(setup, guides)
+    expand_to = setup.num_cells_sorted * length(guides)
 
     cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist,
                                          round(Int64, pdf(Poisson(moi), 1)*cell_count) )

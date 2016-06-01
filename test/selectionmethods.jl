@@ -1,4 +1,4 @@
-function testselection(setup, expansion_func)
+function testselection(setup)
     N = setup.num_genes
     guides = Barcode[]
 
@@ -6,7 +6,7 @@ function testselection(setup, expansion_func)
         push!(guides, Barcode(gene, 1, gene-2, :linear, categ))
     end
 
-    expand_to = expansion_func(setup, guides)
+    expand_to = setup.bottleneck_representation * length(guides)
 
     initial_cells = Array(Int64, expand_to)
     cell_phenotypes = Array(Float64, size(initial_cells))
@@ -37,11 +37,11 @@ function testfacs(σ, quant, width)
     setup = FacsScreen()
     setup.num_genes = N
     setup.coverage = 1
-    setup.num_cells_per_bin = 10000
+    setup.bottleneck_representation = 20000
     setup.bin_info = Dict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0, width), :bin2 => (1-width, 1))
     setup.σ = σ
 
-    results = testselection(setup, calc_expansion)
+    results = testselection(setup)
 
     ideal = log2(cdf(Normal(-1, σ), quant)/cdf(Normal(1,σ), quant))
     tocompare = collect(zip(mean(results, 2), [-ideal, 0.0, ideal]))
@@ -60,8 +60,7 @@ function testgrowth(ideal, num)
     setup.num_bottlenecks = num
     setup.bottleneck_representation = 1000
 
-    expansion_func = (setup,guides) -> setup.num_genes*setup.bottleneck_representation
-    results = testselection(setup, expansion_func)
+    results = testselection(setup)
     tocompare = collect(zip(mean(results, 2), log2(ideal)))
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
 end
