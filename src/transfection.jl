@@ -29,7 +29,7 @@ function transfect(setup::FacsScreen,
     moi = setup.moi
     num_guides = length(guides)
     cell_count = num_guides * setup.representation
-    expand_to = setup.num_cells_sorted * length(guides)
+    expand_to = setup.bottleneck_representation * length(guides)
 
     cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist,
                                          round(Int64, pdf(Poisson(moi), 1)*cell_count) )
