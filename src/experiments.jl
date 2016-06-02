@@ -14,16 +14,7 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function facs_binning(filepath)
-    parameters = Dict{Symbol, Vector}(
-        :representation => [100, 1000],
-        :bottleneck_representation => [100, 1000],
-        :seq_depth => [100, 1000],
-        :σ => [1.0, 1.0],
-        :bin_info => [Dict(:bin1 => (0.0, 0.5^p), :bin2 => (1.0-0.5^p, 1.0)) for p in 1:0.5:6]
-    )
-    num_runs = 25
-
+function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
     deleteat!(fields, findin(fields, [:bin_info]))
@@ -40,20 +31,42 @@ function facs_binning(filepath)
             push!(runs, (setup, run))
         end
     end
+    runs
+end
 
-    test_methods = (genes, methods, metrics) -> begin
+function facs_binning(filepath)
+    parameters = Dict{Symbol, Vector}(
+        :representation => [100, 1000, 1000],
+        :bottleneck_representation => [100, 1000, 1000],
+        :seq_depth => [100, 1000, 1000],
+        :σ => [1.0, 1.0, 0.5],
+        :bin_info => [Dict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0)) for p in
+        [linspace(0.5, 0.1, 20); 0.1.^logspace(0.1, 0.3, 3)]]
+    )
+    num_runs = 25
+
+    runs = grouped_param_space(FacsScreen(), parameters, num_runs)
+
+    test_methods = (genes, methods, measures, genetypes) -> begin
         results = []
-        for (method, metric) in Iterators.product(methods, metrics)
-            result = method(genes[metric], genes[:class], Set([:increasing, :decreasing]))
+        for (method, measure, genetype) in Iterators.product(methods, measures, genetypes)
+            if genetype != :all
+                subgene = genes[genes[:behavior] .== genetype, :]
+            else
+                subgene = genes
+            end
+            result = method(subgene[:pvalmeanprod], subgene[:class], Set(measure))
             (typeof(result) <: Tuple) && (result = result[1])
             push!(results, result)
         end
         (results...)
     end
 
-    methods = [venn, auprc, auroc]
-    metrics = [:absmean, :pvalue, :pvalmeanprod]
-    test_method_wrapper = genes -> test_methods(genes, methods, metrics)
+    methods = [venn, auprc]
+    measures = Array[[:increasing], [:decreasing], [:increasing, :decreasing]]
+    measure_names = [:inc, :dec, :incdec]
+    genetypes = [:sigmoidal, :linear, :all]
+    test_method_wrapper = genes -> test_methods(genes, methods, measures, genetypes)
 
     results = @time pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
     results = DataFrame(hcat(results...)')
@@ -63,7 +76,9 @@ function facs_binning(filepath)
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 
-    col_names = map(x->symbol(x[1],"_",x[2]), collect(Iterators.product(map(symbol, methods), metrics)))
+    println(results)
+
+    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measure_names, genetypes)))
     names!(results, [col_names...; fieldnames(FacsScreen)...; :run; :crisprtype])
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
     writetable(filepath, results)
