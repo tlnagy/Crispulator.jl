@@ -76,8 +76,6 @@ function facs_binning(filepath)
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 
-    println(results)
-
     col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measure_names, genetypes)))
     names!(results, [col_names...; fieldnames(FacsScreen)...; :run; :crisprtype])
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
