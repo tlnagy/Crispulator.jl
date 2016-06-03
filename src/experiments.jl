@@ -48,14 +48,14 @@ function facs_binning(filepath)
     runs = grouped_param_space(FacsScreen(), parameters, num_runs)
 
     test_methods = (genes, methods, measures, genetypes) -> begin
-        results = []
+        local results = []
         for (method, measure, genetype) in Iterators.product(methods, measures, genetypes)
             if genetype != :all
                 subgene = genes[genes[:behavior] .== genetype, :]
             else
                 subgene = genes
             end
-            result = method(subgene[:pvalmeanprod], subgene[:class], Set(measure))
+            local result = method(subgene[:pvalmeanprod], subgene[:class], Set(measure))
             (typeof(result) <: Tuple) && (result = result[1])
             push!(results, result)
         end
