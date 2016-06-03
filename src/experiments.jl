@@ -41,9 +41,9 @@ function facs_binning(filepath)
         :seq_depth => [100, 1000, 1000],
         :σ => [1.0, 1.0, 0.5],
         :bin_info => [Dict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0)) for p in
-        [linspace(0.5, 0.1, 20); 0.1.^logspace(0.1, 0.3, 3)]]
+        [linspace(0.5, 0.1, 30); 0.1.^logspace(0.1, 0.3, 3)]]
     )
-    num_runs = 25
+    num_runs = 100
 
     runs = grouped_param_space(FacsScreen(), parameters, num_runs)
 
@@ -63,8 +63,8 @@ function facs_binning(filepath)
     end
 
     methods = [venn, auprc]
-    measures = Array[[:increasing], [:decreasing], [:increasing, :decreasing]]
-    measure_names = [:inc, :dec, :incdec]
+    measures = Array[[:increasing, :decreasing]]
+    measure_names = [:incdec]
     genetypes = [:sigmoidal, :linear, :all]
     test_method_wrapper = genes -> test_methods(genes, methods, measures, genetypes)
 
