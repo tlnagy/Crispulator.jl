@@ -14,14 +14,14 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, num_runs::Int)
+function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, dist::Symbol, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
-    deleteat!(fields, findin(fields, [:bin_info]))
+    deleteat!(fields, findin(fields, [dist]))
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
-    push!(fields, :bin_info)
-    for vals in Iterators.product(grouped_params, parameters[:bin_info])
+    push!(fields, dist)
+    for vals in Iterators.product(grouped_params, parameters[dist])
         vals = [vals[1]..., vals[2]]
         for run in 1:num_runs
             setup = FacsScreen()
@@ -45,7 +45,7 @@ function facs_binning(filepath)
     )
     num_runs = 100
 
-    runs = grouped_param_space(FacsScreen(), parameters, num_runs)
+    runs = grouped_param_space(FacsScreen(), parameters, :bin_info, num_runs)
 
     test_methods = (genes, methods, measures, genetypes) -> begin
         local results = []
