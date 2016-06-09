@@ -10,14 +10,17 @@ function count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_pos, num_neg
 end
 """
-auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+               pos_labels::Set{Symbol}; rev::Bool=true)
 
 Optimized function for computing the area under the receiver operator characteristic
 curve.
 """
-function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+               pos_labels::Set{Symbol}; rev::Bool=true)
+
     num_scores = length(scores)
-    ordering = sortperm(scores, rev=true)
+    ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
 
@@ -45,7 +48,8 @@ function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, p
 end
 
 """
-auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+               pos_labels::Set{Symbol}; rev::Bool=true)
 
 Computes the area under the Precision-Recall curve using a lower
 trapezoidal estimator, which is more accurate for skewed datasets.
@@ -57,9 +61,11 @@ and Knowledge Discovery in Databases, H. Blockeel, K. Kersting,
 S. Nijssen, and F. Železný, Eds. Springer Berlin Heidelberg, 2013,
 pp. 451–466.
 """
-function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+               pos_labels::Set{Symbol}; rev::Bool=true)
+
     num_scores = length(scores) + 1
-    ordering = sortperm(scores, rev=true)
+    ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
 
@@ -96,14 +102,17 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, p
 end
 
 """
-venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+              pos_labels::Set{Symbol}; rev::Bool=true)
 
 Given `N` positive examples, computes the percentage of the top `N/2`
 hits that are correct
 """
-function venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
+              pos_labels::Set{Symbol}; rev::Bool=true)
+
     num_scores = length(scores)
-    ordering = sortperm(scores, rev=true)
+    ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
 

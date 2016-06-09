@@ -55,7 +55,14 @@ function facs_binning(filepath)
             else
                 subgene = genes
             end
-            local result = method(subgene[:pvalmeanprod], subgene[:class], Set(measure))
+            local result = 0.0
+            if measure == :incdec
+                result = method(abs(subgene[:pvalmeanprod]), subgene[:class], Set([:increasing, :decreasing]))
+            elseif measure == :dec
+                result = method(subgene[:pvalmeanprod], subgene[:class], Set([:decreasing]), rev=false)
+            else
+                result = method(subgene[:pvalmeanprod], subgene[:class], Set([:increasing]))
+            end
             (typeof(result) <: Tuple) && (result = result[1])
             push!(results, result)
         end
@@ -63,8 +70,7 @@ function facs_binning(filepath)
     end
 
     methods = [venn, auprc]
-    measures = Array[[:increasing, :decreasing]]
-    measure_names = [:incdec]
+    measures = [:inc, :dec, :incdec]
     genetypes = [:sigmoidal, :linear, :all]
     test_method_wrapper = genes -> test_methods(genes, methods, measures, genetypes)
 
@@ -76,7 +82,7 @@ function facs_binning(filepath)
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 
-    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measure_names, genetypes)))
+    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measures, genetypes)))
     names!(results, [col_names...; fieldnames(FacsScreen)...; :run; :crisprtype])
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
     writetable(filepath, results)

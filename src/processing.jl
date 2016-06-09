@@ -38,7 +38,7 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
         DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
     end
     genes[:absmean] = abs(genes[:mean])
-    genes[:pvalmeanprod] = genes[:absmean] .* genes[:pvalue]
+    genes[:pvalmeanprod] = genes[:mean] .* genes[:pvalue]
 
     genes
 end

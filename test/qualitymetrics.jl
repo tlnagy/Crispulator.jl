@@ -51,6 +51,18 @@ a, p, r = auprc(scores, classes, Set([:a, :b]))
 a, p, r = auprc(scores, classes, Set([:a]))
 @test a == compute_auprc_posthoc(p, r)
 
+# test for #30
+classes = [:a, :a, :a, :b, :c, :a, :c, :c, :c, :b, :b]
+scores = [-10., -8, -6, -4, -2, -1, 1, 1, 2, 3, 7]
+
+@test venn(scores, classes, Set([:a]), rev=true) == 0.0
+@test venn(scores, classes, Set([:a]), rev=false) == 1.0
+@test venn(abs(scores), classes, Set([:a, :b]), rev=true) == 1.0
+
+@test auprc(scores, classes, Set([:a]), rev=true)[1] ≈ 0.21246843434343435
+@test auprc(scores, classes, Set([:a]), rev=false)[1] ≈ 0.9083333333333333
+@test auprc(abs(scores), classes, Set([:a, :b]), rev=true)[1] ≈ 0.9662698412698412
+
 function compute_bias(recalls, precisions, X, Y)
     true_auprc = 0.0
     for i in 2:length(recalls)
