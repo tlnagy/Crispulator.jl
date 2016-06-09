@@ -2,7 +2,7 @@
 Runs a screen given the parameters specified in `setup` using the
 library `lib` and applies the `processing_func` function to the result.
 """
-function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; run_idx=-1)
+function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; run_idx=-1, flatten_func::Function=as_array)
 
     guides, guide_freqs_dist = construct_library(setup, lib)
 
@@ -16,5 +16,5 @@ function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; ru
     raw_data = sequencing(seq_depths, guides, freqs)
     genes = differences_between_bins(raw_data)
 
-    [processing_func(genes)...; as_array(setup)...; run_idx]
+    [processing_func(genes)...; flatten_func(setup)...; run_idx]
 end
