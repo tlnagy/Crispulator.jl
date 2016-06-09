@@ -118,3 +118,58 @@ function scan_perf_of_diff_cat_in_growth(filepath)
     names!(results, [:decreasing; :increasing; fieldnames(GrowthScreen)...; :run])
     writetable(filepath, results)
 end
+
+function scan_representation_space(filepath)
+    parameters = Dict{Symbol, Vector}(
+        :representation => map(x->round(Int64, x), logspace(0, 3, 20)),
+        :bottleneck_representation => map(x->round(Int64, x),  logspace(0,3,20)),
+        :seq_depth => [100, 1000, 10000]
+    )
+    num_runs = 25
+
+    const overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
+    # custom function for handling both growth and a facs screen in the
+    # same relational datastructure
+    flatten_overlap = (screen) -> begin
+        local results = Any[typeof(screen)]
+        for name in overlap
+            push!(results, getfield(screen, name))
+        end
+        results
+    end
+
+    # computes the auprcs of increasing and decreasing genes separately
+    get_auprcs = genes -> begin
+        a = auprc(abs(genes[:pvalmeanprod]), genes[:class], Set([:increasing, :decreasing]))
+        d = auprc(genes[:pvalmeanprod], genes[:class], Set([:decreasing]), rev=false)
+        i = auprc(genes[:pvalmeanprod], genes[:class], Set([:increasing]))
+        (a[1], d[1], i[1])
+    end
+
+    results = []
+    for screentype in [FacsScreen(), GrowthScreen()]
+        for crisprtype in [CRISPRi(), CRISPRKO()]
+            if typeof(screentype) == GrowthScreen
+                max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
+                    :inactive => (0.83, Delta(0.0)),
+                    :negcontrol => (0.05, Delta(0.0)),
+                    :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+                    :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+                )
+                lib = Library(max_phenotype_dists, crisprtype)
+            else
+                lib = Library(crisprtype)
+            end
+
+            runs = build_parameter_space(screentype, parameters, num_runs)
+
+            result = @time pmap(args -> run_exp(args[1], lib, get_auprcs; run_idx=args[2], flatten_func=flatten_overlap), runs)
+            result = DataFrame(hcat(result...)')
+            result[:crisprtype] = typeof(crisprtype)
+            push!(results, result)
+        end
+    end
+    results = vcat(results...)
+    names!(results, [:all; :inc; :dec; :screen; overlap...; :run; :crisprtype])
+    writetable(filepath, results)
+end
