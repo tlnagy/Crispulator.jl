@@ -121,8 +121,8 @@ end
 
 function scan_representation_space(filepath)
     parameters = Dict{Symbol, Vector}(
-        :representation => map(x->round(Int64, x), logspace(0, 3, 15)),
-        :bottleneck_representation => map(x->round(Int64, x),  logspace(0,3,15)),
+        :representation => map(x->round(Int64, x), logspace(0, 4, 20)),
+        :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,20)),
         :seq_depth => [10^2, 10^3, 10^4]
     )
     num_runs = 25
