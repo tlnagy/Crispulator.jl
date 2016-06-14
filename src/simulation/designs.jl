@@ -14,7 +14,7 @@ function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; ru
     # uniform for now for all bins
     seq_depths = Dict{Symbol, Int64}([binname=>setup.seq_depth for binname in keys(bin_cells)])
     raw_data = sequencing(seq_depths, guides, freqs)
-    genes = differences_between_bins(raw_data)
+    bc_counts, genes = differences_between_bins(raw_data)
 
-    [processing_func(genes)...; flatten_func(setup)...; run_idx]
+    [processing_func(bc_counts, genes)...; flatten_func(setup)...; run_idx]
 end

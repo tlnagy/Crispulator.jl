@@ -32,7 +32,7 @@ function main(filepath; debug=false, quiet=false)
     end
 
     # computes the auprcs of increasing and decreasing genes separately
-    get_auprcs = genes -> begin
+    get_auprcs = (bc_counts, genes) -> begin
         a = auprc(abs(genes[:pvalmeanprod]), genes[:class], Set([:increasing, :decreasing]))
         d = auprc(genes[:pvalmeanprod], genes[:class], Set([:decreasing]), rev=false)
         i = auprc(genes[:pvalmeanprod], genes[:class], Set([:increasing]))

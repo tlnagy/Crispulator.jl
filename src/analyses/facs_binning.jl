@@ -25,7 +25,7 @@ function main(filepath; debug=false, quiet=false)
     methods = [venn, auprc]
     measures = [:inc, :dec, :incdec]
     genetypes = [:sigmoidal, :linear, :all]
-    test_method_wrapper = genes -> test_methods(genes, methods, measures, genetypes)
+    test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
 
     before = time()
     results = pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)

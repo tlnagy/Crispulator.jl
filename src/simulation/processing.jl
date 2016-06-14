@@ -40,5 +40,5 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
     genes[:absmean] = abs(genes[:mean])
     genes[:pvalmeanprod] = genes[:mean] .* genes[:pvalue]
 
-    genes
+    combined, genes
 end
