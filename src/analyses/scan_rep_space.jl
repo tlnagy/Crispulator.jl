@@ -31,13 +31,10 @@ function main(filepath; debug=false, quiet=false)
         results
     end
 
-    # computes the auprcs of increasing and decreasing genes separately
-    get_auprcs = (bc_counts, genes) -> begin
-        a = auprc(abs(genes[:pvalmeanprod]), genes[:class], Set([:increasing, :decreasing]))
-        d = auprc(genes[:pvalmeanprod], genes[:class], Set([:decreasing]), rev=false)
-        i = auprc(genes[:pvalmeanprod], genes[:class], Set([:increasing]))
-        (a[1], d[1], i[1])
-    end
+    methods = [venn, auprc]
+    measures = [:inc, :dec, :incdec]
+    genetypes = [:sigmoidal, :linear, :all]
+    test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
 
     results = []
     for screentype in [FacsScreen(), GrowthScreen()]
@@ -57,7 +54,7 @@ function main(filepath; debug=false, quiet=false)
             runs = build_parameter_space(screentype, parameters, num_runs)
 
             before = time()
-            result = pmap(args -> run_exp(args[1], lib, get_auprcs; run_idx=args[2], flatten_func=flatten_overlap), runs)
+            result = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
             (!quiet) && println("$(time() - before) seconds")
             result = DataFrame(hcat(result...)')
             result[:crisprtype] = typeof(crisprtype)
@@ -65,7 +62,8 @@ function main(filepath; debug=false, quiet=false)
         end
     end
     results = vcat(results...)
-    names!(results, [:all; :inc; :dec; :screen; overlap...; :run; :crisprtype])
+    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measures, genetypes)))
+    names!(results, [col_names...; :screen; overlap...; :run; :crisprtype])
 
     writetable(filepath, results)
 end
