@@ -2,7 +2,7 @@
 # is important: at transfection, at the bottleneck(s), and at
 # sequencing.
 
-function main(filepath; debug=false)
+function main(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(
@@ -13,9 +13,9 @@ function main(filepath; debug=false)
         num_runs = 25
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 4, 2)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,2)),
-            :seq_depth => [10^4]
+            :representation => map(x->round(Int64, x), logspace(0, 2, 2)),
+            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,2,2)),
+            :seq_depth => [10^2]
         )
         num_runs = 1
     end
@@ -56,7 +56,9 @@ function main(filepath; debug=false)
 
             runs = build_parameter_space(screentype, parameters, num_runs)
 
-            result = @time pmap(args -> run_exp(args[1], lib, get_auprcs; run_idx=args[2], flatten_func=flatten_overlap), runs)
+            before = time()
+            result = pmap(args -> run_exp(args[1], lib, get_auprcs; run_idx=args[2], flatten_func=flatten_overlap), runs)
+            (!quiet) && println("$(time() - before) seconds")
             result = DataFrame(hcat(result...)')
             result[:crisprtype] = typeof(crisprtype)
             push!(results, result)

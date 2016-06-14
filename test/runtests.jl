@@ -14,7 +14,8 @@ filenames = ["kdrelationships.jl",
              "qualitymetrics.jl",
              "diffcrisprtransfection.jl",
              "growth.jl",
-             "selectionmethods.jl"]
+             "selectionmethods.jl",
+             "testanalyses.jl"]
 for filename in filenames
     try
         include(filename)

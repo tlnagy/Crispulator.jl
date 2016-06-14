@@ -1,4 +1,4 @@
-function main(filepath; debug=false)
+function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
             :representation => [100, 1000, 1000],
@@ -27,10 +27,14 @@ function main(filepath; debug=false)
     genetypes = [:sigmoidal, :linear, :all]
     test_method_wrapper = genes -> test_methods(genes, methods, measures, genetypes)
 
-    results = @time pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
+    before = time()
+    results = pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
+    (!quiet) && println("$(time() - before) seconds")
     results = DataFrame(hcat(results...)')
     results[:crisprtype] = "CRISPRi"
-    results2 = @time pmap(args -> run_exp(args[1], Library(CRISPRKO()), test_method_wrapper; run_idx=args[2]), runs)
+    before = time()
+    results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), test_method_wrapper; run_idx=args[2]), runs)
+    (!quiet) && println("$(time() - before) seconds")
     results2 = DataFrame(hcat(results2...)')
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
