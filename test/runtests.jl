@@ -6,7 +6,8 @@ using Base.Test
 (!isdir(Pkg.dir("DataStructures"))) && Pkg.add("DataStructures")
 using DataStructures
 
-include("../src/load.jl")
+load_file = joinpath("src", "simulation", "load.jl")
+include(normpath(joinpath(Base.source_dir(),"..",load_file)))
 
 println("Running tests:")
 filenames = ["kdrelationships.jl",

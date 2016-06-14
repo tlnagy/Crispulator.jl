@@ -12,16 +12,15 @@ for package in packages
 end
 
 # Load all simulations files on all workers
-@everywhere function include_all()
+@everywhere function include_all(curr_dir)
     filenames = ["common.jl", "utils.jl", "library.jl", "transfection.jl",
                  "selection.jl", "sequencing.jl", "processing.jl",
                  "designs.jl"]
     for filename in filenames
-        include(filename)
+        include(joinpath(curr_dir, filename))
     end
 end
-@everywhere include_all()
-
-include("experiments.jl")
+curr_dir = Base.source_dir()
+@eval @everywhere include_all($curr_dir)
 
 println("Done.")
