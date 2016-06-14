@@ -43,7 +43,6 @@ for analysis in analyses
         include(joinpath(analyses_path, analysis))
         tempfile = tempname()
         main(tempfile, debug=true, quiet=true)
-        rm(tempfile)
         println("\t\033[1m\033[32mPASSED\033[0m: $(analysis)")
     catch e
         errorfound = true
