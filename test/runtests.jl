@@ -3,8 +3,13 @@ quiet = length(ARGS) > 0 && ARGS[1] == "-q"
 errorfound = false
 
 using Base.Test
-(!isdir(Pkg.dir("DataStructures"))) && Pkg.add("DataStructures")
-using DataStructures
+packages = [:DataStructures,
+            :Gadfly,
+            :ColorBrewer]
+for package in packages
+    !(isdir(Pkg.dir(string(package)))) && Pkg.add(string(package))
+    eval(:(using $package))
+end
 
 load_file = joinpath("src", "simulation", "load.jl")
 include(normpath(joinpath(Base.source_dir(),"..",load_file)))
