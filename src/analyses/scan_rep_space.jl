@@ -6,9 +6,9 @@ function main(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 4, 20)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,20)),
-            :seq_depth => [10^2, round(Int64, 10^2.5), 10^3, round(Int64, 10^3.5), 10^4]
+            :representation => map(x->round(Int64, x), logspace(0, 4, 18)),
+            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,18)),
+            :seq_depth => [10^2, 10^3, 10^4]
         )
         num_runs = 25
     else
