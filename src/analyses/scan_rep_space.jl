@@ -62,8 +62,8 @@ function main(filepath; debug=false, quiet=false)
         end
     end
     results = vcat(results...)
-    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measures, genetypes)))
-    names!(results, [col_names...; :screen; overlap...; :run; :crisprtype])
-
+    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(symbol, methods), measures, genetypes)]...)
+    new_names = [[:method, :measure, :genetype, :score, :screen]...; overlap...; :run; :crisprtype]
+    results = construct_hierarchical_label(hierarchy, results, new_names)
     writetable(filepath, results)
 end

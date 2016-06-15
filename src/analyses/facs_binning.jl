@@ -39,8 +39,9 @@ function main(filepath; debug=false, quiet=false)
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 
-    col_names = map(x->symbol(x[1],"_",x[2], "_", x[3]), collect(Iterators.product(map(symbol, methods), measures, genetypes)))
-    names!(results, [col_names...; fieldnames(FacsScreen)...; :run; :crisprtype])
+    hierachy = vcat([hcat(item...) for item in Iterators.product(map(symbol, methods), measures, genetypes)]...)
+    new_names = [[:method, :measure, :genetype, :score]...; fieldnames(FacsScreen)...; :run; :crisprtype]
+    results = construct_hierarchical_label(hierachy, results, new_names)
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
     writetable(filepath, results)
 end
