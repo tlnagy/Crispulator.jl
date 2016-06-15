@@ -1,4 +1,4 @@
-function count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function Base.count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_pos, num_neg = 0, 0
     for label in labels
         if label in pos_labels
