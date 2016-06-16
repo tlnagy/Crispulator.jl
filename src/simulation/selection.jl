@@ -56,7 +56,7 @@ function select(setup::GrowthScreen,
     bottleneck_representation = setup.bottleneck_representation
     num_bottlenecks = setup.num_bottlenecks
     # all cells at all timepoints
-    cellmat = zeros(Int64, length(guides)*bottleneck_representation, num_bottlenecks)
+    cellmat = zeros(Int64, length(guides)*bottleneck_representation)
     cpmat = zeros(Float64, size(cellmat))
     output_c = Array(Int64, length(initial_cells)*4);
     output_p = Array(Float64, size(output_c));
@@ -66,16 +66,10 @@ function select(setup::GrowthScreen,
 
     for k in 1:num_bottlenecks
         num_inserted = grow!(cells, cell_phenotypes, output_c, output_p)
-        cells, cell_phenotypes = sub(cellmat, :, k), sub(cpmat, :, k)
-        sample!(collect(1:num_inserted), picked, replace=false)
-        copy!(sub(cellmat, :, k), output_c[picked])
-        copy!(sub(cpmat, :, k), output_p[picked])
+        cells, cell_phenotypes = sub(cellmat, :), sub(cpmat, :)
+        sample!(1:num_inserted, picked, replace=false)
+        copy!(sub(cellmat, :), sub(output_c, picked))
+        copy!(sub(cpmat, :), sub(output_p, picked))
     end
-    if debug
-        d = Dict([symbol("bin", i+1)=>cellmat[:, i] for i in 1:num_bottlenecks])
-        d[:bin1] = initial_cells
-        return d
-    else
-        return Dict(:bin1 => initial_cells, :bin2 => cellmat[:, num_bottlenecks])
-    end
+    return Dict(:bin1 => initial_cells, :bin2 => cellmat)
 end
