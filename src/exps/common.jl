@@ -24,7 +24,7 @@ function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vec
     for vals in Iterators.product(grouped_params, parameters[dist])
         vals = [vals[1]..., vals[2]]
         for run in 1:num_runs
-            setup = FacsScreen()
+            setup = T()
             for idx in 1:n_fields
                 setfield!(setup, fields[idx], vals[idx])
             end
