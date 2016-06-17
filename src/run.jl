@@ -35,11 +35,11 @@ function main()
     include(joinpath(Base.source_dir(), "simulation", "load.jl"))
     print("Loading analysis code...")
     target_file = parsed_args["analysis_file"]
-    target_full = joinpath(Base.source_dir(), "analyses", target_file)
+    target_full = joinpath(Base.source_dir(), "exps", target_file)
     output_file = parsed_args["output_file"]
     (!isfile(target_full)) && error("Please provide a valid analysis file to run")
     (!isdir(dirname(abspath(output_file)))) && error("Please provide a valid directory for output")
-    include(joinpath(Base.source_dir(), "analyses", "common.jl"))
+    include(joinpath(Base.source_dir(), "exps", "common.jl"))
     include(target_full)
     println("Done.")
     output_file = compute_name(output_file)

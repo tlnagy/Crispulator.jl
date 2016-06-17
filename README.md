@@ -17,13 +17,13 @@ To run the simulation, you will need a recent version of
 into the root directory of the project and run
 
 ```
-julia -p N src/run.jl {{analysis_file.jl}} {{output_filepath.csv}}
+julia -p N src/run.jl {{experiment_file.jl}} {{output_filepath.csv}}
 ```
 
 where `N+1` is the number of total workers to use for simulation,
-`{{analysis_file.jl` is the filename of the simulation to load from
-`src/analyses/` and `{{output_filepath.csv}}` is the directory and
-filename that will be used for storing the results of the simulation.
+`{{experiment_file.jl` is the filename of the simulation to load from
+`src/exps/` and `{{output_filepath.csv}}` is the directory and filename
+that will be used for storing the results of the simulation.
 
 ## Testing
 

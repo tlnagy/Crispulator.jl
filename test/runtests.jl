@@ -37,7 +37,7 @@ for filename in filenames
     end
 end
 
-analyses_path = normpath(joinpath(Base.source_dir(),"..",joinpath("src", "analyses")))
+analyses_path = normpath(joinpath(Base.source_dir(),"..",joinpath("src", "exps")))
 analyses = readdir(analyses_path)
 analyses = analyses[find(x -> x != "common.jl", analyses)]
 # load common file first
