@@ -24,13 +24,22 @@ function main(filepath; debug=false, quiet=false)
     genetypes = [:sigmoidal, :linear, :all]
     test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
 
+    max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
+        :inactive => (0.83, Delta(0.0)),
+        :negcontrol => (0.05, Delta(0.0)),
+        :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+        :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+    )
+
     before = time()
-    results = pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
+    lib = Library(max_phenotype_dists, CRISPRi())
+    results = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results = DataFrame(hcat(results...)')
     results[:crisprtype] = "CRISPRi"
     before = time()
-    results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), test_method_wrapper; run_idx=args[2]), runs)
+    lib = Library(max_phenotype_dists, CRISPRKO())
+    results2 = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results2 = DataFrame(hcat(results2...)')
     results2[:crisprtype] = "CRISPRKO"
