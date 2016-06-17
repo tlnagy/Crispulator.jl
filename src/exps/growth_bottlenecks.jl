@@ -1,9 +1,9 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => [100, 1000, 1000],
-            :bottleneck_representation => [100, 1000, 1000],
-            :seq_depth => [100, 1000, 1000],
+            :representation => [10, 100, 1000],
+            :bottleneck_representation => [10, 100, 1000],
+            :seq_depth => [100, 100, 1000],
             :num_bottlenecks => collect(1:20)
         )
         num_runs = 25
