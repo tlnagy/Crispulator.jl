@@ -19,7 +19,7 @@ function main(filepath; debug=false, quiet=false)
         num_runs = 1
     end
 
-    runs = grouped_param_space(FacsScreen(), parameters, :bin_info, num_runs)
+    runs = grouped_param_space(FacsScreen(), parameters, [:bin_info], num_runs)
 
     methods = [venn, auprc]
     measures = [:inc, :dec, :incdec]

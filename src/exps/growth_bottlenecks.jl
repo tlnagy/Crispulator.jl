@@ -4,7 +4,8 @@ function main(filepath; debug=false, quiet=false)
             :representation => [10, 100, 1000],
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [100, 100, 1000],
-            :num_bottlenecks => collect(1:20)
+            :num_bottlenecks => collect(1:20),
+            :noise => collect(linspace(0.01, 0.5, 10))
         )
         num_runs = 25
     else
@@ -12,12 +13,13 @@ function main(filepath; debug=false, quiet=false)
             :representation => [100],
             :bottleneck_representation => [100],
             :seq_depth => [100],
-            :num_bottlenecks => [5]
+            :num_bottlenecks => [5, 4],
+            :noise => [0.01, 0.5]
         )
         num_runs = 1
     end
 
-    runs = grouped_param_space(GrowthScreen(), parameters, :num_bottlenecks, num_runs)
+    runs = grouped_param_space(GrowthScreen(), parameters, [:num_bottlenecks, :noise], num_runs)
 
     methods = [venn, auprc]
     measures = [:inc, :dec, :incdec]

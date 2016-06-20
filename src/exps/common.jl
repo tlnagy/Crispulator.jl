@@ -14,15 +14,15 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, dist::Symbol, num_runs::Int)
+function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, dists::Vector{Symbol}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
-    deleteat!(fields, findin(fields, [dist]))
+    deleteat!(fields, findin(fields, dists))
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
-    push!(fields, dist)
-    for vals in Iterators.product(grouped_params, parameters[dist])
-        vals = [vals[1]..., vals[2]]
+    push!(fields, dists...)
+    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
+        vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for run in 1:num_runs
             setup = T()
             for idx in 1:n_fields
