@@ -30,12 +30,16 @@ function select(setup::FacsScreen,
     results
 end
 
-function grow!(cells::AbstractArray{Int64}, cell_phenotypes::AbstractArray{Float64},
-               output_c::AbstractArray{Int64}, output_p::AbstractArray{Float64})
+function grow!(cells::AbstractArray{Int64},
+               cell_phenotypes::AbstractArray{Float64},
+               output_c::AbstractArray{Int64},
+               output_p::AbstractArray{Float64},
+               setup::GrowthScreen)
     num_inserted::Int = 0
+    noise_dist = Normal(0, setup.noise)
     @inbounds for i in 1:length(cells)
         ρ::Float64 = cell_phenotypes[i]
-        decision = abs(ρ) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ))
+        decision = abs(ρ) + rand(noise_dist) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ))
         rng = num_inserted+1:num_inserted+decision
         output_c[rng] = cells[i]
         output_p[rng] = ρ
@@ -65,7 +69,7 @@ function select(setup::GrowthScreen,
     cell_phenotypes = initial_cell_phenotypes
 
     for k in 1:num_bottlenecks
-        num_inserted = grow!(cells, cell_phenotypes, output_c, output_p)
+        num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
         cells, cell_phenotypes = sub(cellmat, :), sub(cpmat, :)
         sample!(1:num_inserted, picked, replace=false)
         copy!(sub(cellmat, :), sub(output_c, picked))

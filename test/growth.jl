@@ -9,9 +9,11 @@ function test_grow_function(phenotypes, expected)
 
     num_runs = 10000
     data = Array(Int64, length(cells), num_runs)
+    setup = GrowthScreen()
+    setup.noise = 0.00001
 
     for i in 1:num_runs
-        num_inserted = grow!(cells, cell_phenotypes, output_c, output_p)
+        num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
         data[:, i] = StatsBase.counts(output_c[1:num_inserted])
     end
     all(round(mean(data, 2), 1) .== expected)
