@@ -81,8 +81,10 @@ type GrowthScreen <: ScreenSetup
     bottleneck_representation::Int64
     "For growth screens, how many bottlenecks are applied"
     num_bottlenecks::Int64
+    "The σ of the normal noise distribution added to each cell's phenotype"
+    noise::Float64
 
     function GrowthScreen()
-        new(500, 5, 100, 0.25, 1000, 1000, 10)
+        new(500, 5, 100, 0.25, 1000, 1000, 10, 0.01)
     end
 end

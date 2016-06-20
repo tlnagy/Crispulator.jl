@@ -13,7 +13,7 @@ function test_crispri_construction()
     lib = Library(CRISPRi())
     setup = FacsScreen()
     guides, guide_freqs_dist = construct_library(setup, lib)
-    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^6)
+    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^6, setup)
 
     # In a CRISPRi screen all cells should have the same phenotype
     all(map(length, convert_cells_to_pop(cells, cell_phenotypes, guides)) .== 1)
@@ -24,7 +24,7 @@ function test_crisprko_construction()
     lib = Library(CRISPRKO())
     setup = FacsScreen()
     guides, guide_freqs_dist = construct_library(setup, lib)
-    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^7)
+    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^7, setup)
 
     arr = convert_cells_to_pop(cells, cell_phenotypes, guides)
     nonzeros = arr[find(x->length(x) != 1, arr)]

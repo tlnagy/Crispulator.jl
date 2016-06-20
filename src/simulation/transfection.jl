@@ -1,5 +1,24 @@
-function build_cells(::CRISPRi, guides::Vector{Barcode},
-                     guide_freq_dist::Categorical, n::Int64)
+function build_cells(::CRISPRi,
+                     guides::Vector{Barcode},
+                     guide_freq_dist::Categorical,
+                     n::Int64,
+                     setup::GrowthScreen
+                    )
+    cells = rand(guide_freq_dist, n)
+    phenotypes = Array(Float64, n)
+    noise_dist = Normal(0, setup.noise)
+    @inbounds @fastmath for i in 1:n
+        phenotypes[i] = guides[cells[i]].theo_phenotype + rand(noise_dist)
+    end
+    cells, phenotypes
+end
+
+function build_cells(::CRISPRi,
+                     guides::Vector{Barcode},
+                     guide_freq_dist::Categorical,
+                     n::Int64,
+                     ::FacsScreen
+                    )
     cells = rand(guide_freq_dist, n)
     phenotypes = Array(Float64, n)
     @inbounds @fastmath for i in 1:n
@@ -8,8 +27,30 @@ function build_cells(::CRISPRi, guides::Vector{Barcode},
     cells, phenotypes
 end
 
-function build_cells(behav::CRISPRKO, guides::Vector{Barcode},
-                     guide_freq_dist::Categorical, n::Int64)
+function build_cells(behav::CRISPRKO,
+                     guides::Vector{Barcode},
+                     guide_freq_dist::Categorical,
+                     n::Int64,
+                     setup::GrowthScreen
+                    )
+
+    phenotypes = Array(Float64, n);
+    cells = rand(guide_freq_dist, n)
+    ko_dist = behav.knockout_dist
+    dist = rand(ko_dist, n)
+    noise_dist = Normal(0, setup.noise)
+    @inbounds @fastmath for i in 1:n
+        phenotypes[i] = guides[cells[i]].theo_phenotype*(dist[i] - 1)/2 + rand(noise_dist)
+    end
+    cells, phenotypes
+end
+
+function build_cells(behav::CRISPRKO,
+                     guides::Vector{Barcode},
+                     guide_freq_dist::Categorical,
+                     n::Int64,
+                     ::FacsScreen
+                    )
 
     phenotypes = Array(Float64, n);
     cells = rand(guide_freq_dist, n)
@@ -32,7 +73,7 @@ function transfect(setup::FacsScreen,
     expand_to = setup.bottleneck_representation * length(guides)
 
     cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist,
-                                         round(Int64, pdf(Poisson(moi), 1)*cell_count) )
+                                         round(Int64, pdf(Poisson(moi), 1)*cell_count), setup)
     num_cells = length(cells)
 
     multiples = 1
@@ -67,7 +108,7 @@ function transfect(setup::GrowthScreen,
     num_guides = length(guides)
     cell_count = num_guides * setup.representation
     initial_cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist,
-                                         round(Int64, pdf(Poisson(setup.moi), 1)*cell_count) )
+                                         round(Int64, pdf(Poisson(setup.moi), 1)*cell_count), setup )
     target = num_guides * setup.bottleneck_representation
 
     if target < length(initial_cells)
