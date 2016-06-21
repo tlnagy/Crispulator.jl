@@ -39,7 +39,8 @@ function grow!(cells::AbstractArray{Int64},
     noise_dist = Normal(0, setup.noise)
     @inbounds for i in 1:length(cells)
         ρ::Float64 = cell_phenotypes[i]
-        decision = abs(ρ) + rand(noise_dist) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ))
+        ρ_noisy = ρ + rand(noise_dist)
+        decision = abs(ρ_noisy) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ_noisy))
         rng = num_inserted+1:num_inserted+decision
         output_c[rng] = cells[i]
         output_p[rng] = ρ
