@@ -1,7 +1,7 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :num_genes => repeat([5000], inner=[3])
+            :num_genes => repeat([5000], inner=[3]),
             :representation => [10, 100, 1000],
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [100, 100, 1000],
