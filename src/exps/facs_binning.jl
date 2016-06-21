@@ -1,9 +1,9 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => [100, 1000, 1000],
-            :bottleneck_representation => [100, 1000, 1000],
-            :seq_depth => [100, 1000, 1000],
+            :representation => [10, 100, 1000],
+            :bottleneck_representation => [10, 100, 1000],
+            :seq_depth => [10, 100, 1000],
             :σ => [1.0, 1.0, 0.5],
             :bin_info => [Dict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0)) for p in linspace(0.5, 0.025, 30)]
         )
