@@ -1,6 +1,7 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
+            :num_genes => repeat([5000], inner=[3])
             :representation => [10, 100, 1000],
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [100, 100, 1000],
@@ -27,9 +28,9 @@ function main(filepath; debug=false, quiet=false)
     test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
 
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
-        :inactive => (0.83, Delta(0.0)),
+        :inactive => (0.849, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
-        :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+        :increasing => (0.001, TruncatedNormal(0.1, 0.1, 0.025, 1)),
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
 
