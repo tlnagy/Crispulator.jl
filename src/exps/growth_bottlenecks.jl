@@ -5,7 +5,7 @@ function main(filepath; debug=false, quiet=false)
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [100, 100, 1000],
             :num_bottlenecks => collect(1:20),
-            :noise => collect(linspace(0.01, 0.5, 10))
+            :noise => collect(linspace(0.001, 0.1, 5))
         )
         num_runs = 25
     else
