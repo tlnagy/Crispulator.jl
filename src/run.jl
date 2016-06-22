@@ -87,7 +87,10 @@ function main()
         main(output_file, debug=parsed_args[command]["debug"])
     else
         config = YAML.load_file(parsed_args[command]["config_file"])
-        println(config)
+        println("Using $(nprocs()) threads")
+        include(joinpath(Base.source_dir(), "simulation", "load.jl"))
+        include(joinpath(Base.source_dir(), "utils", "parse_yaml.jl"))
+        parse(config)
     end
 end
 
