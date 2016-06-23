@@ -141,6 +141,27 @@ function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
     Library(knockdown_dist, max_phenotype_dists, kd_phenotype_relationships, cas9_behavior)
 end
 
+function as_array(lib::Library)
+    cas9_behavior = typeof(lib.cas9_behavior)
+    frac_hq = 0.0
+    mean_hq_kd = 0.0
+    for (id, (quality, dist)) in lib.knockdown_dist
+        if quality == :high
+            mean_hq_kd = cas9_behavior == :CRISPRi ? mean(dist.untruncated) : NaN
+            frac_hq = lib.knockdown_probs.p[id]
+        end
+    end
+
+    frac_inc_genes, frac_dec_genes = 0.0, 0.0
+    for (id, (quality, dist)) in lib.max_phenotype_dists
+        (quality == :increasing) && (frac_inc_genes = lib.phenotype_probs.p[id])
+        (quality == :decreasing) && (frac_dec_genes = lib.phenotype_probs.p[id])
+    end
+    [frac_hq, mean_hq_kd, frac_inc_genes, frac_dec_genes, cas9_behavior]
+end
+
+array_names(::Library) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :crisprtype]
+
 function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
     probs = Float64[]
     results = Dict{Int64, Tuple{Symbol, T}}()
