@@ -20,4 +20,4 @@ function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; ru
 end
 
 flatten_setup(setup::ScreenSetup, ::Library) = as_array(setup)
-flatten_both(setup::ScreenSetup, ::Library) = [as_array(setup)...; as_array(lib)...]
+flatten_both(setup::ScreenSetup, lib::Library) = [as_array(setup)...; as_array(lib)...]

@@ -147,7 +147,7 @@ function as_array(lib::Library)
     mean_hq_kd = 0.0
     for (id, (quality, dist)) in lib.knockdown_dist
         if quality == :high
-            mean_hq_kd = cas9_behavior == :CRISPRi ? mean(dist.untruncated) : NaN
+            mean_hq_kd = cas9_behavior == CRISPRi ? mean(dist.untruncated) : NaN
             frac_hq = lib.knockdown_probs.p[id]
         end
     end
@@ -160,7 +160,7 @@ function as_array(lib::Library)
     [frac_hq, mean_hq_kd, frac_inc_genes, frac_dec_genes, cas9_behavior]
 end
 
-array_names(::Library) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :crisprtype]
+array_names(::Type{Library}) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :crisprtype]
 
 function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
     probs = Float64[]

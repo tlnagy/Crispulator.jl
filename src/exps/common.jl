@@ -33,13 +33,37 @@ function build_parameter_space{T <: ScreenSetup}(::T, libs::Vector{Library},
     runs
 end
 
+function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector},
+                                               libs::Vector{Library},
+                                               dists::Vector{Symbol}, num_runs::Int)
+    fields = collect(keys(parameters))
+    n_fields = length(fields)
+    deleteat!(fields, findin(fields, dists))
+    runs = []
+    grouped_params = zip([parameters[field] for field in fields]...)
+    (length(dists) > 0) && push!(fields, dists...)
+    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
+        vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
+        for lib in libs
+            for run in 1:num_runs
+                setup = T()
+                for idx in 1:n_fields
+                    setfield!(setup, fields[idx], vals[idx])
+                end
+                push!(runs, (setup, lib, run))
+            end
+        end
+    end
+    runs
+end
+
 function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, dists::Vector{Symbol}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
     deleteat!(fields, findin(fields, dists))
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
-    push!(fields, dists...)
+    (length(dists) > 0) && push!(fields, dists...)
     for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
         vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for run in 1:num_runs
