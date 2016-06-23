@@ -90,7 +90,8 @@ function main()
         println("Using $(nprocs()) threads")
         include(joinpath(Base.source_dir(), "simulation", "load.jl"))
         include(joinpath(Base.source_dir(), "utils", "parse_yaml.jl"))
-        parse(config)
+        screen, lib = parse(config)
+        println(screen, lib)
     end
 end
 
