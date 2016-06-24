@@ -20,17 +20,25 @@ function main(filepath; debug=false, quiet=false)
             )
             push!(libs, Library(max_phenotype_dists, crisprtype))
         end
+
+        parameters = Dict{Symbol, Vector}(
+                :representation => [100],
+                :bottleneck_representation => [100],
+                :seq_depth => [100],
+                :num_bottlenecks => collect(7:20)
+            )
+        num_runs = 25
     else
         libs = Library[Library(CRISPRi()), Library(CRISPRKO())]
-    end
 
-    parameters = Dict{Symbol, Vector}(
-            :representation => [100],
-            :bottleneck_representation => [100],
-            :seq_depth => [100],
-            :num_bottlenecks => collect(7:20)
-        )
-    num_runs = 25
+        parameters = Dict{Symbol, Vector}(
+                :representation => [100],
+                :bottleneck_representation => [100],
+                :seq_depth => [100],
+                :num_bottlenecks => [7, 20]
+            )
+        num_runs = 1
+    end
 
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
