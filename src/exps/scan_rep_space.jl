@@ -23,10 +23,10 @@ function main(filepath; debug=false, quiet=false)
     const overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
     # custom function for handling both growth and a facs screen in the
     # same relational datastructure
-    flatten_overlap = (screen) -> begin
-        local results = Any[typeof(screen)]
+    flatten_overlap = (setup, lib) -> begin
+        local results = Any[typeof(setup)]
         for name in overlap
-            push!(results, getfield(screen, name))
+            push!(results, getfield(setup, name))
         end
         results
     end
