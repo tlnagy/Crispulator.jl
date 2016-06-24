@@ -99,6 +99,11 @@ end
     (results...)
 end
 
+@everywhere function compute_snr(bc_counts::DataFrame, genes::DataFrame)
+    sig, noi = signal(bc_counts), noise(bc_counts)
+    (sig/noi, sig, noi)
+end
+
 function compute_name(filename::AbstractString)
     front, back = splitext(filename)
     # commit of the code that generated this data
