@@ -7,14 +7,15 @@ function main(filepath; debug=false, quiet=false)
     if !debug
 
         inc_space = linspace(0.02, 0.1, 5)
+        cent_space = linspace(0.1, 0.55, 5)
 
         libs = Library[]
-        for (inc, crisprtype) in Iterators.product(inc_space, [CRISPRi(), CRISPRKO()])
+        for (inc, cent, crisprtype) in Iterators.product(inc_space, cent_space, [CRISPRi(), CRISPRKO()])
 
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (1-inc-0.1-0.05, Delta(0.0)),
                 :negcontrol => (0.05, Delta(0.0)),
-                :increasing => (inc, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+                :increasing => (inc, TruncatedNormal(cent, 0.1, 0.025, 1)),
                 :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
             )
             push!(libs, Library(max_phenotype_dists, crisprtype))
