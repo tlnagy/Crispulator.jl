@@ -14,8 +14,8 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function build_parameter_space{T <: ScreenSetup}(::T, libs::Vector{Library},
-                                                 parameters::Dict{Symbol, Vector}, num_runs::Int)
+function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector},
+                                                 libs::Vector{Library}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
