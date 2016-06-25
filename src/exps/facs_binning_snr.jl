@@ -34,7 +34,7 @@ function main(filepath; debug=false, quiet=false)
     results = vcat(results, results2)
 
     hierarchy = reshape([:snr, :signal, :noise], (3, 1))
-    new_names = [[:technique, :score]...; fieldnames(FacsScreen)...; :crisprtype; :run_idx]
+    new_names = [[:technique, :score]...; fieldnames(FacsScreen)...; :run_idx; :crisprtype;]
 
     results = construct_hierarchical_label(hierarchy, results, new_names)
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]

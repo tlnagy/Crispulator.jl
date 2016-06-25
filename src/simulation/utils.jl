@@ -157,5 +157,5 @@ function signal(bc_counts::DataFrame)
         signal = guides[:log2fc_bin2] ./ guides[:theo_phenotype]
         DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))
     end
-    mean(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal])
+    mean(abs(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
 end
