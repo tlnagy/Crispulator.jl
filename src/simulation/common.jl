@@ -5,7 +5,7 @@ performance of this entity in the screen.
 """
 type Barcode
     "The target gene id"
-    gene::Int64
+    gene::Int
 
     "The knockdown efficiency"
     knockdown::Float64
@@ -45,11 +45,11 @@ as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
 
 type FacsScreen <: ScreenSetup
     "Number of target genes"
-    num_genes::Int64
+    num_genes::Int
     "Number of guides per gene"
-    coverage::Int64
+    coverage::Int
     "Number of cells with each guide"
-    representation::Int64
+    representation::Int
     "Multiplicity of infection"
     moi::Float64
     "Std dev expected for cells during facs sorting"
@@ -57,9 +57,9 @@ type FacsScreen <: ScreenSetup
     "Range of guide phenotypes to collect in each bin"
     bin_info::Dict{Symbol, Tuple{Float64, Float64}}
     "Number of cells sorted"
-    bottleneck_representation::Int64
+    bottleneck_representation::Int
     "Sequencing depth"
-    seq_depth::Int64
+    seq_depth::Int
 
     function FacsScreen()
         new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 1000, 1000)
@@ -68,19 +68,19 @@ end
 
 type GrowthScreen <: ScreenSetup
     "Number of target genes"
-    num_genes::Int64
+    num_genes::Int
     "Number of guides per gene"
-    coverage::Int64
+    coverage::Int
     "Number of cells with each guide"
-    representation::Int64
+    representation::Int
     "Multiplicity of infection"
     moi::Float64
     "Sequencing depth"
-    seq_depth::Int64
+    seq_depth::Int
     "For growth screens, how much of a bottleneck is applied"
-    bottleneck_representation::Int64
+    bottleneck_representation::Int
     "For growth screens, how many bottlenecks are applied"
-    num_bottlenecks::Int64
+    num_bottlenecks::Int
     "The σ of the normal noise distribution added to each cell's phenotype"
     noise::Float64
 

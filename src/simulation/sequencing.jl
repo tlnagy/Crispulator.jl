@@ -1,4 +1,4 @@
-function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int64}}, guide_count::Int64)
+function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int}}, guide_count::Int)
     results = Dict{Symbol, Vector{Float64}}()
     for (bin, cells) in bin_cells
         counts = StatsBase.counts(cells, 1:guide_count)
@@ -7,13 +7,13 @@ function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int64}}, guide_count::In
     results
 end
 
-function sequencing(depths::Dict{Symbol, Int64}, guides::Vector{Barcode}, samples::Dict{Symbol, Vector{Float64}})
+function sequencing(depths::Dict{Symbol, Int}, guides::Vector{Barcode}, samples::Dict{Symbol, Vector{Float64}})
     @assert all(Bool[haskey(depths, key) for key in keys(samples)]) "Supply exactly one sequencing depth per sample"
     sequencing_results = Dict{Symbol, DataFrame}()
     colnames = fieldnames(Barcode)
     push!(colnames, [:counts, :barcodeid]...)
     coltypes = map(x -> fieldtype(Barcode, x), fieldnames(Barcode))
-    push!(coltypes, [Int64, Int64]...)
+    push!(coltypes, [Int, Int]...)
     num_guides = length(guides)
 
     for (bin, freqs) in samples

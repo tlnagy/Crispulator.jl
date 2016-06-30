@@ -12,7 +12,7 @@ function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; ru
 
     freqs = counts_to_freqs(bin_cells, length(guides))
     # uniform for now for all bins
-    seq_depths = Dict{Symbol, Int64}([binname=>setup.seq_depth for binname in keys(bin_cells)])
+    seq_depths = Dict{Symbol, Int}([binname=>setup.seq_depth for binname in keys(bin_cells)])
     raw_data = sequencing(seq_depths, guides, freqs)
     bc_counts, genes = differences_between_bins(raw_data)
 

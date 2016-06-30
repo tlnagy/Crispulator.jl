@@ -1,16 +1,16 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 4, 12)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,12)),
-            :seq_depth => map(x->round(Int64, x),  logspace(0,4,12)),
+            :representation => map(x->round(Int, x), logspace(0, 4, 12)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,4,12)),
+            :seq_depth => map(x->round(Int, x),  logspace(0,4,12)),
             :num_bottlenecks => collect(8:2:20)
         )
         num_runs = 10
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 2, 2)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,2,2)),
+            :representation => map(x->round(Int, x), logspace(0, 2, 2)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,2,2)),
             :seq_depth => [10^2],
             :num_bottlenecks => [10]
         )

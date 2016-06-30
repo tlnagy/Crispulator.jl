@@ -6,15 +6,15 @@ function main(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 4, 18)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,18)),
+            :representation => map(x->round(Int, x), logspace(0, 4, 18)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,4,18)),
             :seq_depth => [10, 10^2, 10^3, 10^4]
         )
         num_runs = 25
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 2, 2)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,2,2)),
+            :representation => map(x->round(Int, x), logspace(0, 2, 2)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,2,2)),
             :seq_depth => [10^2]
         )
         num_runs = 1

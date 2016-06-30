@@ -11,7 +11,7 @@ function lib_plot(lib::Library)
     max_rep = 10
     xs = Array(Float64, num_steps*max_rep)
     ys = Array(Float64, length(xs))
-    reps = Array(Int64, length(xs))
+    reps = Array(Int, length(xs))
     behaviors = Array(Symbol, length(xs))
 
     classes, max_phenotypes = [], []

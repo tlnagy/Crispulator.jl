@@ -4,7 +4,7 @@ performs simulated facs sorting of the cells into `bins` with the given
 cutoffs. `σ` refers to the spread of the phenotype during the FACS screen.
 """
 function select(setup::FacsScreen,
-                cells::Vector{Int64},
+                cells::Vector{Int},
                 cell_phenotypes::Vector{Float64},
                 guides::Vector{Barcode};
                 debug = false)
@@ -20,19 +20,19 @@ function select(setup::FacsScreen,
     end
     indices = sortperm(observed)
     cells = cells[indices]
-    results = Dict{Symbol, Vector{Int64}}()
+    results = Dict{Symbol, Vector{Int}}()
 
     for (binname, cutoffs) in bins
-        left = clamp(round(Int64, cutoffs[1]*n_cells), 1, n_cells)
-        right = clamp(round(Int64, cutoffs[2]*n_cells), 1, n_cells)
+        left = clamp(round(Int, cutoffs[1]*n_cells), 1, n_cells)
+        right = clamp(round(Int, cutoffs[2]*n_cells), 1, n_cells)
         results[binname] = cells[left:right]
     end
     results
 end
 
-function grow!(cells::AbstractArray{Int64},
+function grow!(cells::AbstractArray{Int},
                cell_phenotypes::AbstractArray{Float64},
-               output_c::AbstractArray{Int64},
+               output_c::AbstractArray{Int},
                output_p::AbstractArray{Float64},
                setup::GrowthScreen)
     num_inserted::Int = 0
@@ -53,7 +53,7 @@ end
 Growth Screen selection
 """
 function select(setup::GrowthScreen,
-                initial_cells::AbstractArray{Int64},
+                initial_cells::AbstractArray{Int},
                 initial_cell_phenotypes::AbstractArray{Float64},
                 guides::Vector{Barcode};
                 debug=false)
@@ -61,12 +61,12 @@ function select(setup::GrowthScreen,
     bottleneck_representation = setup.bottleneck_representation
     num_bottlenecks = setup.num_bottlenecks
     # all cells at all timepoints
-    cellmat = zeros(Int64, length(guides)*bottleneck_representation)
+    cellmat = zeros(Int, length(guides)*bottleneck_representation)
     cpmat = zeros(Float64, size(cellmat))
-    output_c = Array(Int64, length(initial_cells)*4);
+    output_c = Array(Int, length(initial_cells)*4);
     output_p = Array(Float64, size(output_c));
     cells = initial_cells # 1st timepoint slice
-    picked = Array(Int64, size(cellmat, 1))
+    picked = Array(Int, size(cellmat, 1))
     cell_phenotypes = initial_cell_phenotypes
 
     for k in 1:num_bottlenecks
