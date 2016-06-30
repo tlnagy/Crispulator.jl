@@ -1,6 +1,7 @@
 # Pooled Screen Optimization
 
 [![Build Status](https://travis-ci.com/tlnagy/pooled-screen-optimization.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/pooled-screen-optimization)
+[![Build status](https://ci.appveyor.com/api/projects/status/ja0e8s9mnxq6ncf8?svg=true)](https://ci.appveyor.com/project/tlnagy/pooled-screen-optimization)
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## Motivation
