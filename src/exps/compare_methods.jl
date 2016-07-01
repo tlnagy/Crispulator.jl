@@ -86,11 +86,13 @@ function main(filepath; debug=false, quiet=false)
         (sig, noi, pvalmeanprod, pvalue, effectsize)
     end
 
+    before = time()
     results = pmap(args -> run_exp(args[1],
                                    args[2],
                                    compare_reduction_methods;
                                    flatten_func=flatten_overlap,
                                    run_idx=args[3]), runs)
+    (!quiet) && println("$(time() - before) seconds")
     results = DataFrame(hcat(results...)')
     new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; array_names(Library)...; :run_idx]
     hierarchy = [:signal, :noise, :product, :pvalue, :effectsize]'
