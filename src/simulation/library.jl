@@ -152,6 +152,9 @@ function as_array(lib::Library)
         end
     end
 
+    relationships = symbol(sort([behavior for (mapping, (behavior, dist)) in
+                                 lib.kd_phenotype_relationships])...)
+
     frac_inc_genes, frac_dec_genes = 0.0, 0.0
     cent_inc_phenotype = 0.0
     for (id, (quality, dist)) in lib.max_phenotype_dists
@@ -161,10 +164,10 @@ function as_array(lib::Library)
         end
         (quality == :decreasing) && (frac_dec_genes = lib.phenotype_probs.p[id])
     end
-    [frac_hq, mean_hq_kd, frac_inc_genes, frac_dec_genes, cent_inc_phenotype, cas9_behavior]
+    [frac_hq, mean_hq_kd, frac_inc_genes, frac_dec_genes, cent_inc_phenotype, relationships, cas9_behavior]
 end
 
-array_names(::Type{Library}) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :cent_inc_phenotype, :crisprtype]
+array_names(::Type{Library}) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :cent_inc_phenotype, :relationships, :crisprtype]
 
 function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
     probs = Float64[]

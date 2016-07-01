@@ -41,7 +41,7 @@ function main(filepath; debug=false, quiet=false)
         end
 
         kd_phenotype_relationships = Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}}(
-            :relationship => (1.0, genetype)
+            symbol(typeof(genetype)) => (1.0, genetype)
         )
 
         if typeof(crisprtype) == CRISPRKO
