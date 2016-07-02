@@ -25,7 +25,7 @@ function main(filepath; debug=false, quiet=false)
                 :representation => [100],
                 :bottleneck_representation => [100],
                 :seq_depth => [100],
-                :num_bottlenecks => collect(7:20)
+                :num_bottlenecks => collect(1:20)
             )
         num_runs = 25
     else
