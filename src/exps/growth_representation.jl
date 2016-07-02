@@ -1,17 +1,17 @@
 function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int, x), logspace(0, 4, 12)),
-            :bottleneck_representation => map(x->round(Int, x),  logspace(0,4,12)),
-            :seq_depth => map(x->round(Int, x),  logspace(0,4,12)),
-            :num_bottlenecks => collect(8:2:20)
+            :representation => [10, 100, 1000],
+            :bottleneck_representation => [10, 100, 1000],
+            :seq_depth => [10, 100, 1000],
+            :num_bottlenecks => collect(1:20)
         )
-        num_runs = 10
+        num_runs = 25
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int, x), logspace(0, 2, 2)),
-            :bottleneck_representation => map(x->round(Int, x),  logspace(0,2,2)),
-            :seq_depth => [10^2],
+            :representation => [1, 10],
+            :bottleneck_representation => [1, 10],
+            :seq_depth => [1, 10],
             :num_bottlenecks => [10]
         )
         num_runs = 1
@@ -28,7 +28,7 @@ function main(filepath; debug=false, quiet=false)
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
     libs = [Library(max_phenotype_dists, CRISPRi()), Library(max_phenotype_dists, CRISPRKO())]
-    runs = build_parameter_space(GrowthScreen(), parameters, libs, num_runs);
+    runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
     before = time()
     results = pmap(args -> run_exp(args[1], args[2], test_method_wrapper;
