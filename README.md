@@ -1,15 +1,17 @@
-# Pooled Screen Optimization
+# CRISPulator
 
 [![Build Status](https://travis-ci.com/tlnagy/pooled-screen-optimization.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/pooled-screen-optimization)
 [![Build status](https://ci.appveyor.com/api/projects/status/ja0e8s9mnxq6ncf8?svg=true)](https://ci.appveyor.com/project/tlnagy/pooled-screen-optimization)
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+A pooled genetic screen simulator
 
 ## Motivation
 
 Pooled screens are very useful, but they are also extraordinarily complex.
 This work aims to explore the importance of various screen parameters and
 the relevance of design choices on the downstream analysis and
-interpretation. 
+interpretation.
 
 ## Usage
 
