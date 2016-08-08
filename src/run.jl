@@ -1,4 +1,3 @@
-(!isdir(Pkg.dir("ArgParse"))) && Pkg.add("ArgParse")
 using ArgParse
 
 function parse_cmdline()
