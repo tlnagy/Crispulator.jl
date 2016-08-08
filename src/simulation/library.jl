@@ -152,7 +152,7 @@ function as_array(lib::Library)
         end
     end
 
-    relationships = symbol(sort([behavior for (mapping, (behavior, dist)) in
+    relationships = Symbol(sort([behavior for (mapping, (behavior, dist)) in
                                  lib.kd_phenotype_relationships])...)
 
     frac_inc_genes, frac_dec_genes = 0.0, 0.0

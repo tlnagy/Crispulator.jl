@@ -89,8 +89,8 @@ function transfect(setup::GrowthScreen,
 
         while num_inserted < target
             num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
-            cells = copy(sub(output_c, 1:num_inserted))
-            cell_phenotypes = copy(sub(output_p, 1:num_inserted))
+            cells = copy(view(output_c, 1:num_inserted))
+            cell_phenotypes = copy(view(output_p, 1:num_inserted))
             num_doublings += 1
         end
     end

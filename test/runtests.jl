@@ -9,6 +9,8 @@ using Base.Test
 using DataStructures
 using ColorBrewer
 using Gadfly
+using Compat
+import Compat: UTF8String, ASCIIString, view
 
 println("Running tests:")
 filenames = ["kdrelationships.jl",
@@ -44,7 +46,7 @@ for analysis in analyses
     try
         # skip testing with Gadfly on 32-bit machines, this is an
         # upstream problem
-        if analysis == "gen_plots.jl" && WORD_SIZE != 64
+        if analysis == "gen_plots.jl" && Sys.WORD_SIZE != 64
             println("\t\033[1m\033[33mSKIPPED\033[0m: $(analysis)" *
             " # plotting library broken on 32bit machines")
             skipped+=1

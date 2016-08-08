@@ -71,10 +71,10 @@ function select(setup::GrowthScreen,
 
     for k in 1:num_bottlenecks
         num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
-        cells, cell_phenotypes = sub(cellmat, :), sub(cpmat, :)
+        cells, cell_phenotypes = view(cellmat, :), view(cpmat, :)
         sample!(1:num_inserted, picked, replace=false)
-        copy!(sub(cellmat, :), sub(output_c, picked))
-        copy!(sub(cpmat, :), sub(output_p, picked))
+        copy!(view(cellmat, :), view(output_c, picked))
+        copy!(view(cpmat, :), view(output_p, picked))
     end
     return Dict(:bin1 => initial_cells, :bin2 => cellmat)
 end
