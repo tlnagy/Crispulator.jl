@@ -93,9 +93,9 @@ function main(filepath; debug=false, quiet=false)
                                    flatten_func=flatten_overlap,
                                    run_idx=args[3]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results = DataFrame(hcat(results...)')
+    results = DataFrame(permutedims(hcat(results...), [2,1]))
     new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; array_names(Library)...; :run_idx]
-    hierarchy = [:signal, :noise, :product, :pvalue, :effectsize]'
-    results = construct_hierarchical_label(hierarchy', results, new_names)
+    hierarchy = reshape([:signal, :noise, :product, :pvalue, :effectsize], 5, 1)
+    results = construct_hierarchical_label(hierarchy, results, new_names)
     writetable(filepath, results)
 end

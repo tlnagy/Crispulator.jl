@@ -24,12 +24,12 @@ function main(filepath; debug=false, quiet=false)
     before = time()
     results = pmap(args -> run_exp(args[1], Library(CRISPRi()), compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results = DataFrame(hcat(results...)')
+    results = DataFrame(permutedims(hcat(results...), [2, 1]))
     results[:crisprtype] = "CRISPRi"
     before = time()
     results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results2 = DataFrame(hcat(results2...)')
+    results2 = DataFrame(permutedims(hcat(results2...), [2, 1]))
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 

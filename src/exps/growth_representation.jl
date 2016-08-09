@@ -35,7 +35,7 @@ function main(filepath; debug=false, quiet=false)
                    run_idx=args[3], flatten_func=flatten_both), runs)
     (!quiet) && println("$(time() - before) seconds")
 
-    data = DataFrame(hcat(results...)')
+    data = DataFrame(permutedims(hcat(results...), [2, 1]))
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
 

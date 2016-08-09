@@ -12,7 +12,12 @@ function run_exp(setup::ScreenSetup, lib::Library, processing_func::Function; ru
 
     freqs = counts_to_freqs(bin_cells, length(guides))
     # uniform for now for all bins
-    seq_depths = Dict{Symbol, Int}([binname=>setup.seq_depth for binname in keys(bin_cells)])
+    # work around for dict comprehension syntax change in v0.4->v0.5
+    # https://github.com/JuliaLang/Compat.jl/issues/231
+    seq_depths = Dict{Symbol, Int}()
+    for binname in keys(bin_cells)
+        seq_depths[binname] = setup.seq_depth
+    end
     raw_data = sequencing(seq_depths, guides, freqs)
     bc_counts, genes = differences_between_bins(raw_data)
 

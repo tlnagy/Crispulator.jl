@@ -122,7 +122,7 @@ Creates a hierarchical index in the given dataframe
 function construct_hierarchical_label(hierarchy::Array{Symbol, 2}, df::DataFrame, renames::Vector{Symbol})
     procs = []
     for i in 1:size(hierarchy, 1)
-        row_labels = repeat(hierarchy[i, :], inner=[size(df, 1), 1])
+        row_labels = repeat(hierarchy[i:i, :], inner=[size(df, 1), 1])
         data = DataFrame(hcat(row_labels, df[i], Array(df[size(hierarchy, 1)+1:end])))
         names!(data, renames)
         push!(procs, data)

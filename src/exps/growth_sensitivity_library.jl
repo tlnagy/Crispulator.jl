@@ -53,7 +53,7 @@ function main(filepath; debug=false, quiet=false)
                    run_idx=args[3], flatten_func=flatten_both), runs)
     (!quiet) && println("$(time() - before) seconds")
 
-    data = DataFrame(hcat(results...)')
+    data = DataFrame(permutedims(hcat(results...), [2, 1]))
     hierarchy = reshape([:inc; :dec], (2, 1))
     new_names = [[:measure, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
 

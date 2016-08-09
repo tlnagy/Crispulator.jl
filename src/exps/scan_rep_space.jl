@@ -56,7 +56,7 @@ function main(filepath; debug=false, quiet=false)
             before = time()
             result = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
             (!quiet) && println("$(time() - before) seconds")
-            result = DataFrame(hcat(result...)')
+            result = DataFrame(permutedims(hcat(result...), [2, 1]))
             result[:crisprtype] = typeof(crisprtype)
             push!(results, result)
         end
