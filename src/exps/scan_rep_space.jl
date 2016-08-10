@@ -2,7 +2,7 @@
 # is important: at transfection, at the bottleneck(s), and at
 # sequencing.
 
-function scan_rep_space(filepath; debug=false, quiet=false)
+function main(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(

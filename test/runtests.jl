@@ -7,9 +7,10 @@ include(normpath(joinpath(Base.source_dir(),"..",load_file)))
 
 using Base.Test
 using DataStructures
-using Distributions
-using DataFrames
-using CRISPulator
+using ColorBrewer
+using Gadfly
+using Compat
+import Compat: UTF8String, ASCIIString, view
 
 println("Running tests:")
 filenames = ["kdrelationships.jl",
@@ -53,8 +54,7 @@ for analysis in analyses
         end
         include(joinpath(analyses_path, analysis))
         tempfile = tempname()
-        func_name = Symbol(splitext(analysis)[1])
-        getfield(Main, func_name)(tempfile, debug=true, quiet=true)
+        main(tempfile, debug=true, quiet=true)
         println("\t\033[1m\033[32mPASSED\033[0m:  $(analysis)")
     catch e
         errorfound = true

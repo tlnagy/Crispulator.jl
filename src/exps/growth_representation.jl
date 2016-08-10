@@ -1,6 +1,4 @@
-import CRISPulator: flatten_both
-
-function growth_representation(filepath; debug=false, quiet=false)
+function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
             :representation => [10, 100, 1000],

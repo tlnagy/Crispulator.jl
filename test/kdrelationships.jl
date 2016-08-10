@@ -1,5 +1,3 @@
-import CRISPulator: Linear, Sigmoidal, response
-
 linear_response = response(Linear())
 
 @test linear_response(0.0, 1.0) == 0.0

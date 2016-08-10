@@ -1,4 +1,4 @@
-function partition(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
+function Base.count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     num_pos, num_neg = 0, 0
     for label in labels
         if label in pos_labels
@@ -22,7 +22,7 @@ function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     num_scores = length(scores)
     ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
-    num_pos, num_neg = partition(labels, pos_labels)
+    num_pos, num_neg = count(labels, pos_labels)
 
     tprs = Array(Float64, num_scores)
     fprs = Array(Float64, num_scores)
@@ -67,7 +67,7 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     num_scores = length(scores) + 1
     ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
-    num_pos, num_neg = partition(labels, pos_labels)
+    num_pos, num_neg = count(labels, pos_labels)
 
     tn, fn, tp, fp = 0, 0, num_pos, num_neg
 
@@ -114,7 +114,7 @@ function venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     num_scores = length(scores)
     ordering = sortperm(scores, rev=rev)
     labels = classes[ordering]
-    num_pos, num_neg = partition(labels, pos_labels)
+    num_pos, num_neg = count(labels, pos_labels)
 
     n_venn = round(Int, num_pos/2)
     n_correct = 0

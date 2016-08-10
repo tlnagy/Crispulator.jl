@@ -1,5 +1,3 @@
-import CRISPulator: construct_library, build_cells
-
 function convert_cells_to_pop(cells, cell_phenotypes, guides)
     cells_to_phenotypes = [DefaultDict(Float64, Int, 0) for _ in 1:length(guides)]
 

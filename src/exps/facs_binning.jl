@@ -1,4 +1,4 @@
-function facs_binning(filepath; debug=false, quiet=false)
+function main(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
             :representation => [10, 100, 1000],

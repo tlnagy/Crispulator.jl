@@ -6,7 +6,7 @@
 using Gadfly
 using ColorBrewer
 
-function gen_plots(filepath; debug=false, quiet=false)
+function main(filepath; debug=false, quiet=false)
     colors = palette("Accent", 4)
 
     for screentype in [FacsScreen(), GrowthScreen()]

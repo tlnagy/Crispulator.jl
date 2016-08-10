@@ -1,29 +1,26 @@
-"""
-A pooled genetic screen simulator
-"""
-module CRISPulator
+print("Loading simulation framework...")
 
-export ScreenSetup, FacsScreen, GrowthScreen
-export Library, CRISPRi, CRISPRn
-export KDPhenotypeRelationship
-export run_exp
-export auroc, venn, auprc, signal, noise
+packages = [:StatsBase,
+            :Distributions,
+            :DataFrames,
+            :HypothesisTests,
+            :Iterators]
 
-using StatsBase
-using Distributions
-using DataFrames
-using HypothesisTests
-using Iterators
-using Compat
-import Compat: UTF8String, ASCIIString, view
-
-include("common.jl")
-include("utils.jl")
-include("library.jl")
-include("transfection.jl")
-include("selection.jl")
-include("sequencing.jl")
-include("processing.jl")
-include("designs.jl")
-
+for package in packages
+    eval(:(using $package))
+    eval(:(@everywhere using $package))
 end
+
+# Load all simulations files on all workers
+@everywhere function include_all(curr_dir)
+    filenames = ["common.jl", "utils.jl", "library.jl", "transfection.jl",
+                 "selection.jl", "sequencing.jl", "processing.jl",
+                 "designs.jl"]
+    for filename in filenames
+        include(joinpath(curr_dir, filename))
+    end
+end
+curr_dir = Base.source_dir()
+@eval @everywhere include_all($curr_dir)
+
+println("Done.")
