@@ -53,12 +53,12 @@ abstract Cas9Behavior
 
 type CRISPRi <: Cas9Behavior end
 
-type CRISPRKO <: Cas9Behavior
+type CRISPRn <: Cas9Behavior
     knockout_dist::Categorical
 
-    CRISPRKO(dist::Categorical) = new(dist)
+    CRISPRn(dist::Categorical) = new(dist)
 end
-CRISPRKO() = CRISPRKO(Categorical([1/9, 4/9, 4/9]))
+CRISPRn() = CRISPRn(Categorical([1/9, 4/9, 4/9]))
 
 """
 Wrapper containing all library construction parameters
@@ -120,7 +120,7 @@ function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
 end
 
 function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
-                 cas9_behavior::CRISPRKO)
+                 cas9_behavior::CRISPRn)
     # For CRISPR KO assume that if guide is "high quality" than it will a
     # maximum knockdown of 100%
     knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(

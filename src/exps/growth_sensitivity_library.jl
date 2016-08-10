@@ -10,7 +10,7 @@ function main(filepath; debug=false, quiet=false)
         cent_space = linspace(0.1, 0.55, 5)
 
         libs = Library[]
-        for (inc, cent, crisprtype) in Iterators.product(inc_space, cent_space, [CRISPRi(), CRISPRKO()])
+        for (inc, cent, crisprtype) in Iterators.product(inc_space, cent_space, [CRISPRi(), CRISPRn()])
 
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (1-inc-0.1-0.05, Delta(0.0)),
@@ -29,7 +29,7 @@ function main(filepath; debug=false, quiet=false)
             )
         num_runs = 25
     else
-        libs = Library[Library(CRISPRi()), Library(CRISPRKO())]
+        libs = Library[Library(CRISPRi()), Library(CRISPRn())]
 
         parameters = Dict{Symbol, Vector}(
                 :representation => [100],

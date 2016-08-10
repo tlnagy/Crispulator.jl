@@ -32,10 +32,10 @@ function main(filepath; debug=false, quiet=false)
     results = DataFrame(permutedims(hcat(results...), [2, 1]))
     results[:crisprtype] = "CRISPRi"
     before = time()
-    results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), test_method_wrapper; run_idx=args[2]), runs)
+    results2 = pmap(args -> run_exp(args[1], Library(CRISPRn()), test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]))
-    results2[:crisprtype] = "CRISPRKO"
+    results2[:crisprtype] = "CRISPRn"
     results = vcat(results, results2)
 
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)

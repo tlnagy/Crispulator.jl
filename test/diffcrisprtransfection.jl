@@ -21,14 +21,14 @@ end
 @test test_crispri_construction()
 
 function test_crisprko_construction()
-    lib = Library(CRISPRKO())
+    lib = Library(CRISPRn())
     setup = FacsScreen()
     guides, guide_freqs_dist = construct_library(setup, lib)
     cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^7)
 
     arr = convert_cells_to_pop(cells, cell_phenotypes, guides)
     nonzeros = arr[find(x->length(x) != 1, arr)]
-    results = zeros(CRISPRKO().knockout_dist.K, length(nonzeros))
+    results = zeros(CRISPRn().knockout_dist.K, length(nonzeros))
     for (idx, guide) in enumerate(nonzeros)
         if -0.0 in keys(guide)
             @assert guide[0.0] == 0

@@ -27,7 +27,7 @@ function main(filepath; debug=false, quiet=false)
         :negcontrol => (0.05, Delta(0.0)),
         :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
-    libs = [Library(max_phenotype_dists, CRISPRi()), Library(max_phenotype_dists, CRISPRKO())]
+    libs = [Library(max_phenotype_dists, CRISPRi()), Library(max_phenotype_dists, CRISPRn())]
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
     before = time()

@@ -10,7 +10,7 @@ function main(filepath; debug=false, quiet=false)
     colors = palette("Accent", 4)
 
     for screentype in [FacsScreen(), GrowthScreen()]
-        for crisprtype in [CRISPRi(), CRISPRKO()]
+        for crisprtype in [CRISPRi(), CRISPRn()]
             if typeof(screentype) == GrowthScreen
                 max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                     :inactive => (0.83, Delta(0.0)),

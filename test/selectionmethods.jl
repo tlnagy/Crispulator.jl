@@ -15,7 +15,7 @@ function testselection(setup)
         cell_phenotypes[i] = guides[initial_cells[i]].theo_phenotype
     end
 
-    # ensure guide level phenotype isn't used so that CRISPRKO works
+    # ensure guide level phenotype isn't used so that CRISPRn works
     for guide in guides
         guide.theo_phenotype = -Inf
     end

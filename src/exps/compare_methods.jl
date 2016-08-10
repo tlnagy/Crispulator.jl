@@ -15,7 +15,7 @@ function main(filepath; debug=false, quiet=false)
 
     screen_combos = (((FacsScreen, NaN), (GrowthScreen, 10), (GrowthScreen, 20)),
                     levels,
-                    (CRISPRi(), CRISPRKO()),
+                    (CRISPRi(), CRISPRn()),
                     (Linear(), Sigmoidal()))
 
     for (screentype, representation, crisprtype, genetype) in Iterators.product(screen_combos...)
@@ -44,7 +44,7 @@ function main(filepath; debug=false, quiet=false)
             Symbol(typeof(genetype)) => (1.0, genetype)
         )
 
-        if typeof(crisprtype) == CRISPRKO
+        if typeof(crisprtype) == CRISPRn
             knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
                     :high => (0.9, Delta(1.0)),
                     :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))

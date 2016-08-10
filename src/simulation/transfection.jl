@@ -11,7 +11,7 @@ function build_cells(::CRISPRi,
     cells, phenotypes
 end
 
-function build_cells(behav::CRISPRKO,
+function build_cells(behav::CRISPRn,
                      guides::Vector{Barcode},
                      guide_freq_dist::Categorical,
                      n::Int
