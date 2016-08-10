@@ -1,3 +1,5 @@
+import CRISPulator: Delta, array_names
+
 function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, num_runs::Int)
     fields = collect(keys(parameters))
     n_fields = length(fields)

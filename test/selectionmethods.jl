@@ -1,3 +1,5 @@
+import CRISPulator: Barcode, select
+
 function testselection(setup)
     N = setup.num_genes
     guides = Barcode[]

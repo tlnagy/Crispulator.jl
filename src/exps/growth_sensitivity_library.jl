@@ -1,8 +1,9 @@
 # Growth screens seem to be highly susceptible to the distribution of
 # genes that promote growth versus that hurt it. This experiment tests
 # the behavior of growth screens under several different library setups
+import CRISPulator: flatten_both
 
-function main(filepath; debug=false, quiet=false)
+function growth_sensitivity_library(filepath; debug=false, quiet=false)
 
     if !debug
 

@@ -1,4 +1,5 @@
 using StatsBase
+import CRISPulator: grow!
 
 function test_grow_function(phenotypes, expected)
     @assert length(phenotypes) == length(expected)

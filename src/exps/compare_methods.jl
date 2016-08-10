@@ -1,7 +1,8 @@
 # This experiment will compare the behavior of pvalue, effect size, and
 # product over a wide range of screen and library designs
+import CRISPulator: as_array
 
-function main(filepath; debug=false, quiet=false)
+function compare_methods(filepath; debug=false, quiet=false)
 
     runs = []
 
