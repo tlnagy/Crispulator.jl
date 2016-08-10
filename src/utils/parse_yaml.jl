@@ -84,14 +84,14 @@ function Base.parse(data::Dict{Any, Any})
 
     frac_inc_genes, frac_dec_genes = lib_vals[:frac_inc_genes], lib_vals[:frac_dec_genes]
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
-        :inactive => (1-frac_inc_genes-frac_dec_genes-0.05, Delta(0.0)),
-        :negcontrol => (0.05, Delta(0.0)),
+        :inactive => (1-frac_inc_genes-frac_dec_genes-0.2, Delta(0.0)),
+        :negcontrol => (0.2, Delta(0.0)),
         :increasing => (frac_inc_genes, TruncatedNormal(0.1, 0.1, 0.025, 1)),
         :decreasing => (frac_dec_genes, TruncatedNormal(-0.55, 0.2, -1, -0.1))
     )
     lib = Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
 
-    (screen, lib)
+    (screen, lib, lib_vals[:num_runs])
 end
 
 """

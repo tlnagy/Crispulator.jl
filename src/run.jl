@@ -69,7 +69,6 @@ function main()
             (file == "common.jl") && continue
             println(file)
         end
-
     elseif command == "exp"
         println("Using $(nprocs()) threads")
         include(joinpath(Base.source_dir(), "simulation", "load.jl"))
@@ -87,11 +86,12 @@ function main()
         main(output_file, debug=parsed_args[command]["debug"])
     else
         config = YAML.load_file(parsed_args[command]["config_file"])
+        (!isdir(parsed_args[command]["output_dir"])) && error("Please provide a valid directory for output")
         println("Using $(nprocs()) threads")
         include(joinpath(Base.source_dir(), "simulation", "load.jl"))
         include(joinpath(Base.source_dir(), "utils", "parse_yaml.jl"))
-        screen, lib = parse(config)
-        println(screen, lib)
+        include(joinpath(Base.source_dir(), "utils", "runconfig.jl"))
+        runconfig(parse(config)...)
     end
 end
 
