@@ -1,5 +1,3 @@
-(!isdir(Pkg.dir("ArgParse"))) && Pkg.add("ArgParse")
-(!isdir(Pkg.dir("YAML"))) && Pkg.add("YAML")
 using ArgParse
 using YAML
 

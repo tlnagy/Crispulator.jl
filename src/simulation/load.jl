@@ -1,12 +1,12 @@
 print("Loading simulation framework...")
 
-packages = [:DataFrames,
+packages = [:StatsBase,
             :Distributions,
+            :DataFrames,
             :HypothesisTests,
-            :StatsBase,
             :Iterators]
+
 for package in packages
-    !(isdir(Pkg.dir(string(package)))) && Pkg.add(string(package))
     eval(:(using $package))
     eval(:(@everywhere using $package))
 end

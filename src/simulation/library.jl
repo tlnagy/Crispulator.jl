@@ -65,21 +65,21 @@ Wrapper containing all library construction parameters
 """
 type Library
     "Distribution of guide knockdown efficiencies"
-    knockdown_dist::Dict{Int64, Tuple{Symbol, Sampleable}}
+    knockdown_dist::Dict{Int, Tuple{Symbol, Sampleable}}
     knockdown_probs::Categorical
 
     """
     Maximum phenotype categories mapped to their probability of being
     selected and the distribution to draw from if they are selected
     """
-    max_phenotype_dists::Dict{Int64, Tuple{Symbol, Sampleable}}
+    max_phenotype_dists::Dict{Int, Tuple{Symbol, Sampleable}}
     phenotype_probs::Categorical
 
     """
     Knockdown-phenotype relationships mapped to their probability of
     being selected and their respective KDPhenotypeRelationship
     """
-    kd_phenotype_relationships::Dict{Int64, Tuple{Symbol, KDPhenotypeRelationship}}
+    kd_phenotype_relationships::Dict{Int, Tuple{Symbol, KDPhenotypeRelationship}}
     relationship_probs::Categorical
 
     """
@@ -141,9 +141,37 @@ function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
     Library(knockdown_dist, max_phenotype_dists, kd_phenotype_relationships, cas9_behavior)
 end
 
+function as_array(lib::Library)
+    cas9_behavior = typeof(lib.cas9_behavior)
+    frac_hq = 0.0
+    mean_hq_kd = 0.0
+    for (id, (quality, dist)) in lib.knockdown_dist
+        if quality == :high
+            mean_hq_kd = cas9_behavior == CRISPRi ? mean(dist.untruncated) : NaN
+            frac_hq = lib.knockdown_probs.p[id]
+        end
+    end
+
+    relationships = Symbol(sort([behavior for (mapping, (behavior, dist)) in
+                                 lib.kd_phenotype_relationships])...)
+
+    frac_inc_genes, frac_dec_genes = 0.0, 0.0
+    cent_inc_phenotype = 0.0
+    for (id, (quality, dist)) in lib.max_phenotype_dists
+        if quality == :increasing
+            frac_inc_genes = lib.phenotype_probs.p[id]
+            cent_inc_phenotype = mean(dist.untruncated)
+        end
+        (quality == :decreasing) && (frac_dec_genes = lib.phenotype_probs.p[id])
+    end
+    [frac_hq, mean_hq_kd, frac_inc_genes, frac_dec_genes, cent_inc_phenotype, relationships, cas9_behavior]
+end
+
+array_names(::Type{Library}) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :cent_inc_phenotype, :relationships, :crisprtype]
+
 function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
     probs = Float64[]
-    results = Dict{Int64, Tuple{Symbol, T}}()
+    results = Dict{Int, Tuple{Symbol, T}}()
     count = 0
     for (key, value) in data
         push!(probs, value[1])

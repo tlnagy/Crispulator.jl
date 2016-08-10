@@ -124,3 +124,38 @@ function venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     end
     n_correct/n_venn
 end
+
+
+"""
+noise(bc_counts::DataFrame)
+
+Computes the noise in an experiment, where noise is defined to be the
+standard deviation of log2 fold change in the negative controls
+"""
+function noise(bc_counts::DataFrame)
+    negcontrols = bc_counts[bc_counts[:class] .== :negcontrol, :log2fc_bin2]
+    std(negcontrols)
+end
+
+doc"""
+signal(bc_counts::DataFrame)
+
+Computes the signal in an experiment, where the experimental signal is
+defined to be the average of signal of true hit genes. That value, the
+true hit gene signal, is the average ratio of the log2 fold change for
+a guide targeting a specific gene to the guide's theoretical phenotype.
+
+$\frac{1}{N_{true} \times k} \sum_{i=1}^{N_{true}} \sum_{j=1}^k
+\frac{\log_2 fc_{ij}}{\text{theo phenotype}_{ij}}$
+
+where $N_{true}$ is the number of true hit genes and $k$ is the number of
+genes.
+"""
+function signal(bc_counts::DataFrame)
+    true_hits = bc_counts[(bc_counts[:class] .!= :inactive) & (bc_counts[:class] .!= :negcontrol), :]
+    signal_df = by(true_hits, [:gene, :class, :behavior]) do guides
+        signal = guides[:log2fc_bin2] ./ guides[:theo_phenotype]
+        DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))
+    end
+    median(abs(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
+end

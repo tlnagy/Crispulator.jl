@@ -1,0 +1,11 @@
+julia 0.4
+StatsBase
+Distributions
+DataFrames
+HypothesisTests
+Iterators
+ColorBrewer
+Gadfly
+ArgParse
+Compat v0.8.6
+YAML

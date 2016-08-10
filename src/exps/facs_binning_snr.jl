@@ -21,25 +21,21 @@ function main(filepath; debug=false, quiet=false)
 
     runs = grouped_param_space(FacsScreen(), parameters, [:bin_info], num_runs)
 
-    methods = [venn, auprc]
-    measures = [:inc, :dec, :incdec]
-    genetypes = [:sigmoidal, :linear, :all]
-    test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
-
     before = time()
-    results = pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
+    results = pmap(args -> run_exp(args[1], Library(CRISPRi()), compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results = DataFrame(permutedims(hcat(results...), [2, 1]))
     results[:crisprtype] = "CRISPRi"
     before = time()
-    results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), test_method_wrapper; run_idx=args[2]), runs)
+    results2 = pmap(args -> run_exp(args[1], Library(CRISPRKO()), compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]))
     results2[:crisprtype] = "CRISPRKO"
     results = vcat(results, results2)
 
-    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
-    new_names = [[:method, :measure, :genetype, :score]...; fieldnames(FacsScreen)...; :run; :crisprtype]
+    hierarchy = reshape([:snr, :signal, :noise], (3, 1))
+    new_names = [[:technique, :score]...; fieldnames(FacsScreen)...; :run_idx; :crisprtype;]
+
     results = construct_hierarchical_label(hierarchy, results, new_names)
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
     writetable(filepath, results)

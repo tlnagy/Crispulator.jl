@@ -6,15 +6,15 @@ function main(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 4, 18)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,4,18)),
-            :seq_depth => [10, 10^2, 10^3, 10^4]
+            :representation => map(x->round(Int, x), logspace(0, 4, 13)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,4,13)),
+            :seq_depth => map(x->round(Int, x), logspace(0, 4, 13))
         )
-        num_runs = 25
+        num_runs = 10
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int64, x), logspace(0, 2, 2)),
-            :bottleneck_representation => map(x->round(Int64, x),  logspace(0,2,2)),
+            :representation => map(x->round(Int, x), logspace(0, 2, 2)),
+            :bottleneck_representation => map(x->round(Int, x),  logspace(0,2,2)),
             :seq_depth => [10^2]
         )
         num_runs = 1
@@ -23,10 +23,10 @@ function main(filepath; debug=false, quiet=false)
     const overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
     # custom function for handling both growth and a facs screen in the
     # same relational datastructure
-    flatten_overlap = (screen) -> begin
-        local results = Any[typeof(screen)]
+    flatten_overlap = (setup, lib) -> begin
+        local results = Any[typeof(setup)]
         for name in overlap
-            push!(results, getfield(screen, name))
+            push!(results, getfield(setup, name))
         end
         results
     end
@@ -56,13 +56,13 @@ function main(filepath; debug=false, quiet=false)
             before = time()
             result = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
             (!quiet) && println("$(time() - before) seconds")
-            result = DataFrame(hcat(result...)')
+            result = DataFrame(permutedims(hcat(result...), [2, 1]))
             result[:crisprtype] = typeof(crisprtype)
             push!(results, result)
         end
     end
     results = vcat(results...)
-    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(symbol, methods), measures, genetypes)]...)
+    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score, :screen]...; overlap...; :run; :crisprtype]
     results = construct_hierarchical_label(hierarchy, results, new_names)
     writetable(filepath, results)
