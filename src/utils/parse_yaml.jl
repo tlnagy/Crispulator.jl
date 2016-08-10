@@ -18,20 +18,20 @@ function Base.parse(data::Dict{Any, Any})
 
     input_dict = unravel(data)
 
-    param_table = DataFrame(hcat(param_details...)')
+    param_table = DataFrame(permutedims(hcat(param_details...), [2, 1]))
     names!(param_table, [:yaml_name, :sim_name, :type, :relevance, :usage])
 
     input_mat = [Any[key, value] for (key, value) in input_dict]
-    input_table = DataFrame(hcat(input_mat...)')
+    input_table = DataFrame(permutedims(hcat(input_mat...), [2, 1]))
     names!(input_table, [:yaml_name, :input])
 
     combined = join(param_table, input_table, on=:yaml_name)
 
     # get screen type
-    screentype = symbol(lowercase(combined[combined[:yaml_name] .== :screen_type, :input][1]))
+    screentype = Symbol(lowercase(combined[combined[:yaml_name] .== :screen_type, :input][1]))
 
     # get crispr type
-    crisprtype = symbol(lowercase(combined[combined[:yaml_name] .== :libraryguides_crispr_type, :input][1]))
+    crisprtype = Symbol(lowercase(combined[combined[:yaml_name] .== :libraryguides_crispr_type, :input][1]))
 
     screen = screentype == :facs ? FacsScreen() : GrowthScreen()
 
@@ -105,16 +105,16 @@ function unravel(data::Dict)
     for (k1, v1) in data
         if typeof(v1) <: Dict
             for (k2, v2) in unravel(v1)
-                new_data[symbol(k1, k2)] = v2
+                new_data[Symbol(k1, k2)] = v2
             end
         elseif typeof(v1) <: Array && typeof(v1[1]) <: Dict
             for item in v1
                 for (k2, v2) in unravel(item)
-                    new_data[symbol(k1, k2)] = v2
+                    new_data[Symbol(k1, k2)] = v2
                 end
             end
         else
-            new_data[symbol("_", replace(k1, "-", "_"))] = v1
+            new_data[Symbol("_", replace(k1, "-", "_"))] = v1
         end
     end
     new_data

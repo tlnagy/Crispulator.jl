@@ -1,5 +1,7 @@
 using ArgParse
 using YAML
+using Compat
+import Compat: UTF8String, ASCIIString, view, readstring
 
 function parse_cmdline()
     settings = ArgParseSettings(
@@ -50,7 +52,7 @@ function parse_cmdline()
 
     settings["config"].description
 
-    settings.epilog = readall(normpath(joinpath(Base.source_dir(),"..","LICENSE")))
+    settings.epilog = readstring(normpath(joinpath(Base.source_dir(),"..","LICENSE")))
 
     return parse_args(settings)
 end
