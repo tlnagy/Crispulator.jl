@@ -48,10 +48,6 @@ function testfacs(σ, quant, width)
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
 end
 
-@test testfacs(0.5, -0.50138209, 1/3)
-@test testfacs(0.5, 0, 1/2)
-@test testfacs(1, -0.58093999, 1/3)
-
 function testgrowth(ideal, num)
     N = 3
     setup = GrowthScreen()
@@ -65,5 +61,13 @@ function testgrowth(ideal, num)
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
 end
 
-@test testgrowth([1/7, 2/7, 4/7]./(1/3), 1)
-@test testgrowth([1/21, 4/21,16/21]./(1/3), 2)
+begin
+    srand(1)
+    @test testfacs(0.5, -0.50138209, 1/3)
+    @test testfacs(0.5, 0, 1/2)
+    @test testfacs(1, -0.58093999, 1/3)
+
+    @test testgrowth([1/7, 2/7, 4/7]./(1/3), 1)
+    @test testgrowth([1/21, 4/21,16/21]./(1/3), 2)
+    srand()
+end
