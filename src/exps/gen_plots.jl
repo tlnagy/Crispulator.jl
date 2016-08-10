@@ -3,8 +3,6 @@
 # diagnose and explore screen data including: (1) volcano plot of gene
 # pvalues and effect sizes (2) precision-recall curve for the hits
 # (3) raw count plots
-!(isdir(Pkg.dir("Gadfly"))) && Pkg.add("Gadfly")
-!(isdir(Pkg.dir("ColorBrewer"))) && Pkg.add("ColorBrewer")
 using Gadfly
 using ColorBrewer
 
