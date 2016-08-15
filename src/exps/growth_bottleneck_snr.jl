@@ -1,4 +1,4 @@
-function main(filepath; debug=false, quiet=false)
+function growth_bottleneck_snr(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
             :representation => [10, 100, 1000],

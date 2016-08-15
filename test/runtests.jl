@@ -54,7 +54,8 @@ for analysis in analyses
         end
         include(joinpath(analyses_path, analysis))
         tempfile = tempname()
-        main(tempfile, debug=true, quiet=true)
+        func_name = Symbol(splitext(analysis)[1])
+        getfield(Main, func_name)(tempfile, debug=true, quiet=true)
         println("\t\033[1m\033[32mPASSED\033[0m:  $(analysis)")
     catch e
         errorfound = true

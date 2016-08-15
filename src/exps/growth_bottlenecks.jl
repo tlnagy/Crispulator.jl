@@ -1,4 +1,4 @@
-function main(filepath; debug=false, quiet=false)
+function growth_bottlenecks(filepath; debug=false, quiet=false)
     if !debug
         parameters = Dict{Symbol, Vector}(
             :num_genes => repeat([5000], inner=[3]),
