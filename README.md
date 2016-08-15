@@ -12,11 +12,30 @@ This work aims to explore the importance of various screen parameters and
 the relevance of design choices on the downstream analysis and
 interpretation.
 
-## Usage
+## Setup
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org) installed and in your PATH. Then navigate
-into the root directory of the project and run
+[Julia](http://julialang.org/downloads/) installed and in your PATH. Then
+navigate into the root directory of the project and run `julia`. Run the
+following command:
+
+```
+julia -e 'Pkg.clone(pwd()); Pkg.build("crispulator")'
+```
+
+this loads `crispulator` and installs all of its dependencies. We also
+recommend that you run:
+
+```
+julia -e 'Pkg.test("crispulator")'
+```
+
+which loads and runs all of the project's internal tests and makes sure
+that everything is ready.
+
+## Usage
+
+From the root directory of the project run:
 
 ```
 julia -p N src/run.jl {{experiment_file.jl}} {{output_filepath.csv}}
@@ -26,11 +45,3 @@ where `N+1` is the number of total workers to use for simulation,
 `{{experiment_file.jl` is the filename of the simulation to load from
 `src/exps/` and `{{output_filepath.csv}}` is the directory and filename
 that will be used for storing the results of the simulation.
-
-## Testing
-
-To run the unit tests do
-
-```
-julia test/runtests.jl
-```
