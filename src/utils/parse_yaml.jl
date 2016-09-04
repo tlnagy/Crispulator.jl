@@ -73,7 +73,7 @@ function Base.parse(data::Dict{Any, Any})
             :low => (1-lib_vals[:frac_hq], TruncatedNormal(0.05, 0.07, 0, 1))
         )
     elseif crisprtype == :crisprn
-        cas9_behavior = CRISPRKO()
+        cas9_behavior = CRISPRn()
         knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
             :high => (lib_vals[:frac_hq], Delta(1.0)),
             :low => (1-lib_vals[:frac_hq], TruncatedNormal(0.05, 0.07, 0, 1))
