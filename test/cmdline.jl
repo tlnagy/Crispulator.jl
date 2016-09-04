@@ -1,10 +1,11 @@
 # ensure consistency in the command line interface
+using ArgParse
 
 include(normpath(joinpath(Base.source_dir(),"..","src", "parsing.jl")))
 
 let s = build_arg_table()
 
-    test_arg(args) = ArgParse.parse_args(args, s)
+    test_arg(args) = parse_args(args, s)
 
     @test test_arg(["ls"]) == Dict{AbstractString, Any}("%COMMAND%" => "ls", "ls" => Dict{AbstractString, Any}())
     @test test_arg(["config", "CONFIG", "OUTPUT"]) ==
