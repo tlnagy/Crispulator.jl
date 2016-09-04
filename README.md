@@ -20,14 +20,14 @@ navigate into the root directory of the project and run `julia`. Run the
 following command:
 
 ```
-julia -e 'Pkg.clone(pwd()); Pkg.build("crispulator")'
+julia -e 'Pkg.clone(pwd()); Pkg.build("Crispulator")'
 ```
 
-this loads `crispulator` and installs all of its dependencies. We also
-recommend that you run:
+this copies `Crispulator` over to the Julia package directory and installs
+all of its dependencies. We also recommend that you run:
 
 ```
-julia -e 'Pkg.test("crispulator")'
+julia -e 'Pkg.test("Crispulator")'
 ```
 
 which loads and runs all of the project's internal tests and makes sure
