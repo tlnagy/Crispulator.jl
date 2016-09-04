@@ -17,7 +17,8 @@ filenames = ["kdrelationships.jl",
              "qualitymetrics.jl",
              "diffcrisprtransfection.jl",
              "growth.jl",
-             "selectionmethods.jl"]
+             "selectionmethods.jl",
+             "cmdline.jl"]
 
 for filename in filenames
     try
