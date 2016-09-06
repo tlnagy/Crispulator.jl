@@ -54,7 +54,7 @@ function bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString)
     config = YAML.load_file(config_file)
     (!isdir(output_dir)) && error("Please provide a valid directory for output")
 
-    println("Using $(nprocs()) threads")
+    info("Using $(nprocs()) thread(s)")
 
     # load analysis files and simulation
     include(joinpath(Base.source_dir(), "simulation", "load.jl"))
@@ -62,5 +62,5 @@ function bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString)
     include(joinpath(Base.source_dir(), "utils", "runconfig.jl"))
 
     # run
-    runconfig(parse(config)...)
+    runconfig(parse(config)..., output_dir)
 end

@@ -1,4 +1,4 @@
-print("Loading simulation framework...")
+info("Loading simulation framework")
 
 packages = [:StatsBase,
             :Distributions,
@@ -22,5 +22,3 @@ end
 end
 curr_dir = Base.source_dir()
 @eval @everywhere include_all($curr_dir)
-
-println("Done.")

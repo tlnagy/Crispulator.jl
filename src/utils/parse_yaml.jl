@@ -16,6 +16,8 @@ const param_details = Array[[:librarygenome_num_genes, :num_genes, Int64, :both,
 
 function Base.parse(data::Dict{Any, Any})
 
+    info("Parsing config")
+
     input_dict = unravel(data)
 
     param_table = DataFrame(permutedims(hcat(param_details...), [2, 1]))
