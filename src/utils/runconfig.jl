@@ -49,11 +49,28 @@ function runconfig(setup::ScreenSetup,
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(setup)...; :run_idx]
     results = construct_hierarchical_label(hierarchy, results, new_names)
 
+    venn_result, auprc_result = "", ""
+
     grouped_info = by(results, [:method, :measure, :genetype]) do grouped_df
         n = size(grouped_df, 1)
         mean_score = mean(grouped_df[:score])
         std_score = std(grouped_df[:score])
         conf_int = 2.58 * std_score./sqrt(n)
+
+        if (grouped_df[1, :measure] == :incdec) &&
+           (grouped_df[1, :genetype] == :all)
+
+            disp_score = round(mean_score, 2)
+            conf_max = round(mean_score + conf_int, 2)
+            conf_min = round(mean_score - conf_int, 2)
+
+            if (grouped_df[1, :method] == :venn)
+                venn_result = "Venn score = $disp_score, 95% conf int ($conf_min, $conf_max)"
+            else
+                auprc_result = "AUPRC score = $disp_score, 95% conf int ($conf_min, $conf_max)"
+            end
+        end
+
         DataFrame(
             std_score = std_score,
             mean_score = mean_score,
@@ -64,4 +81,5 @@ function runconfig(setup::ScreenSetup,
     end
     info("Saving results in $output_dir")
     writetable(joinpath(output_dir, "results_table.csv"), grouped_info)
+    println("\nQuick results:\n##############\n$venn_result\n$auprc_result\n")
 end

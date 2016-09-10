@@ -14,6 +14,7 @@ const param_details = Array[[:librarygenome_num_genes, :num_genes, Int64, :both,
     [:screenrepresentation_sequencing, :seq_depth, Int64, :both, :screen],
     [:screen_num_runs, :num_runs, Int64, :both, :library]]
 
+# TODO: This is shitty. A reworking of this might be nice at some point
 function Base.parse(data::Dict{Any, Any})
 
     info("Parsing config")
