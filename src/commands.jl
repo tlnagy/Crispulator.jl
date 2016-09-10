@@ -45,11 +45,13 @@ function bootstrap_exp(analysis_file::ASCIIString,
 end
 
 """
-bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString)
+bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString, suppress_graph::Bool)
 
 Run simulation using parameters supplied in a YAML configuration file
 """
-function bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString)
+function bootstrap_config(config_file::ASCIIString,
+                          output_dir::ASCIIString,
+                          suppress_graph::Bool)
     # load config
     config = YAML.load_file(config_file)
     (!isdir(output_dir)) && error("Please provide a valid directory for output")
@@ -62,5 +64,5 @@ function bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString)
     include(joinpath(Base.source_dir(), "utils", "runconfig.jl"))
 
     # run
-    runconfig(parse(config)..., output_dir)
+    runconfig(parse(config)..., output_dir, suppress_graph)
 end

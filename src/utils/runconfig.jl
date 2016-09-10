@@ -1,11 +1,11 @@
 include(normpath(joinpath(@__FILE__, "..", "..", "exps", "common.jl")))
 using Iterators
-using Gadfly
 
 function runconfig(setup::ScreenSetup,
                    lib::Library,
                    num_runs::Int64,
-                   output_dir::ASCIIString)
+                   output_dir::ASCIIString,
+                   suppress_graph::Bool)
 
 
     info("Running config")
@@ -35,7 +35,12 @@ function runconfig(setup::ScreenSetup,
         test_methods(genes, methods, measures, genetypes)
     end
 
-    funcs = [gen_plots, [test_method_wrapper for i in 1:(num_runs - 1)]...]
+    if suppress_graph
+        funcs = [test_method_wrapper for i in 1:num_runs]
+    else
+        eval(:(using Gadfly))
+        funcs = [gen_plots, [test_method_wrapper for i in 1:(num_runs - 1)]...]
+    end
 
     # setup up runs
     runs = [(setup, lib, funcs[i], i) for i in 1:num_runs]
@@ -60,9 +65,9 @@ function runconfig(setup::ScreenSetup,
         if (grouped_df[1, :measure] == :incdec) &&
            (grouped_df[1, :genetype] == :all)
 
-            disp_score = round(mean_score, 2)
-            conf_max = round(mean_score + conf_int, 2)
-            conf_min = round(mean_score - conf_int, 2)
+            disp_score = round(mean_score, 3)
+            conf_max = round(mean_score + conf_int, 3)
+            conf_min = round(mean_score - conf_int, 3)
 
             if (grouped_df[1, :method] == :venn)
                 venn_result = "Venn score = $disp_score, 95% conf int ($conf_min, $conf_max)"

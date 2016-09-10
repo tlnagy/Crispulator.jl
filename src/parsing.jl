@@ -41,6 +41,9 @@ function build_arg_table()
     " flexible than using the configuration files, but also more complex"
 
     @add_arg_table settings["config"] begin
+        "--no-graph", "-g"
+            help = "Suppress graphical output"
+            action = :store_true
         "config_file"
             help = "path to YAML configuration file to load"
             required = true

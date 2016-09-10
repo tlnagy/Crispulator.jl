@@ -23,7 +23,8 @@ function main()
     else
         bootstrap_config(
             parsed_args[command]["config_file"],
-            parsed_args[command]["output_dir"]
+            parsed_args[command]["output_dir"],
+            parsed_args[command]["no-graph"]
         )
     end
 end
