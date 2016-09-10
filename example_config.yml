@@ -3,10 +3,10 @@
 # Settings pertaining to the library design
 library:
     genome:
-        num-genes: 50
+        num-genes: 500
         num-guides-per-gene: 5
-        frac-increasing-genes: 0.02
-        frac-decreasing-genes: 0.1
+        frac-increasing-genes: 0.02 # fraction of genes with a positive phenotype
+        frac-decreasing-genes: 0.1 # fraction of genes with a negative phenotype
 
     guides:
         crispr-type: CRISPRn # either CRISPRi or CRISPRn
@@ -18,9 +18,9 @@ screen:
     num-runs: 10 # how many independent runs
 
     representation: # integer value, how much larger are samples than the library
-        - transfection: 10
-        - selection: 10
-        - sequencing: 10
+        - transfection: 100
+        - selection: 100
+        - sequencing: 100
 
 # screen-type specific parameters
 
