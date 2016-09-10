@@ -99,6 +99,10 @@ end
     (results...)
 end
 
+@everywhere function test_methods_snr(bc_counts, genes, methods, measures, genetypes)
+    (test_methods(genes, methods, measures, genetypes)..., signal(bc_counts), noise(bc_counts))
+end
+
 @everywhere function compute_snr(bc_counts::DataFrame, genes::DataFrame)
     sig, noi = signal(bc_counts), noise(bc_counts)
     (sig/noi, sig, noi)

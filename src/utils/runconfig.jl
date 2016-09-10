@@ -15,7 +15,7 @@ function runconfig(setup::ScreenSetup,
 
     crisprtype = lib.cas9_behavior
 
-    test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
+    test_method_wrapper = (bc_counts, genes) -> test_methods_snr(bc_counts, genes, methods, measures, genetypes)
 
     # a little abuse of lexical scoping
     gen_plots = (bc_counts, genes) -> begin
@@ -50,6 +50,10 @@ function runconfig(setup::ScreenSetup,
     info("Analyzing results")
 
     results = DataFrame(permutedims(hcat(results...), [2, 1]))
+    mean_snr = mean(results[:x19]./results[:x20])
+    std_snr = std(results[:x19]./results[:x20])
+    snr_result = "SNR score = $mean_snr +/- $std_snr"
+    delete!(results, [:x19, :x20])
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(setup)...; :run_idx]
     results = construct_hierarchical_label(hierarchy, results, new_names)
@@ -86,5 +90,5 @@ function runconfig(setup::ScreenSetup,
     end
     info("Saving results in $output_dir")
     writetable(joinpath(output_dir, "results_table.csv"), grouped_info)
-    println("\nQuick results:\n##############\n$venn_result\n$auprc_result\n")
+    println("\nQuick results:\n##############\n$venn_result\n$auprc_result\n$snr_result")
 end
