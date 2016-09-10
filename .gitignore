@@ -4,4 +4,4 @@
 plots/
 data/
 *.ipynb
-!analyses/*.ipynb
+!meta/*.ipynb
