@@ -54,7 +54,17 @@ function bootstrap_config(config_file::ASCIIString,
                           suppress_graph::Bool)
     # load config
     config = YAML.load_file(config_file)
-    (!isdir(output_dir)) && error("Please provide a valid directory for output")
+
+    if !isdir(output_dir)
+        info("Directory $output_dir does not exist, attempting to create")
+        try
+            mkdir(output_dir)
+        catch ex
+            if isa(ex, SystemError)
+                error("Unable to create $output_dir")
+            end
+        end
+    end
 
     info("Using $(nprocs()) thread(s)")
 
