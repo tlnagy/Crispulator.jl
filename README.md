@@ -38,10 +38,9 @@ that everything is ready.
 From the root directory of the project run:
 
 ```
-julia -p N src/run.jl {{experiment_file.jl}} {{output_filepath.csv}}
+julia src/run.jl config example_config.yml test_output
 ```
 
-where `N+1` is the number of total workers to use for simulation,
-`{{experiment_file.jl` is the filename of the simulation to load from
-`src/exps/` and `{{output_filepath.csv}}` is the directory and filename
-that will be used for storing the results of the simulation.
+where `config` tells CRISPulator to use the provided config `example_config.yml`
+and `test_output` is the directory where the results will be saved. This
+directory will be created if it doesn't exist.
