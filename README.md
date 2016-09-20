@@ -15,19 +15,18 @@ interpretation.
 ## Setup
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org/downloads/) installed and in your PATH. Then
-navigate into the root directory of the project and run `julia`. Run the
-following command:
+[Julia](http://julialang.org/downloads/) installed and in your PATH. Start
+Julia and enter the following command in the REPL:
 
 ```
-julia -e 'Pkg.clone(pwd()); Pkg.build("Crispulator")'
+Pkg.clone("git://github.com/tlnagy/Crispulator.jl.git"); Pkg.build("Crispulator")
 ```
 
-this copies `Crispulator` over to the Julia package directory and installs
-all of its dependencies. We also recommend that you run:
+this downloads `Crispulator` and installs all of its dependencies. We also
+recommend that you run:
 
 ```
-julia -e 'Pkg.test("Crispulator")'
+Pkg.test("Crispulator")
 ```
 
 which loads and runs all of the project's internal tests and makes sure
@@ -35,10 +34,11 @@ that everything is ready.
 
 ## Usage
 
-From the root directory of the project run:
+Once installed, run the following from the REPL:
 
 ```
-julia src/run.jl config example_config.yml test_output
+cd(Pkg.dir("Crispulator"))
+run(`julia src/run.jl config example_config.yml test_output`)
 ```
 
 where `config` tells CRISPulator to use the provided config `example_config.yml`
