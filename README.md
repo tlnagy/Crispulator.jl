@@ -19,7 +19,7 @@ To run the simulation, you will need a recent version of
 Julia and enter the following command in the REPL:
 
 ```
-Pkg.clone("git://github.com/tlnagy/Crispulator.jl.git"); Pkg.build("Crispulator")
+Pkg.clone("https://github.com/tlnagy/Crispulator.jl.git"); Pkg.build("Crispulator")
 ```
 
 this downloads `Crispulator` and installs all of its dependencies. We also
