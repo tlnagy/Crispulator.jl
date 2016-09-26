@@ -11,8 +11,8 @@ bootstrap_exp(analysis_file::ASCIIString, output_dir::ASCIIString, proc_count::I
 
 Run custom simulation using one of the scripts in the `exps/` folder
 """
-function bootstrap_exp(analysis_file::ASCIIString,
-                       output_dir::ASCIIString,
+function bootstrap_exp(analysis_file::Compat.String,
+                       output_dir::Compat.String,
                        proc_count::Int,
                        debug::Bool)
 
@@ -45,12 +45,12 @@ function bootstrap_exp(analysis_file::ASCIIString,
 end
 
 """
-bootstrap_config(config_file::ASCIIString, output_dir::ASCIIString, suppress_graph::Bool)
+bootstrap_config(config_file::String, output_dir::String, suppress_graph::Bool)
 
 Run simulation using parameters supplied in a YAML configuration file
 """
-function bootstrap_config(config_file::ASCIIString,
-                          output_dir::ASCIIString,
+function bootstrap_config(config_file::Compat.String,
+                          output_dir::Compat.String,
                           suppress_graph::Bool)
     # load config
     config = YAML.load_file(config_file)

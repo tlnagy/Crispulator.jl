@@ -4,7 +4,7 @@ using Iterators
 function runconfig(setup::ScreenSetup,
                    lib::Library,
                    num_runs::Int64,
-                   output_dir::ASCIIString,
+                   output_dir::Compat.String,
                    suppress_graph::Bool)
 
 
@@ -32,7 +32,7 @@ function runconfig(setup::ScreenSetup,
         x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt),
         Guide.title("$(typeof(crisprtype)) $(typeof(setup))"),
         Guide.xlabel("mean log2 fold change"), Guide.ylabel("-log10 pvalue")))
-        test_methods(genes, methods, measures, genetypes)
+        test_methods_snr(bc_counts, genes, methods, measures, genetypes)
     end
 
     if suppress_graph
