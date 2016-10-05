@@ -52,7 +52,7 @@ function runconfig(setup::ScreenSetup,
     results = DataFrame(permutedims(hcat(results...), [2, 1]))
     mean_snr = mean(results[:x19]./results[:x20])
     std_snr = std(results[:x19]./results[:x20])
-    snr_result = "SNR score = $mean_snr +/- $std_snr"
+    snr_result = "SNR score = $(round(mean_snr, 3)) +/- $(round(std_snr, 3))"
     delete!(results, [:x19, :x20])
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(setup)...; :run_idx]
