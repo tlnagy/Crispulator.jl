@@ -1,8 +1,10 @@
+# Sane behavior when run from the REPL
+source_dir = typeof(Base.source_dir()) == Void ? joinpath(Pkg.dir("Crispulator"), "src") : Base.source_dir()
 """
 List the custom simulation scripts that are available
 """
 function ls()
-    files = readdir(joinpath(Base.source_dir(), "exps"))
+    files = readdir(joinpath(source_dir, "exps"))
     filter(file -> file != "common.jl", files)
 end
 
@@ -21,15 +23,15 @@ function bootstrap_exp(analysis_file::Compat.String,
     println("Using $(nprocs()) threads")
 
     # load simulation code on all cores
-    include(joinpath(Base.source_dir(), "simulation", "load.jl"))
+    include(joinpath(source_dir, "simulation", "load.jl"))
     print("Loading analysis code...")
-    analysis_full_path = joinpath(Base.source_dir(), "exps", analysis_file)
+    analysis_full_path = joinpath(source_dir, "exps", analysis_file)
 
     (!isfile(analysis_full_path)) && error("Please provide a valid analysis file to run")
     (!isdir(dirname(abspath(output_file)))) && error("Please provide a valid directory for output")
 
     # load common analysis code
-    include(joinpath(Base.source_dir(), "exps", "common.jl"))
+    include(joinpath(source_dir, "exps", "common.jl"))
 
     # load specific analysis
     include(analysis_full_path)
@@ -69,9 +71,9 @@ function bootstrap_config(config_file::Compat.String,
     info("Using $(nprocs()) thread(s)")
 
     # load analysis files and simulation
-    include(joinpath(Base.source_dir(), "simulation", "load.jl"))
-    include(joinpath(Base.source_dir(), "utils", "parse_yaml.jl"))
-    include(joinpath(Base.source_dir(), "utils", "runconfig.jl"))
+    include(joinpath(source_dir, "simulation", "load.jl"))
+    include(joinpath(source_dir, "utils", "parse_yaml.jl"))
+    include(joinpath(source_dir, "utils", "runconfig.jl"))
 
     # run
     runconfig(parse(config)..., output_dir, suppress_graph)
