@@ -1,3 +1,4 @@
+import Base.Sort: select
 """
 Given `cells`, a vector of integers, and `guides`, a vector of barcodes
 performs simulated facs sorting of the cells into `bins` with the given
