@@ -46,9 +46,12 @@ this loads the runscript into the REPL. Then run
 cp(joinpath(Pkg.dir("Crispulator"), "example_config.yml"), joinpath(pwd(), "example_config.yml"))
 ```
 
-this copies the YAML configuration file over into your current working directory.
-Edit this to change the parameters of the simulation. Any standard text editor should
-be able to open (e.g. Vim, Atom, SublimeText, TextEdit, Notepad, etc)
+this copies the YAML configuration file over into your current working
+directory. Edit this file to change the parameters of the simulation. Any
+standard text editor should be able to open it (e.g. Vim, Atom,
+SublimeText, TextEdit, Notepad, etc). If you are using a Jupyter Notebook
+then it should appear under the Files tab, clicking on it will let you
+edit it.
 
 Once you've made your changes, run:
 
@@ -56,20 +59,21 @@ Once you've made your changes, run:
 bootstrap_config(joinpath(pwd(), "custom_config.yml"), "test_output/", false)
 ```
 
-which runs the simulation according to the parameters in `custom_config.yml` and
-saves the output in the `test_output` directory.
+which runs the simulation according to the parameters in
+`custom_config.yml` and saves the output in the `test_output` directory.
 
 ## Usage via terminal
 
-While REPL usage is convenient, it can be beneficial to interact with `Crispulator`
-via the terminal. First, make sure that julia is in your PATH (i.e. check that
-`julia -e "versioninfo()"` runs properly and shows 0.5+ as the version number).
-Then from the `Crispulator` package root directory, run:
+While REPL usage is convenient, it can be beneficial to interact with
+`Crispulator` via the terminal. First, make sure that julia is in your
+PATH (i.e. check that `julia -e "versioninfo()"` runs properly and shows
+0.5+ as the version number). Then from the `Crispulator` package root
+directory, run:
 
 ```
 julia src/run.jl config example_config.yml test_output
 ```
 
-where `config` tells `CRISPulator` to use the provided config `example_config.yml`
-and `test_output` is the directory where the results will be saved. This
-directory will be created if it doesn't exist.
+where `config` tells `CRISPulator` to use the provided config
+`example_config.yml` and `test_output` is the directory where the results
+will be saved. This directory will be created if it doesn't exist.
