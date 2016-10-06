@@ -43,7 +43,7 @@ include(joinpath(Pkg.dir("Crispulator"), "src", "run.jl"))
 this loads the runscript into the REPL. Then run
 
 ```julia
-cp(joinpath(Pkg.dir("Crispulator"), "example_config.yml"), joinpath(pwd(), "example_config.yml"))
+cp(joinpath(Pkg.dir("Crispulator"), "example_config.yml"), joinpath(pwd(), "custom_config.yml"))
 ```
 
 this copies the YAML configuration file over into your current working
