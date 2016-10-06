@@ -16,31 +16,60 @@ interpretation.
 
 To run the simulation, you will need a recent version of
 [Julia](http://julialang.org/downloads/) installed and in your PATH. Start
-Julia and enter the following command in the REPL:
+Julia and enter the following command in the Julia command line interface (REPL):
 
-```
+```julia
 Pkg.update(); Pkg.clone("https://github.com/tlnagy/Crispulator.jl.git"); Pkg.build("Crispulator")
 ```
 
 this downloads `Crispulator` and installs all of its dependencies. We also
 recommend that you run:
 
-```
+```julia
 Pkg.test("Crispulator")
 ```
 
 which loads and runs all of the project's internal tests and makes sure
 that everything is ready.
 
-## Usage
+## Usage via Julia REPL/Jupyter Notebooks
 
-Once installed, run the following from the REPL:
+Once installed, run the following commands into the Julia command line:
+
+```julia
+include(joinpath(Pkg.dir("Crispulator"), "src", "run.jl"))
+```
+
+this loads the runscript into the REPL. Then run
+
+```julia
+cp(joinpath(Pkg.dir("Crispulator"), "example_config.yml"), joinpath(pwd(), "example_config.yml"))
+```
+
+this copies the YAML configuration file over into your current working directory.
+Edit this to change the parameters of the simulation. Any standard text editor should
+be able to open (e.g. Vim, Atom, SublimeText, TextEdit, Notepad, etc)
+
+Once you've made your changes, run:
+
+```julia
+bootstrap_config(joinpath(pwd(), "custom_config.yml"), "test_output/", false)
+```
+
+which runs the simulation according to the parameters in `custom_config.yml` and
+saves the output in the `test_output` directory.
+
+## Usage via terminal
+
+While REPL usage is convenient, it can be beneficial to interact with `Crispulator`
+via the terminal. First, make sure that julia is in your PATH (i.e. check that
+`julia -e "versioninfo()"` runs properly and shows 0.5+ as the version number).
+Then from the `Crispulator` package root directory, run:
 
 ```
-cd(Pkg.dir("Crispulator"))
-run(`julia src/run.jl config example_config.yml test_output`)
+julia src/run.jl config example_config.yml test_output
 ```
 
-where `config` tells CRISPulator to use the provided config `example_config.yml`
+where `config` tells `CRISPulator` to use the provided config `example_config.yml`
 and `test_output` is the directory where the results will be saved. This
 directory will be created if it doesn't exist.
