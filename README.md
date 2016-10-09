@@ -15,7 +15,7 @@ interpretation.
 ## Setup
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org/downloads/) installed and in your PATH. Start
+[Julia](http://julialang.org/downloads/) installed. Start
 Julia and enter the following command in the Julia command line interface (REPL):
 
 ```julia
@@ -61,6 +61,14 @@ bootstrap_config(joinpath(pwd(), "custom_config.yml"), "test_output/", false)
 
 which runs the simulation according to the parameters in
 `custom_config.yml` and saves the output in the `test_output` directory.
+You can go back and edit the `custom_config.yml` and rerun the code, but
+we recommend that you run
+
+```julia
+workspace()
+```
+
+to clear the workspace so no overwrite warnings get displayed.
 
 ## Usage via terminal
 
