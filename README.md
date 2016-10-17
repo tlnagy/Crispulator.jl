@@ -1,6 +1,9 @@
 # CRISPulator
 
-[![Build Status](https://travis-ci.com/tlnagy/Crispulator.jl.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/Crispulator.jl)
+[![Build
+Status](https://travis-ci.com/tlnagy/Crispulator.jl.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/Crispulator.jl)
+[![Build
+status](https://ci.appveyor.com/api/projects/status/nr33nmqu6hvowni5/branch/master?svg=true)](https://ci.appveyor.com/project/tlnagy/crispulator-jl/branch/master)
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 A pooled genetic screen simulator
