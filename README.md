@@ -18,7 +18,7 @@ interpretation.
 ## Setup
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org/downloads/) installed. Start
+[Julia](http://julialang.org/downloads/) (v0.5+) installed. Start
 Julia and enter the following command in the Julia command line interface (REPL):
 
 ```julia
