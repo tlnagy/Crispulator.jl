@@ -1,5 +1,7 @@
 # CRISPulator
 
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://tlnagy.github.io/Crispulator.jl/stable)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://tlnagy.github.io/Crispulator.jl/latest)
 [![Build
 Status](https://travis-ci.com/tlnagy/Crispulator.jl.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/Crispulator.jl)
 [![Build
