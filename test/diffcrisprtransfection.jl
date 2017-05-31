@@ -1,5 +1,5 @@
 function convert_cells_to_pop(cells, cell_phenotypes, guides)
-    cells_to_phenotypes = [DefaultDict(Float64, Int, 0) for _ in 1:length(guides)]
+    cells_to_phenotypes = [DefaultDict{Float64, Int}(0) for _ in 1:length(guides)]
 
     @inbounds for i in eachindex(cells)
         cells_to_phenotypes[cells[i]][cell_phenotypes[i]] += 1
