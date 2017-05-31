@@ -111,9 +111,9 @@ end
 function compute_name(filename::AbstractString)
     front, back = splitext(filename)
     # commit of the code that generated this data
-    commit = strip(readall(`git rev-parse --short HEAD`))
+    commit = strip(readstring(`git rev-parse --short HEAD`))
     # whether there are any uncommitted changes
-    n = length(split(readall(`git status --porcelain`), "\n"))
+    n = length(split(readstring(`git status --porcelain`), "\n"))
     status = n > 1 ? "dirty" : "clean"
     string(join([front; commit; status], "_"), back)
 end
