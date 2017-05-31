@@ -28,7 +28,7 @@ function bootstrap_exp(analysis_file::Compat.String,
     analysis_full_path = joinpath(source_dir, "exps", analysis_file)
 
     (!isfile(analysis_full_path)) && error("Please provide a valid analysis file to run")
-    (!isdir(dirname(abspath(output_file)))) && error("Please provide a valid directory for output")
+    (!isdir(dirname(abspath(output_dir)))) && error("Please provide a valid directory for output")
 
     # load common analysis code
     include(joinpath(source_dir, "exps", "common.jl"))
@@ -38,7 +38,7 @@ function bootstrap_exp(analysis_file::Compat.String,
     println("Done.")
 
     # compute output filename
-    output_file = compute_name(output_file)
+    output_file = compute_name(output_dir)
 
     # Run
     println("Running $analysis_file and saving output in $output_file")
