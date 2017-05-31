@@ -3,7 +3,8 @@ os:
     - linux
 julia:
     - 0.5
-    - nightly
+    - 0.6
+    # - nightly # stop testing nightlies for now since everything upstream is broken
 notifications:
     email: false
 script:
