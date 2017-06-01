@@ -17,6 +17,10 @@ This work aims to explore the importance of various screen parameters and
 the relevance of design choices on the downstream analysis and
 interpretation.
 
+## Pre-print
+
+Nagy, T., & Kampmann, M. (2017, March 22). CRISPulator: A Discrete Simulation Tool For Pooled Genetic Screens. bioRxiv. https://doi.org/10.1101/119131
+
 ## Setup
 
 To run the simulation, you will need a recent version of
