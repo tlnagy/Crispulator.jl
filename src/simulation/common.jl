@@ -1,3 +1,5 @@
+using Compat
+
 """
 Any entity that is tracked through the pooled experiment. For CRISPR screens,
 this is equivalent to the sgRNA. This object stores properties relating to the
@@ -39,7 +41,7 @@ as_array(bc::Barcode) = [getfield(bc, fld) for fld in fieldnames(bc)]
 """
 A description of screen parameters
 """
-abstract ScreenSetup
+@compat abstract type ScreenSetup end
 
 as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
 

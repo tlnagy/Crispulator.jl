@@ -152,7 +152,7 @@ where $N_{true}$ is the number of true hit genes and $k$ is the number of
 genes.
 """
 function signal(bc_counts::DataFrame)
-    true_hits = bc_counts[(bc_counts[:class] .!= :inactive) & (bc_counts[:class] .!= :negcontrol), :]
+    true_hits = bc_counts[(bc_counts[:class] .!= :inactive) .& (bc_counts[:class] .!= :negcontrol), :]
     signal_df = by(true_hits, [:gene, :class, :behavior]) do guides
         signal = guides[:log2fc_bin2] ./ guides[:theo_phenotype]
         DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))

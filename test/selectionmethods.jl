@@ -27,7 +27,7 @@ function testselection(setup)
         data = select(setup, initial_cells, cell_phenotypes, guides)
         data1 = StatsBase.counts(data[:bin1], 1:N)
         data2 = StatsBase.counts(data[:bin2], 1:N)
-        results[:, i] = log2(data2 ./ data1)
+        results[:, i] = log2.(data2 ./ data1)
     end
     results
 end
@@ -57,7 +57,7 @@ function testgrowth(ideal, num)
     setup.bottleneck_representation = 1000
 
     results = testselection(setup)
-    tocompare = collect(zip(mean(results, 2), log2(ideal)))
+    tocompare = collect(zip(mean(results, 2), log2.(ideal)))
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
 end
 

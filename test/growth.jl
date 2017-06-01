@@ -16,7 +16,7 @@ function test_grow_function(phenotypes, expected)
         num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
         data[:, i] = StatsBase.counts(output_c[1:num_inserted])
     end
-    all(round(mean(data, 2), 1) .== expected)
+    all(round.(mean(data, 2), 1) .== expected)
 end
 
 # test that, averaged over many runs, each phenotype corresponds to the

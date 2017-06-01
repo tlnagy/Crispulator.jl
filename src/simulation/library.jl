@@ -1,3 +1,5 @@
+using Compat
+
 """
 Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
@@ -23,7 +25,7 @@ Given value(s) `x` apply a simple linear function with maximum value `l`
 """
 linear(x, l) = clamp(l.*x, min(0, l), max(0, l))
 
-abstract KDPhenotypeRelationship
+@compat abstract type KDPhenotypeRelationship end
 
 type Linear <: KDPhenotypeRelationship end
 
@@ -49,7 +51,7 @@ function response(sig::Sigmoidal)
     (x, l) -> sigmoid(x, l, width, inflection)
 end
 
-abstract Cas9Behavior
+@compat abstract type Cas9Behavior end
 
 type CRISPRi <: Cas9Behavior end
 

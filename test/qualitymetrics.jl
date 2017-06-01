@@ -57,11 +57,11 @@ scores = [-10., -8, -6, -4, -2, -1, 1, 1, 2, 3, 7]
 
 @test venn(scores, classes, Set([:a]), rev=true) == 0.0
 @test venn(scores, classes, Set([:a]), rev=false) == 1.0
-@test venn(abs(scores), classes, Set([:a, :b]), rev=true) == 1.0
+@test venn(abs.(scores), classes, Set([:a, :b]), rev=true) == 1.0
 
 @test auprc(scores, classes, Set([:a]), rev=true)[1] ≈ 0.21246843434343435
 @test auprc(scores, classes, Set([:a]), rev=false)[1] ≈ 0.9083333333333333
-@test auprc(abs(scores), classes, Set([:a, :b]), rev=true)[1] ≈ 0.9662698412698412
+@test auprc(abs.(scores), classes, Set([:a, :b]), rev=true)[1] ≈ 0.9662698412698412
 
 function compute_bias(recalls, precisions, X, Y)
     true_auprc = 0.0
@@ -91,7 +91,7 @@ test_dists = Array[
 recall(xs, Y) = 1-cdf(Y, xs)
 function precision(xs, π, X, Y)
     res = π*recall(xs, Y)./(π*recall(xs, Y) + (1-π)*(1-cdf(X, xs)))
-    res[isnan(res)] = 1
+    res[isnan.(res)] = 1
     res
 end
 xs = linspace(-10, 10, 1000)
