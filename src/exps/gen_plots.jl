@@ -27,7 +27,7 @@ function gen_plots(filepath; debug=false, quiet=false)
             gen_plots = (bc_counts, genes) -> begin
                 curr_dir = dirname(filepath)
                 new_filename = joinpath(curr_dir, "$(basename(filepath))_$(typeof(crisprtype))_$(typeof(screentype))_counts.svg")
-                nopseudo = bc_counts[(bc_counts[:counts_bin1] .> 0.5) & (bc_counts[:counts_bin2] .> 0.5), :]
+                nopseudo = bc_counts[(bc_counts[:counts_bin1] .> 0.5) .& (bc_counts[:counts_bin2] .> 0.5), :]
                 draw(SVG(new_filename, 10cm, 10cm), plot(nopseudo,
                 x=:counts_bin1, y=:counts_bin2, color=:class, Scale.x_log10,
                 Scale.y_log10, Scale.color_discrete_manual(colors..., levels=sort(unique(nopseudo[:class]))),
