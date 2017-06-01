@@ -4,11 +4,11 @@ function test_grow_function(phenotypes, expected)
     @assert length(phenotypes) == length(expected)
     cells = collect(1:length(phenotypes))
     cell_phenotypes = phenotypes
-    output_c = Array(Int, length(cells)*4)
-    output_p = Array(Float64, size(output_c))
+    output_c = Array{Int}(length(cells)*4)
+    output_p = Array{Float64}(size(output_c))
 
     num_runs = 10000
-    data = Array(Int, length(cells), num_runs)
+    data = Array{Int}(length(cells), num_runs)
     setup = GrowthScreen()
     setup.noise = 0.00001
 

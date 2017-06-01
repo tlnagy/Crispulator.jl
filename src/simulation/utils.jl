@@ -24,8 +24,8 @@ function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
 
-    tprs = Array(Float64, num_scores)
-    fprs = Array(Float64, num_scores)
+    tprs = Array{Float64}(num_scores)
+    fprs = Array{Float64}(num_scores)
 
     auroc = 0.0
     tp = labels[1] in pos_labels ? 1 : 0
@@ -71,8 +71,8 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
 
     tn, fn, tp, fp = 0, 0, num_pos, num_neg
 
-    p = Array(Float64, num_scores)
-    r = Array(Float64, num_scores)
+    p = Array{Float64}(num_scores)
+    r = Array{Float64}(num_scores)
     p[num_scores] = tp/(tp+fp)
     r[num_scores] = tp/(tp+fn)
     auprc, prev_r = 0.0, r[num_scores]

@@ -11,7 +11,7 @@ function sigmoid(x::Float64, l, k, p)
 end
 
 function sigmoid(xs::AbstractArray{Float64}, l, k, p)
-    result = Array(Float64, size(xs))
+    result = Array{Float64}(size(xs))
     @inbounds @fastmath for i in eachindex(xs)
         result[i] = sigmoid(xs[i], l, k, p)
     end

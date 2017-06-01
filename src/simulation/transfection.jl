@@ -4,7 +4,7 @@ function build_cells(::CRISPRi,
                      n::Int
                     )
     cells = rand(guide_freq_dist, n)
-    phenotypes = Array(Float64, n)
+    phenotypes = Array{Float64}(n)
     @inbounds @fastmath for i in 1:n
         phenotypes[i] = guides[cells[i]].theo_phenotype
     end
@@ -17,7 +17,7 @@ function build_cells(behav::CRISPRn,
                      n::Int
                     )
 
-    phenotypes = Array(Float64, n);
+    phenotypes = Array{Float64}(n);
     cells = rand(guide_freq_dist, n)
     ko_dist = behav.knockout_dist
     dist = rand(ko_dist, n)
@@ -44,8 +44,8 @@ function transfect(setup::FacsScreen,
     multiples = 1
     if expand_to > num_cells
         multiples = ceil(Int, expand_to/num_cells)
-        expansion_c = Array(Int, num_cells*multiples)
-        expansion_p = Array(Float64, num_cells*multiples)
+        expansion_c = Array{Int}(num_cells*multiples)
+        expansion_p = Array{Float64}(num_cells*multiples)
         for rep in 1:multiples
             rng = (rep-1)*num_cells+1:rep*num_cells
             expansion_c[rng] = cells
@@ -84,8 +84,8 @@ function transfect(setup::GrowthScreen,
         cells, cell_phenotypes = copy(initial_cells), copy(cell_phenotypes)
         num_inserted = length(cells)
         num_doublings = 0
-        output_c = Array(Int, target*4)
-        output_p = Array(Float64, target*4)
+        output_c = Array{Int}(target*4)
+        output_p = Array{Float64}(target*4)
 
         while num_inserted < target
             num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)

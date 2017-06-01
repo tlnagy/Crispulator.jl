@@ -64,10 +64,10 @@ function select(setup::GrowthScreen,
     # all cells at all timepoints
     cellmat = zeros(Int, length(guides)*bottleneck_representation)
     cpmat = zeros(Float64, size(cellmat))
-    output_c = Array(Int, length(initial_cells)*4);
-    output_p = Array(Float64, size(output_c));
+    output_c = Array{Int}(length(initial_cells)*4);
+    output_p = Array{Float64}(size(output_c));
     cells = initial_cells # 1st timepoint slice
-    picked = Array(Int, size(cellmat, 1))
+    picked = Array{Int}(size(cellmat, 1))
     cell_phenotypes = initial_cell_phenotypes
 
     for k in 1:num_bottlenecks

@@ -8,8 +8,8 @@ function testselection(setup)
 
     expand_to = setup.bottleneck_representation * length(guides)
 
-    initial_cells = Array(Int, expand_to)
-    cell_phenotypes = Array(Float64, size(initial_cells))
+    initial_cells = Array{Int}(expand_to)
+    cell_phenotypes = Array{Float64}(size(initial_cells))
     for i in 1:length(initial_cells)
         initial_cells[i] = mod1(i, N)
         cell_phenotypes[i] = guides[initial_cells[i]].theo_phenotype
@@ -21,7 +21,7 @@ function testselection(setup)
     end
 
     num_runs = 100
-    results = Array(Float64, N, num_runs)
+    results = Array{Float64}(N, num_runs)
 
     for i in 1:num_runs
         data = select(setup, initial_cells, cell_phenotypes, guides)
