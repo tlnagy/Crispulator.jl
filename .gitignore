@@ -5,3 +5,4 @@ plots/
 data/
 *.ipynb
 !meta/*.ipynb
+!mageck/*.ipynb
