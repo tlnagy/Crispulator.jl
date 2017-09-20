@@ -2,7 +2,7 @@
 .DS_Store
 .*.un~
 plots/
-data/
+simulation/data/*
 *.ipynb
 !meta/*.ipynb
 !simulation/**/*.ipynb
