@@ -11,10 +11,10 @@ include("../src/simulation/transfection.jl")
 
 srand(577322681)
 
-for num_sample in [4,8]
+for num_sample in [4]
     for bin_prob in [0.1, 0.25]
-        for σ in [0.5, 1.0]
-            for pheno_prob in [ 0.2, 0.4 ]
+        for σ in [1.0, 1.5, 2.0]
+            for pheno_prob in [0.05, 0.1, 0.2]
                 facs_param = FacsScreen()
                 facs_param.num_genes = 1000
                 facs_param.coverage = 10

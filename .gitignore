@@ -6,4 +6,4 @@ data/
 *.ipynb
 !meta/*.ipynb
 !simulation/**/*.ipynb
-matrix/FACS_simulation.zip
+simulation/matrix/FACS_simulation.zip

@@ -7,7 +7,6 @@ count.to.matrix <- function( dir.name ) {
   fmt <- file.path(dir.name,"bc_count_%s.csv")
   
   df.count <- list()
-  
   for(idx in 1:N) {
     df.count[[idx]] <- read.csv(sprintf(fmt, idx))
   }
@@ -36,7 +35,6 @@ count.to.matrix <- function( dir.name ) {
   df.final
 }
 
-setwd("~/Sandbox/Crispulator.jl/simulation")
 scenarios <- Sys.glob("data/*")
 
 library(stringr)
