@@ -1,13 +1,12 @@
-include("../src/simulation/load.jl")
-include("../src/simulation/common.jl")
-include("../src/simulation/utils.jl")
-include("../src/simulation/library.jl")
-include("../src/simulation/designs.jl")
-include("../src/simulation/processing.jl")
-include("../src/simulation/selection.jl")
-include("../src/simulation/sequencing.jl")
-include("../src/simulation/transfection.jl")
-
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "load.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "common.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "utils.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "library.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "designs.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "processing.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "selection.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "sequencing.jl"))
+include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "transfection.jl"))
 
 srand(577322681)
 

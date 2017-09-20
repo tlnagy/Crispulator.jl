@@ -1,7 +1,3 @@
-#setwd("~/Sandbox/Crispulator.jl/sim_data/")
-
-
-
 count.to.matrix <- function( dir.name ) {
   N <- as.integer(strsplit(dir.name, "_")[[1]][2])
   fmt <- file.path(dir.name,"bc_count_%s.csv")
@@ -9,12 +5,6 @@ count.to.matrix <- function( dir.name ) {
   df.count <- list()
   for(idx in 1:N) {
     df.count[[idx]] <- read.csv(sprintf(fmt, idx))
-  }
-  
-  for(i in 1:(N-1)) {
-    for(j in (i+1):N) {
-      print(c(i, j, sum(df.count[[i]]$class != df.count[[j]]$class)))
-    }
   }
   
   tmp <- df.count[[1]]
