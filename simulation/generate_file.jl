@@ -29,7 +29,7 @@ for num_sample in [4]
                 lib.phenotype_probs = Categorical([pheno_prob/2,0.05,0.95-pheno_prob,pheno_prob/2])
                 guides, guide_freqs_dist = construct_library(facs_param, lib)
 
-                dir_path = string("data/scenario_", num_sample, "_", bin_prob, "_", σ, "_", pheno_prob, "/")
+                dir_path = string("data/scenario_",  num_sample, "_", @sprintf("%.2f", bin_prob), "_", @sprintf("%.2f",σ), "_", @sprintf("%.2f",pheno_prob), "/")
                 println(dir_path)
                 mkpath(dir_path)
                 for rep_no in 1:num_sample
