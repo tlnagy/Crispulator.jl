@@ -5,4 +5,5 @@ plots/
 data/
 *.ipynb
 !meta/*.ipynb
-!mageck/*.ipynb
+!simulation/**/*.ipynb
+matrix/FACS_simulation.zip
