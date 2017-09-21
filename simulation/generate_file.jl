@@ -12,7 +12,7 @@ srand(577322681)
 
 for num_sample in [4]
     for bin_prob in [0.1, 0.25]
-        for σ in [1.0, 1.5, 2.0]
+        for σ in [1.0, 1.5, 2.0, 2.5, 3, 3.5, 4]
             for pheno_prob in [0.05, 0.1, 0.2]
                 facs_param = FacsScreen()
                 facs_param.num_genes = 1000
