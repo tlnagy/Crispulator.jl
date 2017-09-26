@@ -18,8 +18,7 @@ count.to.matrix <- function( dir.name ) {
     low.id <- sprintf("L%d", i)
     high.id <- sprintf("H%d", i)
     df.low[[low.id]] <- as.integer(tmp$counts_bin1-0.5)
-    df.high[[high.id]] <- as.integer(tmp$counts_bin2-0.5)
-  }
+    df.high[[high.id]] <- as.integer(tmp$counts_bin2-0.5) }
   
   df.final <- cbind(df.label, df.low, df.high)
   df.final

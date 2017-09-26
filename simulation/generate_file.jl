@@ -10,10 +10,10 @@ include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "transfection.jl")
 
 srand(577322681)
 
-for num_sample in [4]
+num_sample = 4
+for seq_depth in [ 10, 100, 500, 1000 ]
     for bin_prob in [0.1, 0.25]
-        # for σ in [1.0, 1.5, 2.0, 2.5, 3, 3.5, 4]
-        for σ in [4.5, 5, 5.5, 6]
+        for σ in [1.0, 1.5, 2.0, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
             for pheno_prob in [0.05, 0.1, 0.2]
                 facs_param = FacsScreen()
                 facs_param.num_genes = 1000
@@ -21,7 +21,7 @@ for num_sample in [4]
                 facs_param.representation = 100
                 facs_param.bin_info[:bin1] = (0, bin_prob)
                 facs_param.bin_info[:bin2] = (1-bin_prob, 1)
-                facs_param.seq_depth = 1000
+                facs_param.seq_depth = seq_depth
                 facs_param.σ = σ
 
 
@@ -29,7 +29,7 @@ for num_sample in [4]
                 lib.phenotype_probs = Categorical([pheno_prob/2,0.05,0.95-pheno_prob,pheno_prob/2])
                 guides, guide_freqs_dist = construct_library(facs_param, lib)
 
-                dir_path = string("data/scenario_",  num_sample, "_", @sprintf("%.2f", bin_prob), "_", @sprintf("%.2f",σ), "_", @sprintf("%.2f",pheno_prob), "/")
+                dir_path = string("data/scenario_",  seq_dpeth, "_", @sprintf("%.2f", bin_prob), "_", @sprintf("%.2f",σ), "_", @sprintf("%.2f",pheno_prob), "/")
                 println(dir_path)
                 mkpath(dir_path)
                 for rep_no in 1:num_sample
