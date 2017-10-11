@@ -11,9 +11,9 @@ include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "transfection.jl")
 srand(577322681)
 
 num_sample = 4
-for seq_depth in [ 50 ]
+for seq_depth in [ 10, 50, 100, 200, 500, 1000 ]
     for bin_prob in [0.1, 0.25]
-        for σ in [1.0, 1.5, 2.0, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
+        for σ in [0.1, 0.5, 1.0]
             for pheno_prob in [0.05, 0.1, 0.2]
                 facs_param = FacsScreen()
                 facs_param.num_genes = 1000
