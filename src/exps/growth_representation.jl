@@ -36,7 +36,7 @@ function growth_representation(filepath; debug=false, quiet=false)
     (!quiet) && println("$(time() - before) seconds")
 
     data = DataFrame(permutedims(hcat(results...), [2, 1]))
-    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
+    hierarchy = vcat([hcat(item...) for item in IterTools.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
 
     data = construct_hierarchical_label(hierarchy, data, new_names)

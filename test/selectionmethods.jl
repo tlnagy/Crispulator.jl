@@ -43,7 +43,7 @@ function testfacs(σ, quant, width)
 
     results = testselection(setup)
 
-    ideal = log2(cdf(Normal(-1, σ), quant)/cdf(Normal(1,σ), quant))
+    ideal = log2(cdf.(Normal(-1, σ), quant)/cdf.(Normal(1,σ), quant))
     tocompare = collect(zip(mean(results, 2), [-ideal, 0.0, ideal]))
     all(Bool[isapprox(x[1], x[2], atol=0.1) for x in tocompare])
 end

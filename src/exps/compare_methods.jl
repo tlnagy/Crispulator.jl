@@ -18,7 +18,7 @@ function compare_methods(filepath; debug=false, quiet=false)
                     (CRISPRi(), CRISPRn()),
                     (Linear(), Sigmoidal()))
 
-    for (screentype, representation, crisprtype, genetype) in Iterators.product(screen_combos...)
+    for (screentype, representation, crisprtype, genetype) in IterTools.product(screen_combos...)
         screen = screentype[1]()
         screen.representation = representation
         screen.bottleneck_representation = representation

@@ -88,9 +88,9 @@ test_dists = Array[
      [Uniform(0, 1), Uniform(0.5, 1.5)]
 ]
 # true precision, recall functions
-recall(xs, Y) = 1-cdf(Y, xs)
+recall(xs, Y) = 1-cdf.(Y, xs)
 function precision(xs, π, X, Y)
-    res = π*recall(xs, Y)./(π*recall(xs, Y) + (1-π)*(1-cdf(X, xs)))
+    res = π*recall(xs, Y)./(π*recall(xs, Y) + (1-π)*(1-cdf.(X, xs)))
     res[isnan.(res)] = 1
     res
 end

@@ -2,7 +2,7 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
-    for vals in Iterators.product([parameters[field] for field in fields]...)
+    for vals in IterTools.product([parameters[field] for field in fields]...)
         for run in 1:num_runs
             setup = T()
             for idx in 1:n_fields
@@ -19,7 +19,7 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
-    for vals in Iterators.product([parameters[field] for field in fields]...)
+    for vals in IterTools.product([parameters[field] for field in fields]...)
         for lib in libs
             for run in 1:num_runs
                 setup = T()
@@ -42,7 +42,7 @@ function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vec
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
     (length(dists) > 0) && push!(fields, dists...)
-    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
+    for vals in IterTools.product(grouped_params, [parameters[dist] for dist in dists]...)
         vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for lib in libs
             for run in 1:num_runs
@@ -64,7 +64,7 @@ function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vec
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
     (length(dists) > 0) && push!(fields, dists...)
-    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
+    for vals in IterTools.product(grouped_params, [parameters[dist] for dist in dists]...)
         vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for run in 1:num_runs
             setup = T()
@@ -79,7 +79,7 @@ end
 
 @everywhere function test_methods(genes, methods, measures, genetypes)
     local results = []
-    for (method, measure, genetype) in Iterators.product(methods, measures, genetypes)
+    for (method, measure, genetype) in IterTools.product(methods, measures, genetypes)
         if genetype != :all
             subgene = genes[genes[:behavior] .== genetype, :]
         else

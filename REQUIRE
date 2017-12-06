@@ -3,7 +3,7 @@ StatsBase
 Distributions
 DataFrames
 HypothesisTests
-Iterators
+IterTools
 ColorBrewer
 Gadfly
 ArgParse
