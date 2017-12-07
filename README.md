@@ -2,10 +2,7 @@
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://tlnagy.github.io/Crispulator.jl/stable)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://tlnagy.github.io/Crispulator.jl/latest)
-[![Build
-Status](https://travis-ci.com/tlnagy/Crispulator.jl.svg?token=MCUYuFeh1dFnAvCDpb4q&branch=master)](https://travis-ci.com/tlnagy/Crispulator.jl)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/nr33nmqu6hvowni5/branch/master?svg=true)](https://ci.appveyor.com/project/tlnagy/crispulator-jl/branch/master)
+[![Build Status](https://travis-ci.org/tlnagy/Crispulator.jl.svg?branch=master)](https://travis-ci.org/tlnagy/Crispulator.jl)
 [![License](http://img.shields.io/:license-apache-blue.svg?style=flat-square)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 A pooled genetic screen simulator

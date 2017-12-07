@@ -1,15 +1,18 @@
 language: julia
 os:
-    - linux
+  - linux
+  - osx
 julia:
-    - 0.5
-    - 0.6
-    # - nightly # stop testing nightlies for now since everything upstream is broken
+  - 0.6
+  - nightly
+matrix:
+  allow_failures:
+  - julia: nightly
 notifications:
-    email: false
+  email: false
 script:
-    - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-    - julia -e 'Pkg.clone(pwd()); Pkg.build("Crispulator"); Pkg.test("Crispulator")';
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'Pkg.clone(pwd()); Pkg.build("Crispulator"); Pkg.test("Crispulator")';
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("Crispulator")); include(joinpath("docs", "make.jl"))'
