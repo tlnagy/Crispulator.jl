@@ -2,6 +2,8 @@
 .DS_Store
 .*.un~
 plots/
-data/
+simulation/data/*
 *.ipynb
 !meta/*.ipynb
+!simulation/**/*.ipynb
+simulation/matrix/FACS_simulation.zip
