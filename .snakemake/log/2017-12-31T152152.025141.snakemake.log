@@ -1,0 +1,2 @@
+SyntaxError in line 25 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+Unexpected keyword output_facs in rule definition (Snakefile, line 25)

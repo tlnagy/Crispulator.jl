@@ -1,0 +1,87 @@
+Building DAG of jobs...
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	162	run_facs
+	81	run_growth
+	244
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.2_0.1, data/FACS_10005_0.25_1000_100_0.2_0.1/bc_count_4.csv
+    jobid: 99
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.2, e=0.1
+
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.1_0.01, data/GROWTH_10005_100_10_0.1_0.01/bc_count_4.csv
+    jobid: 111
+    wildcards: seed=10005, r=100, s=10, p=0.1, e=0.01
+
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.1_0.01, data/FACS_10005_0.1_1000_100_0.1_0.01/bc_count_4.csv
+    jobid: 125
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.1, e=0.01
+
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.01_0.1, data/FACS_10005_0.25_100_100_0.01_0.1/bc_count_4.csv
+    jobid: 35
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.01, e=0.1
+
+Error in rule run_facs:
+Error in rule run_facs:
+    jobid: 35
+    jobid: 125
+    output: data/FACS_10005_0.25_100_100_0.01_0.1, data/FACS_10005_0.25_100_100_0.01_0.1/bc_count_4.csv
+    output: data/FACS_10005_0.1_1000_100_0.1_0.01, data/FACS_10005_0.1_1000_100_0.1_0.01/bc_count_4.csv
+
+
+RuleException:
+CalledProcessError in line 31 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+Command ' set -euo pipefail;  julia simdata_generator.jl --screen_type FACS --representation 100 --seq_depth 100 --positive_ratio 0.01 --noise_ratio 0.1 --bin_ratio 0.25 --out_path data/FACS_10005_0.25_100_100_0.01_0.1 ' returned non-zero exit status 1.
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 31, in __rule_run_facs
+  File "/usr/local/Cellar/python3/3.6.3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+RuleException:
+CalledProcessError in line 31 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+Command ' set -euo pipefail;  julia simdata_generator.jl --screen_type FACS --representation 1000 --seq_depth 100 --positive_ratio 0.1 --noise_ratio 0.01 --bin_ratio 0.1 --out_path data/FACS_10005_0.1_1000_100_0.1_0.01 ' returned non-zero exit status 1.
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 31, in __rule_run_facs
+  File "/usr/local/Cellar/python3/3.6.3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+Removing output files of failed job run_facs since they might be corrupted:
+data/FACS_10005_0.25_100_100_0.01_0.1
+Removing output files of failed job run_facs since they might be corrupted:
+data/FACS_10005_0.1_1000_100_0.1_0.01
+Will exit after finishing currently running jobs.
+Will exit after finishing currently running jobs.
+Error in rule run_growth:
+    jobid: 111
+    output: data/GROWTH_10005_100_10_0.1_0.01, data/GROWTH_10005_100_10_0.1_0.01/bc_count_4.csv
+
+RuleException:
+CalledProcessError in line 46 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+Command ' set -euo pipefail;  julia simdata_generator.jl --screen_type GROWTH --representation 100 --seq_depth 10 --positive_ratio 0.1 --noise_ratio 0.01 --out_path data/GROWTH_10005_100_10_0.1_0.01 ' returned non-zero exit status 1.
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 46, in __rule_run_growth
+  File "/usr/local/Cellar/python3/3.6.3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+Removing output files of failed job run_growth since they might be corrupted:
+data/GROWTH_10005_100_10_0.1_0.01
+Will exit after finishing currently running jobs.
+Error in rule run_facs:
+    jobid: 99
+    output: data/FACS_10005_0.25_1000_100_0.2_0.1, data/FACS_10005_0.25_1000_100_0.2_0.1/bc_count_4.csv
+
+RuleException:
+CalledProcessError in line 31 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+Command ' set -euo pipefail;  julia simdata_generator.jl --screen_type FACS --representation 1000 --seq_depth 100 --positive_ratio 0.2 --noise_ratio 0.1 --bin_ratio 0.25 --out_path data/FACS_10005_0.25_1000_100_0.2_0.1 ' returned non-zero exit status 1.
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 31, in __rule_run_facs
+  File "/usr/local/Cellar/python3/3.6.3/Frameworks/Python.framework/Versions/3.6/lib/python3.6/concurrent/futures/thread.py", line 56, in run
+Removing output files of failed job run_facs since they might be corrupted:
+data/FACS_10005_0.25_1000_100_0.2_0.1
+Will exit after finishing currently running jobs.
+Exiting because a job execution failed. Look above for error message
+Complete log: /Users/hwan/Sandbox/Crispulator.jl/.snakemake/log/2017-12-31T181130.305359.snakemake.log

@@ -1,0 +1,4 @@
+NameError in line 21 of /Users/hwan/Sandbox/Crispulator.jl/Snakefile:
+name 'br' is not defined
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 21, in <module>
+  File "/Users/hwan/Sandbox/Crispulator.jl/Snakefile", line 21, in <listcomp>

@@ -1,9 +1,5 @@
 .ipynb_checkpoints
 .DS_Store
 .*.un~
-plots/
-simulation/data/*
+data/*
 *.ipynb
-!meta/*.ipynb
-!simulation/**/*.ipynb
-simulation/matrix/FACS_simulation.zip

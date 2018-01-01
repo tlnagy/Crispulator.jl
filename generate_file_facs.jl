@@ -1,19 +1,12 @@
 include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "load.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "common.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "utils.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "library.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "designs.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "processing.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "selection.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "sequencing.jl"))
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "transfection.jl"))
+
 
 srand(577322681)
 
 num_sample = 4
-for seq_depth in [ 100, 500 ]
+for seq_depth in [ 10, 100, 1000 ]
     for bin_prob in [0.1, 0.25]
-        for σ in [0.1, 0.5, 1.0]
+        for σ in [0.01, 0.1, 0.2]
             for pheno_prob in [0, 0.01, 0.2]
                 facs_param = FacsScreen()
                 facs_param.num_genes = 1000

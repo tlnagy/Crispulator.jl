@@ -1,0 +1,1180 @@
+Building DAG of jobs...
+Provided cores: 4
+Rules claiming more threads will be scaled down.
+Job counts:
+	count	jobs
+	1	all
+	161	run_facs
+	81	run_growth
+	243
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.2_0.2, data/GROWTH_10005_1000_10_0.2_0.2/bc_count_4.csv
+    jobid: 161
+    wildcards: seed=10005, r=1000, s=10, p=0.2, e=0.2
+
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.2_0.1, data/GROWTH_10005_100_10_0.2_0.1/bc_count_4.csv
+    jobid: 6
+    wildcards: seed=10005, r=100, s=10, p=0.2, e=0.1
+
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_10_0.1_0.01, data/FACS_10005_0.1_10_10_0.1_0.01/bc_count_4.csv
+    jobid: 43
+    wildcards: seed=10005, br=0.1, r=10, s=10, p=0.1, e=0.01
+
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.2_0.2, data/GROWTH_10005_100_10_0.2_0.2/bc_count_4.csv
+    jobid: 34
+    wildcards: seed=10005, r=100, s=10, p=0.2, e=0.2
+
+Finished job 43.
+1 of 243 steps (0.41%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.1_0.01, data/FACS_10005_0.25_100_100_0.1_0.01/bc_count_4.csv
+    jobid: 120
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.1, e=0.01
+
+Finished job 120.
+2 of 243 steps (0.82%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.2_0.01, data/FACS_10005_0.25_100_100_0.2_0.01/bc_count_4.csv
+    jobid: 100
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.2, e=0.01
+
+Finished job 6.
+3 of 243 steps (1%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.01_0.1, data/GROWTH_10005_100_100_0.01_0.1/bc_count_4.csv
+    jobid: 225
+    wildcards: seed=10005, r=100, s=100, p=0.01, e=0.1
+
+Finished job 34.
+4 of 243 steps (2%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_10_0.1_0.1, data/FACS_10005_0.25_10_10_0.1_0.1/bc_count_4.csv
+    jobid: 23
+    wildcards: seed=10005, br=0.25, r=10, s=10, p=0.1, e=0.1
+
+Finished job 161.
+5 of 243 steps (2%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_10_0.2_0.01, data/FACS_10005_0.1_10_10_0.2_0.01/bc_count_4.csv
+    jobid: 234
+    wildcards: seed=10005, br=0.1, r=10, s=10, p=0.2, e=0.01
+
+Finished job 100.
+6 of 243 steps (2%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_1000_0.1_0.2, data/GROWTH_10005_100_1000_0.1_0.2/bc_count_4.csv
+    jobid: 93
+    wildcards: seed=10005, r=100, s=1000, p=0.1, e=0.2
+
+Finished job 23.
+7 of 243 steps (3%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.01_0.1, data/GROWTH_10005_1000_10_0.01_0.1/bc_count_4.csv
+    jobid: 68
+    wildcards: seed=10005, r=1000, s=10, p=0.01, e=0.1
+
+Finished job 234.
+8 of 243 steps (3%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_1000_0.2_0.1, data/FACS_10005_0.1_10_1000_0.2_0.1/bc_count_4.csv
+    jobid: 27
+    wildcards: seed=10005, br=0.1, r=10, s=1000, p=0.2, e=0.1
+
+Finished job 27.
+9 of 243 steps (4%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_100_0.2_0.1, data/GROWTH_10005_10_100_0.2_0.1/bc_count_4.csv
+    jobid: 63
+    wildcards: seed=10005, r=10, s=100, p=0.2, e=0.1
+
+Finished job 225.
+10 of 243 steps (4%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_10_0.1_0.1, data/FACS_10005_0.1_10_10_0.1_0.1/bc_count_4.csv
+    jobid: 19
+    wildcards: seed=10005, br=0.1, r=10, s=10, p=0.1, e=0.1
+
+Finished job 93.
+11 of 243 steps (5%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_10_0.01_0.01, data/FACS_10005_0.25_1000_10_0.01_0.01/bc_count_4.csv
+    jobid: 35
+    wildcards: seed=10005, br=0.25, r=1000, s=10, p=0.01, e=0.01
+
+Finished job 19.
+12 of 243 steps (5%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_100_0.01_0.01, data/GROWTH_10005_1000_100_0.01_0.01/bc_count_4.csv
+    jobid: 117
+    wildcards: seed=10005, r=1000, s=100, p=0.01, e=0.01
+
+Finished job 68.
+13 of 243 steps (5%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_10_0.1_0.01, data/FACS_10005_0.1_100_10_0.1_0.01/bc_count_4.csv
+    jobid: 105
+    wildcards: seed=10005, br=0.1, r=100, s=10, p=0.1, e=0.01
+
+Finished job 35.
+14 of 243 steps (6%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.01_0.1, data/FACS_10005_0.25_10_1000_0.01_0.1/bc_count_4.csv
+    jobid: 139
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.01, e=0.1
+
+Finished job 105.
+15 of 243 steps (6%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_10_0.01_0.2, data/FACS_10005_0.25_100_10_0.01_0.2/bc_count_4.csv
+    jobid: 206
+    wildcards: seed=10005, br=0.25, r=100, s=10, p=0.01, e=0.2
+
+Finished job 63.
+16 of 243 steps (7%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_10_0.2_0.1, data/FACS_10005_0.25_100_10_0.2_0.1/bc_count_4.csv
+    jobid: 40
+    wildcards: seed=10005, br=0.25, r=100, s=10, p=0.2, e=0.1
+
+Finished job 139.
+17 of 243 steps (7%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.1_0.1, data/FACS_10005_0.25_100_100_0.1_0.1/bc_count_4.csv
+    jobid: 33
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.1, e=0.1
+
+Finished job 206.
+18 of 243 steps (7%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_1000_0.01_0.01, data/FACS_10005_0.25_1000_1000_0.01_0.01/bc_count_4.csv
+    jobid: 62
+    wildcards: seed=10005, br=0.25, r=1000, s=1000, p=0.01, e=0.01
+
+Finished job 40.
+19 of 243 steps (8%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_1000_0.2_0.01, data/FACS_10005_0.1_10_1000_0.2_0.01/bc_count_4.csv
+    jobid: 185
+    wildcards: seed=10005, br=0.1, r=10, s=1000, p=0.2, e=0.01
+
+Finished job 117.
+20 of 243 steps (8%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.2_0.01, data/GROWTH_10005_100_100_0.2_0.01/bc_count_4.csv
+    jobid: 194
+    wildcards: seed=10005, r=100, s=100, p=0.2, e=0.01
+
+Finished job 33.
+21 of 243 steps (9%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.1_0.1, data/GROWTH_10005_100_10_0.1_0.1/bc_count_4.csv
+    jobid: 186
+    wildcards: seed=10005, r=100, s=10, p=0.1, e=0.1
+
+Finished job 185.
+22 of 243 steps (9%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_10_0.1_0.01, data/FACS_10005_0.1_1000_10_0.1_0.01/bc_count_4.csv
+    jobid: 184
+    wildcards: seed=10005, br=0.1, r=1000, s=10, p=0.1, e=0.01
+
+Finished job 62.
+23 of 243 steps (9%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.1_0.1, data/FACS_10005_0.25_10_1000_0.1_0.1/bc_count_4.csv
+    jobid: 195
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.1, e=0.1
+
+Finished job 184.
+24 of 243 steps (10%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_10_0.1_0.2, data/FACS_10005_0.25_10_10_0.1_0.2/bc_count_4.csv
+    jobid: 200
+    wildcards: seed=10005, br=0.25, r=10, s=10, p=0.1, e=0.2
+
+Finished job 195.
+25 of 243 steps (10%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.01_0.01, data/GROWTH_10005_100_10_0.01_0.01/bc_count_4.csv
+    jobid: 118
+    wildcards: seed=10005, r=100, s=10, p=0.01, e=0.01
+
+Finished job 194.
+26 of 243 steps (11%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_10_0.2_0.01, data/FACS_10005_0.25_1000_10_0.2_0.01/bc_count_4.csv
+    jobid: 239
+    wildcards: seed=10005, br=0.25, r=1000, s=10, p=0.2, e=0.01
+
+Finished job 200.
+27 of 243 steps (11%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_100_0.2_0.01, data/GROWTH_10005_10_100_0.2_0.01/bc_count_4.csv
+    jobid: 243
+    wildcards: seed=10005, r=10, s=100, p=0.2, e=0.01
+
+Finished job 186.
+28 of 243 steps (12%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_100_0.01_0.01, data/GROWTH_10005_10_100_0.01_0.01/bc_count_4.csv
+    jobid: 141
+    wildcards: seed=10005, r=10, s=100, p=0.01, e=0.01
+
+Finished job 239.
+29 of 243 steps (12%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.01_0.01, data/FACS_10005_0.1_1000_100_0.01_0.01/bc_count_4.csv
+    jobid: 123
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.01, e=0.01
+
+Finished job 118.
+30 of 243 steps (12%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.1_0.2, data/FACS_10005_0.25_1000_100_0.1_0.2/bc_count_4.csv
+    jobid: 83
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.1, e=0.2
+
+Finished job 123.
+31 of 243 steps (13%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_100_0.1_0.01, data/GROWTH_10005_1000_100_0.1_0.01/bc_count_4.csv
+    jobid: 39
+    wildcards: seed=10005, r=1000, s=100, p=0.1, e=0.01
+
+Finished job 141.
+32 of 243 steps (13%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_1000_0.01_0.01, data/FACS_10005_0.1_10_1000_0.01_0.01/bc_count_4.csv
+    jobid: 110
+    wildcards: seed=10005, br=0.1, r=10, s=1000, p=0.01, e=0.01
+
+Finished job 243.
+33 of 243 steps (14%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_1000_0.1_0.1, data/FACS_10005_0.25_100_1000_0.1_0.1/bc_count_4.csv
+    jobid: 138
+    wildcards: seed=10005, br=0.25, r=100, s=1000, p=0.1, e=0.1
+
+Finished job 83.
+34 of 243 steps (14%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.1_0.2, data/GROWTH_10005_1000_1000_0.1_0.2/bc_count_4.csv
+    jobid: 217
+    wildcards: seed=10005, r=1000, s=1000, p=0.1, e=0.2
+
+Finished job 110.
+35 of 243 steps (14%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_1000_0.1_0.1, data/FACS_10005_0.25_1000_1000_0.1_0.1/bc_count_4.csv
+    jobid: 119
+    wildcards: seed=10005, br=0.25, r=1000, s=1000, p=0.1, e=0.1
+
+Finished job 138.
+36 of 243 steps (15%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.1_0.01, data/GROWTH_10005_100_10_0.1_0.01/bc_count_4.csv
+    jobid: 14
+    wildcards: seed=10005, r=100, s=10, p=0.1, e=0.01
+
+Finished job 39.
+37 of 243 steps (15%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_100_0.01_0.1, data/FACS_10005_0.1_10_100_0.01_0.1/bc_count_4.csv
+    jobid: 162
+    wildcards: seed=10005, br=0.1, r=10, s=100, p=0.01, e=0.1
+
+Finished job 119.
+38 of 243 steps (16%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.01_0.2, data/GROWTH_10005_1000_10_0.01_0.2/bc_count_4.csv
+    jobid: 96
+    wildcards: seed=10005, r=1000, s=10, p=0.01, e=0.2
+
+Finished job 217.
+39 of 243 steps (16%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.2_0.1, data/GROWTH_10005_1000_10_0.2_0.1/bc_count_4.csv
+    jobid: 101
+    wildcards: seed=10005, r=1000, s=10, p=0.2, e=0.1
+
+Finished job 162.
+40 of 243 steps (16%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_1000_0.1_0.1, data/FACS_10005_0.1_1000_1000_0.1_0.1/bc_count_4.csv
+    jobid: 238
+    wildcards: seed=10005, br=0.1, r=1000, s=1000, p=0.1, e=0.1
+
+Finished job 14.
+41 of 243 steps (17%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.01_0.1, data/FACS_10005_0.25_1000_100_0.01_0.1/bc_count_4.csv
+    jobid: 8
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.01, e=0.1
+
+Finished job 238.
+42 of 243 steps (17%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_100_0.1_0.01, data/FACS_10005_0.1_100_100_0.1_0.01/bc_count_4.csv
+    jobid: 116
+    wildcards: seed=10005, br=0.1, r=100, s=100, p=0.1, e=0.01
+
+Finished job 8.
+43 of 243 steps (18%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.2_0.01, data/GROWTH_10005_100_10_0.2_0.01/bc_count_4.csv
+    jobid: 170
+    wildcards: seed=10005, r=100, s=10, p=0.2, e=0.01
+
+Finished job 96.
+44 of 243 steps (18%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_1000_0.01_0.2, data/FACS_10005_0.1_1000_1000_0.01_0.2/bc_count_4.csv
+    jobid: 99
+    wildcards: seed=10005, br=0.1, r=1000, s=1000, p=0.01, e=0.2
+
+Finished job 116.
+45 of 243 steps (19%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.01_0.1, data/GROWTH_10005_1000_1000_0.01_0.1/bc_count_4.csv
+    jobid: 182
+    wildcards: seed=10005, r=1000, s=1000, p=0.01, e=0.1
+
+Finished job 101.
+46 of 243 steps (19%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_1000_0.2_0.2, data/GROWTH_10005_100_1000_0.2_0.2/bc_count_4.csv
+    jobid: 71
+    wildcards: seed=10005, r=100, s=1000, p=0.2, e=0.2
+
+Finished job 99.
+47 of 243 steps (19%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.2_0.2, data/GROWTH_10005_100_100_0.2_0.2/bc_count_4.csv
+    jobid: 124
+    wildcards: seed=10005, r=100, s=100, p=0.2, e=0.2
+
+Finished job 170.
+48 of 243 steps (20%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_10_0.2_0.1, data/GROWTH_10005_10_10_0.2_0.1/bc_count_4.csv
+    jobid: 134
+    wildcards: seed=10005, r=10, s=10, p=0.2, e=0.1
+
+Finished job 182.
+49 of 243 steps (20%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_100_0.2_0.01, data/GROWTH_10005_1000_100_0.2_0.01/bc_count_4.csv
+    jobid: 227
+    wildcards: seed=10005, r=1000, s=100, p=0.2, e=0.01
+
+Finished job 71.
+50 of 243 steps (21%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_100_0.01_0.2, data/FACS_10005_0.1_100_100_0.01_0.2/bc_count_4.csv
+    jobid: 31
+    wildcards: seed=10005, br=0.1, r=100, s=100, p=0.01, e=0.2
+
+Finished job 124.
+51 of 243 steps (21%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_1000_0.1_0.1, data/GROWTH_10005_100_1000_0.1_0.1/bc_count_4.csv
+    jobid: 125
+    wildcards: seed=10005, r=100, s=1000, p=0.1, e=0.1
+
+Finished job 31.
+52 of 243 steps (21%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_100_0.01_0.01, data/FACS_10005_0.25_10_100_0.01_0.01/bc_count_4.csv
+    jobid: 232
+    wildcards: seed=10005, br=0.25, r=10, s=100, p=0.01, e=0.01
+
+Finished job 134.
+53 of 243 steps (22%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.01_0.2, data/FACS_10005_0.25_10_1000_0.01_0.2/bc_count_4.csv
+    jobid: 26
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.01, e=0.2
+
+Finished job 232.
+54 of 243 steps (22%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_1000_0.1_0.01, data/GROWTH_10005_10_1000_0.1_0.01/bc_count_4.csv
+    jobid: 131
+    wildcards: seed=10005, r=10, s=1000, p=0.1, e=0.01
+
+Finished job 227.
+55 of 243 steps (23%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_10_0.1_0.1, data/FACS_10005_0.1_100_10_0.1_0.1/bc_count_4.csv
+    jobid: 176
+    wildcards: seed=10005, br=0.1, r=100, s=10, p=0.1, e=0.1
+
+Finished job 26.
+56 of 243 steps (23%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_10_0.2_0.01, data/FACS_10005_0.1_100_10_0.2_0.01/bc_count_4.csv
+    jobid: 10
+    wildcards: seed=10005, br=0.1, r=100, s=10, p=0.2, e=0.01
+
+Finished job 125.
+57 of 243 steps (23%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.2_0.2, data/FACS_10005_0.1_1000_100_0.2_0.2/bc_count_4.csv
+    jobid: 193
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.2, e=0.2
+
+Finished job 176.
+58 of 243 steps (24%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_100_0.2_0.2, data/FACS_10005_0.1_100_100_0.2_0.2/bc_count_4.csv
+    jobid: 16
+    wildcards: seed=10005, br=0.1, r=100, s=100, p=0.2, e=0.2
+
+Finished job 10.
+59 of 243 steps (24%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_100_0.01_0.1, data/FACS_10005_0.1_100_100_0.01_0.1/bc_count_4.csv
+    jobid: 175
+    wildcards: seed=10005, br=0.1, r=100, s=100, p=0.01, e=0.1
+
+Finished job 193.
+60 of 243 steps (25%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.1_0.1, data/FACS_10005_0.1_1000_100_0.1_0.1/bc_count_4.csv
+    jobid: 205
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.1, e=0.1
+
+Finished job 16.
+61 of 243 steps (25%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_10_0.01_0.01, data/FACS_10005_0.1_10_10_0.01_0.01/bc_count_4.csv
+    jobid: 12
+    wildcards: seed=10005, br=0.1, r=10, s=10, p=0.01, e=0.01
+
+Finished job 131.
+62 of 243 steps (26%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_10_0.1_0.01, data/FACS_10005_0.25_100_10_0.1_0.01/bc_count_4.csv
+    jobid: 106
+    wildcards: seed=10005, br=0.25, r=100, s=10, p=0.1, e=0.01
+
+Finished job 175.
+63 of 243 steps (26%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.1_0.2, data/FACS_10005_0.1_1000_100_0.1_0.2/bc_count_4.csv
+    jobid: 163
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.1, e=0.2
+
+Finished job 12.
+64 of 243 steps (26%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.2_0.2, data/FACS_10005_0.25_100_100_0.2_0.2/bc_count_4.csv
+    jobid: 104
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.2, e=0.2
+
+Finished job 205.
+65 of 243 steps (27%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_10_0.01_0.1, data/FACS_10005_0.1_100_10_0.01_0.1/bc_count_4.csv
+    jobid: 94
+    wildcards: seed=10005, br=0.1, r=100, s=10, p=0.01, e=0.1
+
+Finished job 106.
+66 of 243 steps (27%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.2_0.1, data/GROWTH_10005_100_100_0.2_0.1/bc_count_4.csv
+    jobid: 173
+    wildcards: seed=10005, r=100, s=100, p=0.2, e=0.1
+
+Finished job 163.
+67 of 243 steps (28%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_10_0.2_0.01, data/GROWTH_10005_10_10_0.2_0.01/bc_count_4.csv
+    jobid: 189
+    wildcards: seed=10005, r=10, s=10, p=0.2, e=0.01
+
+Finished job 94.
+68 of 243 steps (28%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.01_0.2, data/FACS_10005_0.25_1000_100_0.01_0.2/bc_count_4.csv
+    jobid: 146
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.01, e=0.2
+
+Finished job 104.
+69 of 243 steps (28%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_1000_0.2_0.1, data/FACS_10005_0.25_100_1000_0.2_0.1/bc_count_4.csv
+    jobid: 122
+    wildcards: seed=10005, br=0.25, r=100, s=1000, p=0.2, e=0.1
+
+Finished job 146.
+70 of 243 steps (29%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.1_0.01, data/GROWTH_10005_1000_10_0.1_0.01/bc_count_4.csv
+    jobid: 228
+    wildcards: seed=10005, r=1000, s=10, p=0.1, e=0.01
+
+Finished job 122.
+71 of 243 steps (29%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_100_0.2_0.1, data/FACS_10005_0.1_10_100_0.2_0.1/bc_count_4.csv
+    jobid: 45
+    wildcards: seed=10005, br=0.1, r=10, s=100, p=0.2, e=0.1
+
+Finished job 173.
+72 of 243 steps (30%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_10_100_0.01_0.01, data/FACS_10005_0.1_10_100_0.01_0.01/bc_count_4.csv
+    jobid: 229
+    wildcards: seed=10005, br=0.1, r=10, s=100, p=0.01, e=0.01
+
+Finished job 189.
+73 of 243 steps (30%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.1_0.2, data/GROWTH_10005_100_100_0.1_0.2/bc_count_4.csv
+    jobid: 78
+    wildcards: seed=10005, r=100, s=100, p=0.1, e=0.2
+
+Finished job 45.
+74 of 243 steps (30%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.01_0.01, data/GROWTH_10005_1000_10_0.01_0.01/bc_count_4.csv
+    jobid: 49
+    wildcards: seed=10005, r=1000, s=10, p=0.01, e=0.01
+
+Finished job 229.
+75 of 243 steps (31%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_10_0.01_0.2, data/FACS_10005_0.1_1000_10_0.01_0.2/bc_count_4.csv
+    jobid: 114
+    wildcards: seed=10005, br=0.1, r=1000, s=10, p=0.01, e=0.2
+
+Finished job 228.
+76 of 243 steps (31%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.2_0.1, data/FACS_10005_0.25_10_1000_0.2_0.1/bc_count_4.csv
+    jobid: 199
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.2, e=0.1
+
+Finished job 114.
+77 of 243 steps (32%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.1_0.2, data/GROWTH_10005_1000_10_0.1_0.2/bc_count_4.csv
+    jobid: 90
+    wildcards: seed=10005, r=1000, s=10, p=0.1, e=0.2
+
+Finished job 78.
+78 of 243 steps (32%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_100_0.2_0.1, data/GROWTH_10005_1000_100_0.2_0.1/bc_count_4.csv
+    jobid: 121
+    wildcards: seed=10005, r=1000, s=100, p=0.2, e=0.1
+
+Finished job 49.
+79 of 243 steps (33%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_10_0.01_0.1, data/FACS_10005_0.25_10_10_0.01_0.1/bc_count_4.csv
+    jobid: 212
+    wildcards: seed=10005, br=0.25, r=10, s=10, p=0.01, e=0.1
+
+Finished job 199.
+80 of 243 steps (33%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.1_0.2, data/FACS_10005_0.25_100_100_0.1_0.2/bc_count_4.csv
+    jobid: 158
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.1, e=0.2
+
+Finished job 212.
+81 of 243 steps (33%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_1000_0.2_0.1, data/GROWTH_10005_100_1000_0.2_0.1/bc_count_4.csv
+    jobid: 240
+    wildcards: seed=10005, r=100, s=1000, p=0.2, e=0.1
+
+Finished job 158.
+82 of 243 steps (34%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_10_0.01_0.2, data/FACS_10005_0.1_100_10_0.01_0.2/bc_count_4.csv
+    jobid: 136
+    wildcards: seed=10005, br=0.1, r=100, s=10, p=0.01, e=0.2
+
+Finished job 90.
+83 of 243 steps (34%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_1000_0.01_0.2, data/GROWTH_10005_10_1000_0.01_0.2/bc_count_4.csv
+    jobid: 42
+    wildcards: seed=10005, r=10, s=1000, p=0.01, e=0.2
+
+Finished job 136.
+84 of 243 steps (35%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_100_0.01_0.1, data/GROWTH_10005_1000_100_0.01_0.1/bc_count_4.csv
+    jobid: 171
+    wildcards: seed=10005, r=1000, s=100, p=0.01, e=0.1
+
+Finished job 121.
+85 of 243 steps (35%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.1_0.1, data/GROWTH_10005_100_100_0.1_0.1/bc_count_4.csv
+    jobid: 168
+    wildcards: seed=10005, r=100, s=100, p=0.1, e=0.1
+
+Finished job 240.
+86 of 243 steps (35%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.01_0.2, data/FACS_10005_0.1_1000_100_0.01_0.2/bc_count_4.csv
+    jobid: 224
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.01, e=0.2
+
+Finished job 42.
+87 of 243 steps (36%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.01_0.01, data/FACS_10005_0.25_1000_100_0.01_0.01/bc_count_4.csv
+    jobid: 143
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.01, e=0.01
+
+Finished job 171.
+88 of 243 steps (36%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_10_0.01_0.1, data/FACS_10005_0.1_1000_10_0.01_0.1/bc_count_4.csv
+    jobid: 87
+    wildcards: seed=10005, br=0.1, r=1000, s=10, p=0.01, e=0.1
+
+Finished job 224.
+89 of 243 steps (37%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_1000_0.1_0.2, data/FACS_10005_0.1_100_1000_0.1_0.2/bc_count_4.csv
+    jobid: 147
+    wildcards: seed=10005, br=0.1, r=100, s=1000, p=0.1, e=0.2
+
+Finished job 168.
+90 of 243 steps (37%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_10_0.1_0.01, data/GROWTH_10005_10_10_0.1_0.01/bc_count_4.csv
+    jobid: 38
+    wildcards: seed=10005, r=10, s=10, p=0.1, e=0.01
+
+Finished job 143.
+91 of 243 steps (37%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.2_0.1, data/GROWTH_10005_1000_1000_0.2_0.1/bc_count_4.csv
+    jobid: 151
+    wildcards: seed=10005, r=1000, s=1000, p=0.2, e=0.1
+
+Finished job 87.
+92 of 243 steps (38%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_10_0.1_0.1, data/GROWTH_10005_10_10_0.1_0.1/bc_count_4.csv
+    jobid: 192
+    wildcards: seed=10005, r=10, s=10, p=0.1, e=0.1
+
+Finished job 147.
+93 of 243 steps (38%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_10_0.2_0.2, data/FACS_10005_0.25_1000_10_0.2_0.2/bc_count_4.csv
+    jobid: 180
+    wildcards: seed=10005, br=0.25, r=1000, s=10, p=0.2, e=0.2
+
+Finished job 180.
+94 of 243 steps (39%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_100_0.1_0.1, data/FACS_10005_0.1_100_100_0.1_0.1/bc_count_4.csv
+    jobid: 233
+    wildcards: seed=10005, br=0.1, r=100, s=100, p=0.1, e=0.1
+
+Finished job 38.
+95 of 243 steps (39%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.2_0.01, data/GROWTH_10005_1000_10_0.2_0.01/bc_count_4.csv
+    jobid: 220
+    wildcards: seed=10005, r=1000, s=10, p=0.2, e=0.01
+
+Finished job 151.
+96 of 243 steps (40%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_1000_0.01_0.1, data/GROWTH_10005_10_1000_0.01_0.1/bc_count_4.csv
+    jobid: 22
+    wildcards: seed=10005, r=10, s=1000, p=0.01, e=0.1
+
+Finished job 233.
+97 of 243 steps (40%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_1000_0.2_0.2, data/FACS_10005_0.25_1000_1000_0.2_0.2/bc_count_4.csv
+    jobid: 167
+    wildcards: seed=10005, br=0.25, r=1000, s=1000, p=0.2, e=0.2
+
+Finished job 192.
+98 of 243 steps (40%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_10_0.1_0.1, data/FACS_10005_0.1_1000_10_0.1_0.1/bc_count_4.csv
+    jobid: 211
+    wildcards: seed=10005, br=0.1, r=1000, s=10, p=0.1, e=0.1
+
+Finished job 167.
+99 of 243 steps (41%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_10_0.1_0.1, data/GROWTH_10005_1000_10_0.1_0.1/bc_count_4.csv
+    jobid: 57
+    wildcards: seed=10005, r=1000, s=10, p=0.1, e=0.1
+
+Finished job 211.
+100 of 243 steps (41%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.1_0.01, data/FACS_10005_0.25_10_1000_0.1_0.01/bc_count_4.csv
+    jobid: 115
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.1, e=0.01
+
+Finished job 220.
+101 of 243 steps (42%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.01_0.2, data/GROWTH_10005_100_100_0.01_0.2/bc_count_4.csv
+    jobid: 214
+    wildcards: seed=10005, r=100, s=100, p=0.01, e=0.2
+
+Finished job 115.
+102 of 243 steps (42%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_10_0.2_0.1, data/FACS_10005_0.25_10_10_0.2_0.1/bc_count_4.csv
+    jobid: 130
+    wildcards: seed=10005, br=0.25, r=10, s=10, p=0.2, e=0.1
+
+Finished job 22.
+103 of 243 steps (42%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_10_0.1_0.2, data/FACS_10005_0.25_1000_10_0.1_0.2/bc_count_4.csv
+    jobid: 165
+    wildcards: seed=10005, br=0.25, r=1000, s=10, p=0.1, e=0.2
+
+Finished job 130.
+104 of 243 steps (43%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.1_0.01, data/GROWTH_10005_1000_1000_0.1_0.01/bc_count_4.csv
+    jobid: 76
+    wildcards: seed=10005, r=1000, s=1000, p=0.1, e=0.01
+
+Finished job 165.
+105 of 243 steps (43%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_1000_0.2_0.2, data/FACS_10005_0.1_100_1000_0.2_0.2/bc_count_4.csv
+    jobid: 208
+    wildcards: seed=10005, br=0.1, r=100, s=1000, p=0.2, e=0.2
+
+Finished job 57.
+106 of 243 steps (44%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_100_0.01_0.1, data/FACS_10005_0.1_1000_100_0.01_0.1/bc_count_4.csv
+    jobid: 150
+    wildcards: seed=10005, br=0.1, r=1000, s=100, p=0.01, e=0.1
+
+Finished job 214.
+107 of 243 steps (44%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_1000_0.01_0.1, data/GROWTH_10005_100_1000_0.01_0.1/bc_count_4.csv
+    jobid: 108
+    wildcards: seed=10005, r=100, s=1000, p=0.01, e=0.1
+
+Finished job 208.
+108 of 243 steps (44%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_10_0.2_0.1, data/FACS_10005_0.25_1000_10_0.2_0.1/bc_count_4.csv
+    jobid: 188
+    wildcards: seed=10005, br=0.25, r=1000, s=10, p=0.2, e=0.1
+
+Finished job 150.
+109 of 243 steps (45%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.01_0.01, data/FACS_10005_0.25_100_100_0.01_0.01/bc_count_4.csv
+    jobid: 140
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.01, e=0.01
+
+Finished job 188.
+110 of 243 steps (45%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_100_0.2_0.2, data/FACS_10005_0.25_1000_100_0.2_0.2/bc_count_4.csv
+    jobid: 69
+    wildcards: seed=10005, br=0.25, r=1000, s=100, p=0.2, e=0.2
+
+Finished job 140.
+111 of 243 steps (46%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.01_0.2, data/GROWTH_10005_100_10_0.01_0.2/bc_count_4.csv
+    jobid: 179
+    wildcards: seed=10005, r=100, s=10, p=0.01, e=0.2
+
+Finished job 76.
+112 of 243 steps (46%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_1000_0.01_0.01, data/FACS_10005_0.25_10_1000_0.01_0.01/bc_count_4.csv
+    jobid: 207
+    wildcards: seed=10005, br=0.25, r=10, s=1000, p=0.01, e=0.01
+
+Finished job 108.
+113 of 243 steps (47%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_100_1000_0.01_0.01, data/FACS_10005_0.1_100_1000_0.01_0.01/bc_count_4.csv
+    jobid: 203
+    wildcards: seed=10005, br=0.1, r=100, s=1000, p=0.01, e=0.01
+
+Finished job 69.
+114 of 243 steps (47%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.1_0.1, data/GROWTH_10005_1000_1000_0.1_0.1/bc_count_4.csv
+    jobid: 54
+    wildcards: seed=10005, r=1000, s=1000, p=0.1, e=0.1
+
+Finished job 207.
+115 of 243 steps (47%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_10_0.2_0.2, data/FACS_10005_0.25_10_10_0.2_0.2/bc_count_4.csv
+    jobid: 29
+    wildcards: seed=10005, br=0.25, r=10, s=10, p=0.2, e=0.2
+
+Finished job 203.
+116 of 243 steps (48%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_100_100_0.2_0.1, data/FACS_10005_0.25_100_100_0.2_0.1/bc_count_4.csv
+    jobid: 102
+    wildcards: seed=10005, br=0.25, r=100, s=100, p=0.2, e=0.1
+
+Finished job 29.
+117 of 243 steps (48%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_10_100_0.2_0.2, data/GROWTH_10005_10_100_0.2_0.2/bc_count_4.csv
+    jobid: 5
+    wildcards: seed=10005, r=10, s=100, p=0.2, e=0.2
+
+Finished job 179.
+118 of 243 steps (49%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.1_0.2, data/GROWTH_10005_100_10_0.1_0.2/bc_count_4.csv
+    jobid: 218
+    wildcards: seed=10005, r=100, s=10, p=0.1, e=0.2
+
+Finished job 102.
+119 of 243 steps (49%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_100_0.2_0.2, data/FACS_10005_0.25_10_100_0.2_0.2/bc_count_4.csv
+    jobid: 190
+    wildcards: seed=10005, br=0.25, r=10, s=100, p=0.2, e=0.2
+
+Finished job 54.
+120 of 243 steps (49%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_1000_0.1_0.01, data/FACS_10005_0.1_1000_1000_0.1_0.01/bc_count_4.csv
+    jobid: 80
+    wildcards: seed=10005, br=0.1, r=1000, s=1000, p=0.1, e=0.01
+
+Finished job 190.
+121 of 243 steps (50%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_1000_1000_0.01_0.1, data/FACS_10005_0.25_1000_1000_0.01_0.1/bc_count_4.csv
+    jobid: 191
+    wildcards: seed=10005, br=0.25, r=1000, s=1000, p=0.01, e=0.1
+
+Finished job 5.
+122 of 243 steps (50%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_100_0.01_0.01, data/GROWTH_10005_100_100_0.01_0.01/bc_count_4.csv
+    jobid: 53
+    wildcards: seed=10005, r=100, s=100, p=0.01, e=0.01
+
+Finished job 80.
+123 of 243 steps (51%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_100_10_0.01_0.1, data/GROWTH_10005_100_10_0.01_0.1/bc_count_4.csv
+    jobid: 89
+    wildcards: seed=10005, r=100, s=10, p=0.01, e=0.1
+
+Finished job 218.
+124 of 243 steps (51%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_100_0.1_0.01, data/FACS_10005_0.25_10_100_0.1_0.01/bc_count_4.csv
+    jobid: 32
+    wildcards: seed=10005, br=0.25, r=10, s=100, p=0.1, e=0.01
+
+Finished job 191.
+125 of 243 steps (51%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.1_1000_1000_0.2_0.2, data/FACS_10005_0.1_1000_1000_0.2_0.2/bc_count_4.csv
+    jobid: 67
+    wildcards: seed=10005, br=0.1, r=1000, s=1000, p=0.2, e=0.2
+
+Finished job 32.
+126 of 243 steps (52%) done
+
+rule run_growth:
+    input: simdata_generator.jl
+    output: data/GROWTH_10005_1000_1000_0.01_0.2, data/GROWTH_10005_1000_1000_0.01_0.2/bc_count_4.csv
+    jobid: 13
+    wildcards: seed=10005, r=1000, s=1000, p=0.01, e=0.2
+
+Finished job 67.
+127 of 243 steps (52%) done
+
+rule run_facs:
+    input: simdata_generator.jl
+    output: data/FACS_10005_0.25_10_100_0.01_0.2, data/FACS_10005_0.25_10_100_0.01_0.2/bc_count_4.csv
+    jobid: 7
+    wildcards: seed=10005, br=0.25, r=10, s=100, p=0.01, e=0.2
+
