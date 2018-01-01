@@ -5,3 +5,9 @@ data/*
 *.ipynb
 .snakemake/
 .snakemake/*
+
+.ropeproject/
+__pycache__/
+output.csv
+sample1.log
+
