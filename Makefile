@@ -1,7 +1,12 @@
-all:	generate_file_facs.jl generate_file_growth.jl convert_to_datamatrix.R
-	rm -rf matrix/*
-	rm -rf data/*	
-	julia generate_file_facs.jl
-	julia generate_file_growth.jl
-	Rscript convert_to_datamatrix.R
-	git add matrix/*
+NCORE = 4
+
+all:	experiment.smk
+	snakemake -s experiment.smk --cores $(NCORE)
+
+
+force:	experiment.smk
+	snakemake -s experiment.smk --forceall --cores $(NCORE)
+
+
+dry:	experiment.smk
+	snakemake -s experiment.smk -np

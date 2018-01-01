@@ -1,0 +1,63 @@
+INFO  @ Mon, 01 Jan 2018 02:07:25: Parameters: /usr/local/bin/mageck test -k matrix/FACS_10005_0.25_100_100_0.01_0.01.mageck -t H1,H2,H3,H4 -c L1,L2,L3,L4 -n results/mageck/FACS_10005_0.25_100_100_0.01_0.01 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Welcome to MAGeCK v0.5.6. Command: test 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Loading count table from matrix/FACS_10005_0.25_100_100_0.01_0.01.mageck  
+INFO  @ Mon, 01 Jan 2018 02:07:25: Processing 1 lines.. 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Parsing error in line 1 (usually the header line). Skip this line. 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Loaded 10000 records. 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Loading R template file: /usr/local/lib/python2.7/site-packages/mageck/plot_template.RTemplate. 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Loading R template file: /usr/local/lib/python2.7/site-packages/mageck/plot_template_indvgene.RTemplate. 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Loading Rnw template file: /usr/local/lib/python2.7/site-packages/mageck/plot_template.Rnw. 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Setting up the visualization module... 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Given sample labels: H1,H2,H3,H4 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Converted index: 4 5 6 7 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Treatment samples:H1,H2,H3,H4 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Treatment sample index:4,5,6,7 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Given sample labels: L1,L2,L3,L4 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Converted index: 0 1 2 3 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Control samples:L1,L2,L3,L4 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Control sample index:0,1,2,3 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Initial (total) size factor: 1.05541237113 0.922297297297 1.05541237113 1.01361386139 1.01361386139 0.975 1.04464285714 0.939220183486 
+DEBUG @ Mon, 01 Jan 2018 02:07:25: Median factor: 1.05821320946 0.922764087712 1.06402733705 1.02007196444 1.00326074179 0.9672684264 1.03477064289 0.927981845126 
+INFO  @ Mon, 01 Jan 2018 02:07:25: Final size factor: 1.05821320946 0.922764087712 1.06402733705 1.02007196444 1.00326074179 0.9672684264 1.03477064289 0.927981845126 
+DEBUG @ Mon, 01 Jan 2018 02:07:26: Adjusted model: 1.04843645094	1.68619857305 
+DEBUG @ Mon, 01 Jan 2018 02:07:27: lower test FDR cutoff: 0.0395 
+DEBUG @ Mon, 01 Jan 2018 02:07:27: higher test FDR cutoff: 0.0538 
+INFO  @ Mon, 01 Jan 2018 02:07:27: Running command: RRA -i results/mageck/FACS_10005_0.25_100_100_0.01_0.01.plow.txt -o results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.low.txt -p 0.05 --skip-gene NA --skip-gene na  
+INFO  @ Mon, 01 Jan 2018 02:07:27: Command message: 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Welcome to RRA v 0.5.6. 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Skipping gene NA for permutation ... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Skipping gene na for permutation ... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Reading input file... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Summary: 10000 sgRNAs, 1000 genes, 1 lists; skipped sgRNAs:0 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Computing lo-values for each group... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Computing false discovery rate... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Permuting genes with 10 sgRNAs... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Number of genes under FDR adjustment: 1000 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   Saving to output file... 
+INFO  @ Mon, 01 Jan 2018 02:07:27:   RRA completed. 
+INFO  @ Mon, 01 Jan 2018 02:07:27:    
+INFO  @ Mon, 01 Jan 2018 02:07:27: End command message. 
+INFO  @ Mon, 01 Jan 2018 02:07:27: Running command: RRA -i results/mageck/FACS_10005_0.25_100_100_0.01_0.01.phigh.txt -o results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.high.txt -p 0.0538 --skip-gene NA --skip-gene na  
+INFO  @ Mon, 01 Jan 2018 02:07:28: Command message: 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Welcome to RRA v 0.5.6. 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Skipping gene NA for permutation ... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Skipping gene na for permutation ... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Reading input file... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Summary: 10000 sgRNAs, 1000 genes, 1 lists; skipped sgRNAs:0 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Computing lo-values for each group... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Computing false discovery rate... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Permuting genes with 10 sgRNAs... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Number of genes under FDR adjustment: 1000 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   Saving to output file... 
+INFO  @ Mon, 01 Jan 2018 02:07:28:   RRA completed. 
+INFO  @ Mon, 01 Jan 2018 02:07:28:    
+INFO  @ Mon, 01 Jan 2018 02:07:28: End command message. 
+DEBUG @ Mon, 01 Jan 2018 02:07:28: Sorting the merged items by negative selection... 
+INFO  @ Mon, 01 Jan 2018 02:07:28: Loading top 10 genes from results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.low.txt: G0991,G0293,G0099,G0407,G0520,G0380,G0689,G0135,G0904,G0810 
+DEBUG @ Mon, 01 Jan 2018 02:07:28: Column index:3 
+INFO  @ Mon, 01 Jan 2018 02:07:28: Loading top 10 genes from results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.high.txt: G0872,G0170,G0907,G0701,G0836,G0888,G0022,G0205,G0341,G0492 
+DEBUG @ Mon, 01 Jan 2018 02:07:28: Column index:9 
+INFO  @ Mon, 01 Jan 2018 02:07:29: Running command: rm results/mageck/FACS_10005_0.25_100_100_0.01_0.01.plow.txt 
+INFO  @ Mon, 01 Jan 2018 02:07:29: Running command: rm results/mageck/FACS_10005_0.25_100_100_0.01_0.01.phigh.txt 
+INFO  @ Mon, 01 Jan 2018 02:07:29: Running command: rm results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.low.txt 
+INFO  @ Mon, 01 Jan 2018 02:07:29: Running command: rm results/mageck/FACS_10005_0.25_100_100_0.01_0.01.gene.high.txt 

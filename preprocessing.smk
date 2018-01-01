@@ -13,9 +13,29 @@ rule all:
 		expand("data/FACS_{seed}_{br}_{r}_{s}_{p}_{e}/bc_count_4.csv", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err, br=bin_ratio) +
 		expand("data/GROWTH_{seed}_{r}_{s}_{p}_{e}/bc_count_4.csv", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err) +
 		expand("matrix/FACS_{seed}_{br}_{r}_{s}_{p}_{e}.csv", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err, br=bin_ratio) +
-		expand("matrix/GROWTH_{seed}_{r}_{s}_{p}_{e}.csv", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err) 
+		expand("matrix/GROWTH_{seed}_{r}_{s}_{p}_{e}.csv", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err) +
+		expand("matrix/FACS_{seed}_{br}_{r}_{s}_{p}_{e}.mageck", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err, br=bin_ratio) +
+		expand("matrix/GROWTH_{seed}_{r}_{s}_{p}_{e}.mageck", seed=random_seed, r=rep, s=seq_depth, p=pheno, e=err) 
 
 
+rule csv_to_mageck_facs:
+	input:
+		"matrix/FACS_{seed}_{br}_{r}_{s}_{p}_{e}.csv"
+	output:
+		"matrix/FACS_{seed}_{br}_{r}_{s}_{p}_{e}.mageck"
+	run:
+		convert_to_mageck_format(str(input), str(output))
+	
+	
+rule csv_tomageck_growth:
+	input:
+		"matrix/GROWTH_{seed}_{r}_{s}_{p}_{e}.csv"
+	output:
+		"matrix/GROWTH_{seed}_{r}_{s}_{p}_{e}.mageck"
+	run:
+		convert_to_mageck_format(str(input), str(output))
+	
+	
 rule merge_facs:
 	input:
 		in_dir = "data/FACS_{seed}_{br}_{r}_{s}_{p}_{e}",
