@@ -15,9 +15,6 @@ type Barcode
     "The theoretical phenotype exerted"
     theo_phenotype::Float64
 
-    "The observed phenotype"
-    obs_phenotype::Float64
-
     "The gene behavior, either sigmoidal or linear"
     behavior::Symbol
 
