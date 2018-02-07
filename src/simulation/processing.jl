@@ -10,7 +10,10 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
         seq_data[:freqs] = seq_data[:counts]./sum(seq_data[:counts])
         # normalize to median of negative controls, fixes #19
         # TODO: consider normalizing the std dev
-        med = median(seq_data[seq_data[:class] .== :negcontrol, :freqs])
+        negcontrol_freqs = seq_data[seq_data[:class] .== :negcontrol, :freqs]
+        (length(negcontrol_freqs) == 0) && error("No negative control guides found. Try increasing "*
+            "the frequency of negative controls or increase the number of genes.")
+        med = median(negcontrol_freqs)
         seq_data[:rel_freqs] = seq_data[:freqs] ./ med
     end
 
