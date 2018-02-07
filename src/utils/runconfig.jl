@@ -21,7 +21,7 @@ function runconfig(setup::ScreenSetup,
     gen_plots = (bc_counts, genes) -> begin
         info("Generating plots")
         new_filename = joinpath(output_dir, "counts.svg")
-        nopseudo = bc_counts[(bc_counts[:counts_bin1] .> 0.5) & (bc_counts[:counts_bin2] .> 0.5), :]
+        nopseudo = bc_counts[(bc_counts[:counts_bin1] .> 0.5) .& (bc_counts[:counts_bin2] .> 0.5), :]
         draw(SVG(new_filename, 10cm, 10cm), plot(nopseudo,
         x=:counts_bin1, y=:counts_bin2, color=:class, Scale.x_log10, Scale.y_log10,
         Theme(highlight_width=0pt), Coord.cartesian(fixed=true),

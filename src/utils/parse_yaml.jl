@@ -38,7 +38,7 @@ function Base.parse(data::Dict{Any, Any})
 
     screen = screentype == :facs ? FacsScreen() : GrowthScreen()
 
-    screen_fields = combined[(combined[:usage] .== :screen) & BitArray(map(x->x in [screentype, :both], combined[:relevance])), :]
+    screen_fields = combined[(combined[:usage] .== :screen) .& BitArray(map(x->x in [screentype, :both], combined[:relevance])), :]
     deleterows!(screen_fields, find(screen_fields[:yaml_name] .== :screen_type)[1])
 
     lib_vals = Dict()
