@@ -26,7 +26,7 @@ type Barcode
 
     function Barcode(gene, knockdown, phenotype, behavior, class)
         if (0 <= knockdown <= 1)
-            new(gene, knockdown, phenotype, -Inf, behavior, class, -Inf)
+            new(gene, knockdown, phenotype, behavior, class, -Inf)
         else
             error("Knockdown must be between 0 and 1, inclusive")
         end
