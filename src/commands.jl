@@ -76,5 +76,5 @@ function bootstrap_config(config_file::Compat.String,
     include(joinpath(source_dir, "utils", "runconfig.jl"))
 
     # run
-    runconfig(parse(config)..., output_dir, suppress_graph)
+    Base.invokelatest(runconfig, Base.invokelatest(parse, config)..., output_dir, suppress_graph)
 end
