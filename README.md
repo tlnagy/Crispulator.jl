@@ -14,18 +14,18 @@ This work aims to explore the importance of various screen parameters and
 the relevance of design choices on the downstream analysis and
 interpretation.
 
-## Pre-print
+## Paper
 
-Nagy, T., & Kampmann, M. (2017, March 22). CRISPulator: A Discrete Simulation Tool For Pooled Genetic Screens. bioRxiv. https://doi.org/10.1101/119131
+Nagy, T. & Kampmann, M. CRISPulator: a discrete simulation tool for pooled genetic screens. BMC Bioinformatics 18, 347 (2017). https://doi.org/10.1186/s12859-017-1759-9 (Preprint also [available](https://doi.org/10.1101/119131))
 
 ## Setup
 
 To run the simulation, you will need a recent version of
-[Julia](http://julialang.org/downloads/) (v0.5+) installed. Start
+[Julia](http://julialang.org/downloads/) (v0.6+) installed. Start
 Julia and enter the following command in the Julia command line interface (REPL):
 
 ```julia
-Pkg.update(); Pkg.clone("https://github.com/tlnagy/Crispulator.jl.git"); Pkg.build("Crispulator")
+Pkg.update(); Pkg.add("Crispulator");
 ```
 
 this downloads `Crispulator` and installs all of its dependencies. We also
@@ -81,7 +81,7 @@ to clear the workspace so no overwrite warnings get displayed.
 While REPL usage is convenient, it can be beneficial to interact with
 `Crispulator` via the terminal. First, make sure that julia is in your
 PATH (i.e. check that `julia -e "versioninfo()"` runs properly and shows
-0.5+ as the version number). Then from the `Crispulator` package root
+0.6+ as the version number). Then from the `Crispulator` package root
 directory, run:
 
 ```
