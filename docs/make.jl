@@ -12,7 +12,7 @@ makedocs(
 
 deploydocs(
     repo   = "github.com/tlnagy/Crispulator.jl.git",
-    julia  = "0.5",
+    julia  = "release",
     osname = "linux",
     deps = nothing,
     make = nothing,
