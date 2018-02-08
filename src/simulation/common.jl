@@ -17,6 +17,9 @@ type Barcode
     "The theoretical phenotype exerted"
     theo_phenotype::Float64
 
+    "The observed phenotype (only relevant for FACS screens)"
+    obs_phenotype::Float64
+
     "The gene behavior, either sigmoidal or linear"
     behavior::Symbol
 
@@ -28,14 +31,14 @@ type Barcode
 
     function Barcode(gene, knockdown, phenotype, behavior, class)
         if (0 <= knockdown <= 1)
-            new(gene, knockdown, phenotype, behavior, class, -Inf)
+            new(gene, knockdown, phenotype, NaN, behavior, class, -Inf)
         else
             error("Knockdown must be between 0 and 1, inclusive")
         end
     end
 end
 
-as_array(bc::Barcode) = [getfield(bc, fld) for fld in fieldnames(bc)]
+as_array(bc::Barcode) = [getfield(bc, fld) for fld in fieldnames(bc) if fld != :obs_phenotype]
 
 """
 A description of screen parameters

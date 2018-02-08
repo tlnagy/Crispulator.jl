@@ -20,6 +20,7 @@ function select(setup::FacsScreen,
     observed = zeros(n_cells)
     @inbounds for i in 1:n_cells
         observed[i] = rand(Normal(cell_phenotypes[i], σ))
+        guides[cells[i]].obs_phenotype = observed[i]
     end
     indices = sortperm(observed)
     cells = cells[indices]

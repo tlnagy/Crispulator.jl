@@ -26,9 +26,9 @@ through [`Simulation.counts_to_freqs`](@ref) followed by
 function sequencing(depths::Dict{Symbol, Int}, guides::Vector{Barcode}, samples::Dict{Symbol, Vector{Float64}})
     @assert all(Bool[haskey(depths, key) for key in keys(samples)]) "Supply exactly one sequencing depth per sample"
     sequencing_results = Dict{Symbol, DataFrame}()
-    colnames = fieldnames(Barcode)
+    colnames = [fld for fld in fieldnames(Barcode) if fld != :obs_phenotype]
+    coltypes = map(x -> fieldtype(Barcode, x), colnames)
     push!(colnames, [:counts, :barcodeid]...)
-    coltypes = map(x -> fieldtype(Barcode, x), fieldnames(Barcode))
     push!(coltypes, [Int, Int]...)
     num_guides = length(guides)
 
@@ -37,7 +37,6 @@ function sequencing(depths::Dict{Symbol, Int}, guides::Vector{Barcode}, samples:
 
         raw_counts = StatsBase.counts(reads, 1:num_guides)
 
-        bc_fieldnames = fieldnames(Barcode)
         data = Any[coltype[] for coltype in coltypes]
 
         # convert Barcode objects to tabular form
