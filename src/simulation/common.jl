@@ -174,3 +174,53 @@ type GrowthScreen <: ScreenSetup
         new(500, 5, 100, 0.25, 1000, 1000, 10, 0.01)
     end
 end
+
+function _print(io::IO, s::ScreenSetup)
+    print(io, typeof(s), " <: ScreenSetup \n")
+
+    info = (
+        "Number of genes: $(s.num_genes)",
+        "Number of guides per gene: $(s.coverage) ($(s.num_genes*s.coverage) guides total)",
+        "Cells per guide at transfection: $(s.representation) ($(s.num_genes*s.coverage*s.representation) cells total)",
+        "Multiplicity of infection (M.O.I.): $(s.moi)",
+        "Number of cells per guide at sequencing: $(s.seq_depth) ($(s.num_genes*s.coverage*s.seq_depth) cells total)",
+    )
+
+    for line in info
+        print(io, "\n    ", line)
+    end
+end
+
+function Base.show(io::IO, s::FacsScreen)
+    _print(io::IO, s)
+
+    info = (
+        "",
+        "Number of cells per guide sorted: $(s.bottleneck_representation) ($(s.num_genes*s.coverage*s.bottleneck_representation) cells total)",
+        "Gaussian standard deviation of sorting: $(s.σ) (phenotype units)",
+        "Bins:"
+    )
+
+    for line in info
+        print(io, "\n    ", line)
+    end
+
+    for (bin, range) in s.bin_info
+        print(io, "\n        $bin: $(round(Int, range[1]*100))-$(round(Int, range[2]*100)) percentile of cells",)
+    end
+end
+
+function Base.show(io::IO, s::GrowthScreen)
+    _print(io::IO, s)
+
+    info = (
+        "",
+        "Minimum number of cells kept per subsampling: $(s.bottleneck_representation) ($(s.num_genes*s.coverage*s.bottleneck_representation) cells total)",
+        "Number of rounds of subsampling: $(s.num_bottlenecks)",
+        "Gaussian standard deviation of subsampling: $(s.noise) (phenotype units)",
+    )
+
+    for line in info
+        print(io, "\n    ", line)
+    end
+end
