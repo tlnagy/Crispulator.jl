@@ -1,3 +1,9 @@
+"""
+$(SIGNATURES)
+
+Converts raw counts to frequencies by dividing by the total number of reads
+for each sample.
+"""
 function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int}}, guide_count::Int)
     results = Dict{Symbol, Vector{Float64}}()
     for (bin, cells) in bin_cells
@@ -7,6 +13,16 @@ function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int}}, guide_count::Int)
     results
 end
 
+"""
+$(SIGNATURES)
+
+Simulates next-gen sequencing by generating a Categorical distribution based on
+frequencies of each guide in each bin and then randomly samples from this
+distributions up to the depth provided in `depths` for each bin. Returns a
+dict of DataFrames with the bin names as the keys. This object can then be passed
+through [`Simulation.counts_to_freqs`](@ref) followed by
+[`Simulation.differences_between_bins`](@ref).
+"""
 function sequencing(depths::Dict{Symbol, Int}, guides::Vector{Barcode}, samples::Dict{Symbol, Vector{Float64}})
     @assert all(Bool[haskey(depths, key) for key in keys(samples)]) "Supply exactly one sequencing depth per sample"
     sequencing_results = Dict{Symbol, DataFrame}()

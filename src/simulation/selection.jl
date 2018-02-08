@@ -1,7 +1,10 @@
 import Base.Sort: select
+
 """
-Given `cells`, a vector of integers, and `guides`, a vector of barcodes
-performs simulated facs sorting of the cells into `bins` with the given
+$(SIGNATURES)
+
+Given `cells`, a vector of integers, and `guides`, a vector of barcodes,
+performs simulated FACS sorting of the cells into `bins` with the given
 cutoffs. `σ` refers to the spread of the phenotype during the FACS screen.
 """
 function select(setup::FacsScreen,
@@ -50,6 +53,8 @@ function grow!(cells::AbstractArray{Int},
 end
 
 """
+$(SIGNATURES)
+
 Growth Screen selection
 """
 function select(setup::GrowthScreen,

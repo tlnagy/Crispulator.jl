@@ -4,6 +4,8 @@ using Compat
 Any entity that is tracked through the pooled experiment. For CRISPR screens,
 this is equivalent to the sgRNA. This object stores properties relating to the
 performance of this entity in the screen.
+
+$(FIELDS)
 """
 type Barcode
     "The target gene id"
@@ -42,22 +44,69 @@ A description of screen parameters
 
 as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
 
+"""
+A type representing the parameters used in a typical FACS screen.
+
+$(FIELDS)
+"""
 type FacsScreen <: ScreenSetup
-    "Number of target genes"
+    "Number of genes targeted by the screen"
     num_genes::Int
+
     "Number of guides per gene"
     coverage::Int
-    "Number of cells with each guide"
+
+    """Number of cells with each guide. `representation=10` means that there are
+    10 times as many cells as guides during transfection. The actual number of
+    cells per guide post-transfection will be less depending on the MOI"""
     representation::Int
-    "Multiplicity of infection"
+
+    """The multiplicity of infection, ``\\lambda``, of the screen. We model this as a Poisson
+    process during transfection (see [`Simulation.transfect`](@ref)).
+
+    !!! note
+
+        We **do not** model multiple infections. We assume that the MOI is properly
+        selected and less than half the cells are transfected by any virus, i.e.
+        ``\\lambda \\lt 0.5`` and then select only the cells that have a single
+        transfection occurrence:
+
+        ```math
+        P(x = 1; Poisson(λ))
+        ```
+
+        For ``\\lambda = 0.25`` this works out to being ``\\approx 19.5\\%`` of the
+        number of cells (`num_genes` * `coverage` * `representation`).
+    """
     moi::Float64
-    "Std dev expected for cells during facs sorting"
+
+    """The standard deviation expected for cells during FACS sorting. This should
+    be set according to the biological variance experimentally observed, e.g. in
+    the fluorescence intensity of isogenic cells"""
     σ::Float64
-    "Range of guide phenotypes to collect in each bin"
+
+    """Range of guide phenotypes to collect in each bin
+
+    # Example
+
+    In the following example
+
+    ```julia
+    p = 0.05
+    bin_info = Dict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0))
+    ```
+
+    The 5th percentile of cells sorted according to their phenotype (fluorescence,
+    size, etc) will be compared to the 95th percentile.
+    """
     bin_info::Dict{Symbol, Tuple{Float64, Float64}}
-    "Number of cells sorted"
+
+    "Number of cells sorted expressed as an integer multiple of the number of guides"
     bottleneck_representation::Int
-    "Sequencing depth"
+
+    """Sequencing depth as a integer multiple of the number of guides, i.e.
+    `seq_depth=10` is equivalent to `10 * num_genes * coverage` reads.
+    """
     seq_depth::Int
 
     function FacsScreen()
@@ -65,22 +114,60 @@ type FacsScreen <: ScreenSetup
     end
 end
 
+"""
+A type representing the parameters used in a typical growth-based screen.
+
+$(FIELDS)
+"""
 type GrowthScreen <: ScreenSetup
-    "Number of target genes"
+    "Number of genes targeted by the screen"
     num_genes::Int
+
     "Number of guides per gene"
     coverage::Int
-    "Number of cells with each guide"
+
+    """Number of cells with each guide. `representation=10` means that there are
+    10 times as many cells as guides during transfection. The actual number of
+    cells per guide post-transfection will be less depending on the MOI"""
     representation::Int
-    "Multiplicity of infection"
+
+    """The multiplicity of infection, ``\\lambda``, of the screen. We model this as a Poisson
+    process during transfection (see [`Simulation.transfect`](@ref)).
+
+    !!! note
+
+        We **do not** model multiple infections. We assume that the MOI is properly
+        selected and less than half the cells are transfected by any virus, i.e.
+        ``\\lambda \\lt 0.5`` and then select only the cells that have a single
+        transfection occurrence:
+
+        ```math
+        P(x = 1; Poisson(λ))
+        ```
+
+        For ``\\lambda = 0.25`` this works out to being ``\\approx 19.5\\%`` of the
+        number of cells (`num_genes` * `coverage` * `representation`).
+    """
     moi::Float64
-    "Sequencing depth"
+
+    """Sequencing depth as a integer multiple of the number of guides, i.e.
+    `seq_depth=10` is equivalent to `10 * num_genes * coverage` reads.
+    """
     seq_depth::Int
-    "For growth screens, how much of a bottleneck is applied"
+
+    """For growth screens, how much of a bottleneck is applied. This is minimum
+    number of cells that is kept when passaging the pool of cells. This is
+    expressed as an integer multiple of the number of guides."""
     bottleneck_representation::Int
-    "For growth screens, how many bottlenecks are applied"
+
+    """For growth screens, how many bottlenecks are applied. This is the integer
+    number of passages during the growth screen."""
     num_bottlenecks::Int
-    "The σ of the normal noise distribution added to each cell's phenotype"
+
+    """Before each passage, the theoretical phenotype of each cell is convolved
+    with a normal noise distribution with a standard deviation, σ, dictated by
+    this parameter. This should be set based on an expectation of noisiness of
+    the subsampling"""
     noise::Float64
 
     function GrowthScreen()

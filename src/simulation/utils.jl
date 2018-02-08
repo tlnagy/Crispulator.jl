@@ -9,9 +9,9 @@ function Base.count(labels::AbstractArray{Symbol}, pos_labels::Set{Symbol})
     end
     num_pos, num_neg
 end
+
 """
-auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
-               pos_labels::Set{Symbol}; rev::Bool=true)
+$(SIGNATURES)
 
 Optimized function for computing the area under the receiver operator characteristic
 curve.
@@ -48,8 +48,7 @@ function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
 end
 
 """
-auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
-               pos_labels::Set{Symbol}; rev::Bool=true)
+$(SIGNATURES)
 
 Computes the area under the Precision-Recall curve using a lower
 trapezoidal estimator, which is more accurate for skewed datasets.
@@ -102,8 +101,7 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
 end
 
 """
-venn(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
-              pos_labels::Set{Symbol}; rev::Bool=true)
+$(SIGNATURES)
 
 Given `N` positive examples, computes the percentage of the top `N/2`
 hits that are correct
@@ -127,7 +125,7 @@ end
 
 
 """
-noise(bc_counts::DataFrame)
+$(SIGNATURES)
 
 Computes the noise in an experiment, where noise is defined to be the
 standard deviation of log2 fold change in the negative controls
@@ -137,18 +135,20 @@ function noise(bc_counts::DataFrame)
     std(negcontrols)
 end
 
-doc"""
-signal(bc_counts::DataFrame)
+"""
+$(SIGNATURES)
 
 Computes the signal in an experiment, where the experimental signal is
 defined to be the average of signal of true hit genes. That value, the
 true hit gene signal, is the average ratio of the log2 fold change for
 a guide targeting a specific gene to the guide's theoretical phenotype.
 
-$\frac{1}{N_{true} \times k} \sum_{i=1}^{N_{true}} \sum_{j=1}^k
-\frac{\log_2 fc_{ij}}{\text{theo phenotype}_{ij}}$
+```math
+\\frac{1}{N_{true} \\times k} \\sum_{i=1}^{N_{true}} \\sum_{j=1}^k
+\\frac{\\log_2 fc_{ij}}{\\text{theo phenotype}_{ij}}
+```
 
-where $N_{true}$ is the number of true hit genes and $k$ is the number of
+where ``N_{true}`` is the number of true hit genes and ``k`` is the number of
 genes.
 """
 function signal(bc_counts::DataFrame)

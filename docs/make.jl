@@ -1,12 +1,34 @@
 using Documenter
 
+module Simulation
+    packages = [:StatsBase,
+                :Distributions,
+                :DataFrames,
+                :HypothesisTests,
+                :IterTools,
+                :DocStringExtensions]
+
+    for package in packages
+        eval(:(using $package))
+    end
+
+    filenames = ["common.jl", "utils.jl", "library.jl", "transfection.jl",
+                 "selection.jl", "sequencing.jl", "processing.jl",
+                 "designs.jl"]
+    for filename in filenames
+        include(joinpath(Base.source_dir(), "..", "src", "simulation", filename))
+    end
+end
+using Simulation
+
 makedocs(
+    modules = [Simulation],
     clean = false,
-    format = Documenter.Formats.HTML,
+    format = :html,
     sitename = "Crispulator.jl",
     pages = Any[
         "Home" => "index.md",
-        "FACS vs Growth" => "facs_growth.md"
+        "Simulation Internals" => "internals.md"
     ]
 )
 

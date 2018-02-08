@@ -1,6 +1,8 @@
 using Compat
 
 """
+$(SIGNATURES)
+
 Given value(s) `x` apply the sigmoidal function with maximum
 value `l`, a steepness `k`, and an inflection point `p`.
 """
@@ -21,10 +23,16 @@ function sigmoid(xs::AbstractArray{Float64}, l, k, p)
 end
 
 """
+$(SIGNATURES)
+
 Given value(s) `x` apply a simple linear function with maximum value `l`
 """
 linear(x, l) = clamp(l.*x, min(0, l), max(0, l))
 
+"""
+A type representing a relationship between degree of knockdown and effect on
+phenotype
+"""
 @compat abstract type KDPhenotypeRelationship end
 
 type Linear <: KDPhenotypeRelationship end
@@ -51,10 +59,34 @@ function response(sig::Sigmoidal)
     (x, l) -> sigmoid(x, l, width, inflection)
 end
 
+"""
+A type representing the behavior of different Cas9s
+"""
 @compat abstract type Cas9Behavior end
 
+"""
+$(TYPEDEF)
+
+CRISPRi behavior is simply determined by the activity of the guide
+"""
 type CRISPRi <: Cas9Behavior end
 
+"""
+$(TYPEDEF)
+
+CRISPR KO behavior is more complex since sgRNA-directed DNA damage repair is
+stochastic. We assume that 2/3 of repair events at a given locus lead to a
+frameshift, and that the screen is carried out in diploid cells. The assumption
+that only bi-allelic frame-shift mutations lead to a phenotype in
+CRISPRn screens for most sgRNAs is supported by the empirical finding that
+in-frame deletions mostly do not show strong phenotypes, unless they occur in
+regions encoding conserved residues or domains[^2]
+
+[^2]: Horlbeck MA, Gilbert LA, Villalta JE, Adamson B, Pak RA, Chen Y, Fields AP,
+    Park CY, Corn JE, Kampmann M, Weissman JS: Compact and highly active next-
+    generation libraries for CRISPR-mediated gene repression and activation.
+    *Elife* 2016, 5.
+"""
 type CRISPRn <: Cas9Behavior
     knockout_dist::Categorical
 
@@ -64,6 +96,8 @@ CRISPRn() = CRISPRn(Categorical([1/9, 4/9, 4/9]))
 
 """
 Wrapper containing all library construction parameters
+
+$(FIELDS)
 """
 type Library
     "Distribution of guide knockdown efficiencies"
@@ -190,6 +224,8 @@ function rand_gene(lib::Library)
 end
 
 """
+$(SIGNATURES)
+
 Constructs the guide library for `N` genes with `coverage` number of guides per
 gene. Returns a tuple of guides and their relative frequencies (assigned randomly).
 """

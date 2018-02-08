@@ -15,11 +15,11 @@ navigate into the root directory of the project and run `julia`. Run the
 following command:
 
 ```
-julia -e 'Pkg.clone(pwd()); Pkg.build("Crispulator")'
+julia -e 'Pkg.update(); Pkg.add("Crispulator")'
 ```
 
 this copies `Crispulator` over to the Julia package directory and installs
-all of its dependencies. 
+all of its dependencies.
 
 ## Quickstart
 
@@ -28,3 +28,7 @@ From the root directory of the project run
 ```julia
 julia src/run.jl config example_config.yml .
 ```
+
+## Advanced
+
+See the [Simulation Internals](@ref) page for in-depth documentation needed for more advanced usage

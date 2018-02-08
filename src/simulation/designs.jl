@@ -1,4 +1,6 @@
 """
+$(SIGNATURES)
+
 Runs a screen given the parameters specified in `setup` using the
 library `lib` and applies the `processing_func` function to the result.
 """

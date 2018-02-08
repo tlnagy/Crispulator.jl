@@ -4,7 +4,8 @@ packages = [:StatsBase,
             :Distributions,
             :DataFrames,
             :HypothesisTests,
-            :IterTools]
+            :IterTools,
+            :DocStringExtensions]
 
 for package in packages
     eval(:(using $package))
