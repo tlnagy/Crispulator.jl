@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Simulation Internals",
     "title": "Simulation.Barcode",
     "category": "Type",
-    "text": "Any entity that is tracked through the pooled experiment. For CRISPR screens, this is equivalent to the sgRNA. This object stores properties relating to the performance of this entity in the screen.\n\ngene\nThe target gene id\nknockdown\nThe knockdown efficiency\ntheo_phenotype\nThe theoretical phenotype exerted\nbehavior\nThe gene behavior, either sigmoidal or linear\nclass\nThe gene activity class, either inactive, up or down\ninitial_freq\nInitial frequency after transfection\n\n\n\n"
+    "text": "Any entity that is tracked through the pooled experiment. For CRISPR screens, this is equivalent to the sgRNA. This object stores properties relating to the performance of this entity in the screen.\n\ngene\nThe target gene id\nknockdown\nThe knockdown efficiency\ntheo_phenotype\nThe theoretical phenotype exerted\nobs_phenotype\nThe observed phenotype (only relevant for FACS screens)\nbehavior\nThe gene behavior, either sigmoidal or linear\nclass\nThe gene activity class, either inactive, up or down\ninitial_freq\nInitial frequency after transfection\n\n\n\n"
 },
 
 {
