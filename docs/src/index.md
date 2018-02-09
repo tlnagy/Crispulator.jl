@@ -14,21 +14,27 @@ To run the simulation, you will need a recent version of
 navigate into the root directory of the project and run `julia`. Run the
 following command:
 
-```
-julia -e 'Pkg.update(); Pkg.add("Crispulator")'
+```sh
+$ julia -e 'Pkg.update(); Pkg.add("Crispulator")'
 ```
 
 this copies `Crispulator` over to the Julia package directory and installs
-all of its dependencies.
+all of its dependencies. Note the `$` just represents the prompt, you don't need
+to type it. Make sure to run the tests and verify that everything
+is passing
+
+```sh
+$ julia -e 'Pkg.test("Crispulator")'
+```
 
 ## Quickstart
 
-From the root directory of the project run
+For most simple cases, no writing of Julia code is necessary. See the
+[Tutorial](@ref) for using Crispulator in this manner.
 
-```julia
-julia src/run.jl config example_config.yml .
-```
 
 ## Advanced
 
-See the [Simulation Internals](@ref) page for in-depth documentation needed for more advanced usage
+See the [Custom Simulations](@ref) for a step-by-step guide to writing a custom
+simulation on top of Crispulator. Additionally, the [Simulation Internals](@ref)
+page has in-depth documentation needed for more advanced usage

@@ -2,6 +2,10 @@
 
 This is an example of building a custom simulation of a FACS-based screen.
 
+!!! tip
+    This section is complementary to the Implementation section of the
+    [paper](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-017-1759-9#Sec2)
+
 ## Setup
 
 ```@setup 1
@@ -11,7 +15,8 @@ using DataFrames
 using Distributions
 ```
 
-Lets first load the packages we'll need:
+Lets first start the Julia REPL or a Julia session inside of a Jupyter Notebook
+and load the packages we'll need:
 
 ```julia
 using Gadfly
@@ -20,8 +25,8 @@ include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "load.jl"))
 
 ## Basic screen parameters
 
-First lets design a simple [`Simulation.FacsScreen`](@ref) with 100 genes with
-3 guides per gene. Lets say that we make sure we have 1000x as many cells as
+First lets design a simple [`Simulation.FacsScreen`](@ref) with 250 genes with
+5 guides per gene. Lets say that we make sure we have 1000x as many cells as
 guides during transfection (`representation`) and sorting
 (`bottleneck_representation`) and 1000x as many reads as guides during sequencing
 (`seq_depth`). We'll leave the rest of the values as the defaults and print
@@ -29,8 +34,8 @@ the object
 
 ```@example 1
 s = FacsScreen()
-s.num_genes = 100
-s.coverage = 3
+s.num_genes = 250
+s.coverage = 5
 s.representation = 1000
 s.bottleneck_representation = 1000
 s.seq_depth = 1000
@@ -92,7 +97,7 @@ of guides looks like
 df = DataFrame(Dict(
     :phenotype=>map(x->x.theo_phenotype, guides),
     :class=>map(x->x.class, guides),
-    :freq=>pdf.(guide_freqs_dist, 1:300)
+    :freq=>pdf.(guide_freqs_dist, 1:(length(guides)))
 ))
 plot(df, x=:phenotype, color=:class, Geom.histogram, Guide.ylabel("Number of guides"),
 Guide.title("Guide phenotype distribution"))
@@ -124,18 +129,26 @@ bin_cells = select(s, cells, cell_phenotypes, guides)
 freqs = counts_to_freqs(bin_cells, length(guides));
 ```
 
-A quick sanity check is that we should see a slight enrichment of the
-frequency of `:increasing` genes in the right bin (`bin2`):
+Lets look at what the observed phenotype distribution looks like when the
+selection was performed:
 
 ```@example 1
-tmp = Dict()
-tmp[:freqs] = vcat(freqs[:bin1], freqs[:bin2])
-tmp[:bin] = vcat(fill(:bin1, length(freqs[:bin1])), fill(:bin2, length(freqs[:bin2])))
-classes = map(x->x.class, guides)
-tmp[:class] = vcat(classes, classes)
-df = DataFrame(tmp)
-plot(by(df, [:bin, :class], d->sum(d[:freqs])), x=:class, y=:x1, color=:bin, Geom.bar(position=:dodge),
-Guide.ylabel("∑ᵢ freqs"))
+df = DataFrame(Dict(
+    :phenotype=>map(x->x.theo_phenotype, guides),
+    :class=>map(x->x.class, guides),
+    :obs_freq=>map(x->x.obs_phenotype, guides)
+))
+plot(df, x=:obs_freq, Geom.density, Guide.xlabel("Observed phenotype on FACS machine"),
+Guide.title("Kernel density estimate of guide observed phenotypes"), Guide.ylabel("ρ"))
+```
+
+As you can see, this looks like many FACS plots, e.g. when looking at density
+along the fluorescence channel. A quick sanity check is that we should see a
+slight enrichment of the frequency of `:increasing` genes on the right side
+
+```@example 1
+plot(df, x=:obs_freq, color=:class, Geom.density, Guide.xlabel("Observed phenotype on FACS machine"),
+Guide.title("Kernel density estimate of guide observed phenotypes"), Guide.ylabel("ρ"))
 ```
 
 And that is what we see. The change is really small (this is pretty usual), but
@@ -143,10 +156,36 @@ the later analysis will be able to pull out the `increasing` genes.
 
 ## Sequencing and Analysis
 
-```
+Now we'll use [`Simulation.sequencing`](@ref) to simulate sequencing by
+transforming the guide frequencies into a Categorical distribution and drawing
+a random sample of reads from this distribution. Finally, we'll use
+the [`Simulation.differences_between_bins`](@ref) function to compute the
+differences between bins on a per-guide level (`guide_data`) and per-gene level
+(`gene_data`).
+
+```@example 1
 raw_data = sequencing(Dict(:bin1=>s.seq_depth, :bin2=>s.seq_depth), guides, freqs)
 guide_data, gene_data = differences_between_bins(raw_data);
 ```
+
+Here's what the per-guide data looks like:
+
+```@example 1
+head(guide_data) # hide
+```
+
+!!! tip
+    See [`Simulation.differences_between_bins`](@ref) for details on what each
+    column means.
+
+And the gene level data
+
+```@example 1
+head(gene_data) # hide
+```
+
+We can generate standard pooled screen plots from this dataset. Like a count
+scatterplot:
 
 ```@example 1
 nopseudo = guide_data[(guide_data[:counts_bin1] .> 0.5) .& (guide_data[:counts_bin2] .> 0.5), :]
@@ -155,7 +194,19 @@ Scale.y_log10, Theme(highlight_width=0pt), Coord.cartesian(fixed=true),
 Guide.xlabel("log counts bin1"), Guide.ylabel("log counts bin2"))
 ```
 
+And a volcano plot:
+
 ```@example 1
 plot(gene_data, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt),
 Guide.xlabel("mean log2 fold change"), Guide.ylabel("-log10 pvalue"))
 ```
+
+And finally we can see how well we can differentiate between the different
+classes using Area Under the Precision-Recall Curve ([`Simulation.auprc`](@ref))
+
+```@example 1
+auprc(gene_data[:pvalmeanprod], gene_data[:class], Set([:increasing]))[1]
+```
+
+[`Simulation.auroc`](@ref) and [`Simulation.venn`](@ref) are also good summary
+statistics.

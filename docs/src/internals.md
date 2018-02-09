@@ -41,6 +41,7 @@ Simulation.KDPhenotypeRelationship
 Simulation.Cas9Behavior
 Simulation.CRISPRn
 Simulation.CRISPRi
+Simulation.Delta
 ```
 
 ## Miscellaneous functions

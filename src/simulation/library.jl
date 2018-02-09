@@ -113,13 +113,13 @@ type Library
 
     """
     Knockdown-phenotype relationships mapped to their probability of
-    being selected and their respective KDPhenotypeRelationship
+    being selected and their respective [`Simulation.KDPhenotypeRelationship`](@ref)
     """
     kd_phenotype_relationships::Dict{Int, Tuple{Symbol, KDPhenotypeRelationship}}
     relationship_probs::Categorical
 
     """
-    Whether this library is CRISPRi or CRISPR cutting.
+    Whether this library is [`Simulation.CRISPRi`](@ref) or [`Simulation.CRISPRn`](@ref)
     """
     cas9_behavior::Cas9Behavior
 
@@ -259,7 +259,10 @@ function construct_library(setup::ScreenSetup, lib::Library)
 end
 
 """
-Constructs a delta function at a given δ value
+$(TYPEDEF)
+
+Constructs a delta function at a given δ value. This distribution always emits
+the same value.
 """
 type Delta <: Distributions.Sampleable{Univariate, Discrete}
     δ::Float64
