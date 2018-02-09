@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Setup",
     "category": "section",
-    "text": "To run the simulation, you will need a recent version of Julia installed and in your PATH. Then navigate into the root directory of the project and run julia. Run the following command:julia -e 'Pkg.update(); Pkg.add(\"Crispulator\")'this copies Crispulator over to the Julia package directory and installs all of its dependencies."
+    "text": "To run the simulation, you will need a recent version of Julia installed and in your PATH. Then navigate into the root directory of the project and run julia. Run the following command:$ julia -e 'Pkg.update(); Pkg.add(\"Crispulator\")'this copies Crispulator over to the Julia package directory and installs all of its dependencies. Note the $ just represents the prompt, you don't need to type it. Make sure to run the tests and verify that everything is passing$ julia -e 'Pkg.test(\"Crispulator\")'"
 },
 
 {
@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Quickstart",
     "category": "section",
-    "text": "From the root directory of the project runjulia src/run.jl config example_config.yml ."
+    "text": "For most simple cases, no writing of Julia code is necessary. See the Tutorial for using Crispulator in this manner."
 },
 
 {
@@ -37,7 +37,119 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Advanced",
     "category": "section",
-    "text": "See the Simulation Internals page for in-depth documentation needed for more advanced usage"
+    "text": "See the Custom Simulations for a step-by-step guide to writing a custom simulation on top of Crispulator. Additionally, the Simulation Internals page has in-depth documentation needed for more advanced usage"
+},
+
+{
+    "location": "tutorial.html#",
+    "page": "Tutorial",
+    "title": "Tutorial",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorial.html#Tutorial-1",
+    "page": "Tutorial",
+    "title": "Tutorial",
+    "category": "section",
+    "text": "The easiest way to use Crispulator is via the command line config file. If this format is too constraining, the Custom Simulations has a detailed walk- through of writing a custom simulation where each step can be modified according to need."
+},
+
+{
+    "location": "tutorial.html#Graphical-overview-1",
+    "page": "Tutorial",
+    "title": "Graphical overview",
+    "category": "section",
+    "text": "The simulation is laid out in the following manner:(Image: )"
+},
+
+{
+    "location": "tutorial.html#Getting-started-1",
+    "page": "Tutorial",
+    "title": "Getting started",
+    "category": "section",
+    "text": "First, navigate to the Crispulator directory.tip: Tip\nYou can find the directory by running$ julia -e 'println(Pkg.dir(\"Crispulator\"))'There should be a YAML file called example_config.yml. Open this is in a text editor and it should look like this# This is an example configuration file. Whitespace is important.\n\n# Settings pertaining to the library design\nlibrary:\n    genome:\n        num-genes: 500\n        num-guides-per-gene: 5\n        frac-increasing-genes: 0.02 # fraction of genes with a positive phenotype\n        frac-decreasing-genes: 0.1 # fraction of genes with a negative phenotype\n\n    guides:\n        crispr-type: CRISPRn # either CRISPRi or CRISPRn\n        frac-high-quality: 0.9 # fraction of high quality guides\n        mean-high-quality-kd: 0.85 # mean knockdown by a high quality guide (CRISPRi only)\n\nscreen:\n    type: facs # either facs or growth\n    num-runs: 10 # how many independent runs\n\n    representation: # integer value, how much larger are samples than the library\n        - transfection: 100\n        - selection: 100\n        - sequencing: 100\n\n# screen-type specific parameters\n\n    bin-size: 0.25 # size of tail to sample from, must be between 0 and 0.5 (FACS only)\n    std-noise: 1 # (FACS only)\n    num-bottlenecks: 10 # (Growth only)This gives access to most dials in the simulation, if something is missing than see Custom Simulations.Now, lets remove all genes that have a positive phenotype by changing line 8 to 0.0:        frac-increasing-genes: 0.0 # fraction of genes with a positive phenotype"
+},
+
+{
+    "location": "tutorial.html#Running-simulation-1",
+    "page": "Tutorial",
+    "title": "Running simulation",
+    "category": "section",
+    "text": "Now, we can actually run the code by executing the following commandjulia src/run.jl config example_config.yml test_outputtip: Tip\nHere config tells CRISPulator to use the provided config example_config.yml and test_output is the directory where the results will be saved. This directory will be created if it doesn't exist.The output should look likeoutput = readstring(`julia ../../src/run.jl config example_config.yml test_output`) # hide\nprintln(output) # hideThe test_output/ directory should now be populated with all the filesforeach(println, readdir(\"test_output\")) # hide"
+},
+
+{
+    "location": "tutorial.html#Output-1",
+    "page": "Tutorial",
+    "title": "Output",
+    "category": "section",
+    "text": "The folder contains one of the raw count scatterplots (left) and a volcano plot of mean log2 fold change versus significance of each gene (right)(Image: ) (Image: )It also has a useful table that contains all the summary statistic information.using DataFrames # hide\nhead(readtable(joinpath(\"test_output\", \"results_table.csv\"))) # hideThe table below describes each columnColumn Name Meaning\nmethod Which summary statistic was used (e.g. Simulation.auprc)\nmeasure Whether the score is only for increasing genes (inc), decreasing (dec) or both (incdec). Allows independent evaluation on which type of genes the screen can accurately evaluate.\ngenetype Whether the score is for linear, sigmoidal, or all genes (see Simulation.KDPhenotypeRelationship). Helps determine if CRISPRn or CRISPRi is better for this design.\nmean_score Average score\nstd_score Standard deviation in scores\nconf_max Upper limit of 95% confidence interval\nconf_min Lower limit of 95% confidence interval\nn Number of independent replicates"
+},
+
+{
+    "location": "custom.html#",
+    "page": "Custom Simulations",
+    "title": "Custom Simulations",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "custom.html#Custom-Simulations-1",
+    "page": "Custom Simulations",
+    "title": "Custom Simulations",
+    "category": "section",
+    "text": "This is an example of building a custom simulation of a FACS-based screen.tip: Tip\nThis section is complementary to the Implementation section of the paper"
+},
+
+{
+    "location": "custom.html#Setup-1",
+    "page": "Custom Simulations",
+    "title": "Setup",
+    "category": "section",
+    "text": "using Simulation\nusing Gadfly\nusing DataFrames\nusing DistributionsLets first start the Julia REPL or a Julia session inside of a Jupyter Notebook and load the packages we'll need:using Gadfly\ninclude(joinpath(Pkg.dir(\"Crispulator\"), \"src\", \"simulation\", \"load.jl\"))"
+},
+
+{
+    "location": "custom.html#Basic-screen-parameters-1",
+    "page": "Custom Simulations",
+    "title": "Basic screen parameters",
+    "category": "section",
+    "text": "First lets design a simple Simulation.FacsScreen with 250 genes with 5 guides per gene. Lets say that we make sure we have 1000x as many cells as guides during transfection (representation) and sorting (bottleneck_representation) and 1000x as many reads as guides during sequencing (seq_depth). We'll leave the rest of the values as the defaults and print the objects = FacsScreen()\ns.num_genes = 250\ns.coverage = 5\ns.representation = 1000\ns.bottleneck_representation = 1000\ns.seq_depth = 1000\nprintln(s)"
+},
+
+{
+    "location": "custom.html#Construction-of-true-phenotype-distribution-1",
+    "page": "Custom Simulations",
+    "title": "Construction of true phenotype distribution",
+    "category": "section",
+    "text": "Next, lets make our distribution of true phenotypes. The basic layout is a Dict mapping a class name to a tuple of the probability of selecting this class and then the Distributions.Sampleable from which to draw a random phenotype from this class. The probabilities across all the classes should add up to 1.For example, here we are making three different classes of \"genes\": the first group are :inactive, i.e. they have no phenotype, so we'll set their phenotypes to 0.0 using a Simulation.Delta. We'll also make them 60% of all the genes. The second group are the negative controls :negcontrol (the only required group) which make up 10% of the population of genes and also have no effect. The final group is :increasing which makes up 30% of all genes and which are represented by a Normal(μ=0.1, σ=0.1) distribution clamped between 0.025 and 1.max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(\n    :inactive => (0.60, Delta(0.0)),\n    :negcontrol => (0.1, Delta(0.0)),\n    :increasing => (0.3, TruncatedNormal(0.1, 0.1, 0.025, 1)),\n);note: Note\nThe :negcontrol class needs to be present because Crispulator normalizes the frequencies of all other guides against the median frequency of the negative control guides. Also the distribution of :negcontrol guides serve as the null distribution against which the log2 fold changes of guides targeting a specific gene are assayed to calculate a statistical significance of the shift for each gene. See Simulation.differences_between_bins for more details."
+},
+
+{
+    "location": "custom.html#Library-construction-1",
+    "page": "Custom Simulations",
+    "title": "Library construction",
+    "category": "section",
+    "text": "Now, we actually build the library. Here we're making a Simulation.CRISPRi library and then getting the guides that were built from the true phenotype distribution that we constructed above and we also get the frequency of each guide in the library.lib = Library(max_phenotype_dists, CRISPRi())\nguides, guide_freqs_dist = construct_library(s, lib);Lets first look at what the true phenotype distribution of our different classes of guides looks likedf = DataFrame(Dict(\n    :phenotype=>map(x->x.theo_phenotype, guides),\n    :class=>map(x->x.class, guides),\n    :freq=>pdf.(guide_freqs_dist, 1:(length(guides)))\n))\nplot(df, x=:phenotype, color=:class, Geom.histogram, Guide.ylabel(\"Number of guides\"),\nGuide.title(\"Guide phenotype distribution\"))As you can see, most guides should have a phenotype of 0. In FACS Screens this is equivalent to having no preference to being in either the left (bin1) or right (bin2) bins. The :increasing genes have a small preference to be in the right bin.We can also look at the frequency of each guide in the library, which follows a Log-Normal distribution.plot(df, x=:freq, color=:class, Geom.histogram(position=:stack),\n    Guide.xlabel(\"Frequency\"), Guide.ylabel(\"Number of guides\"),\n    Guide.title(\"Frequencies of guides in simulated library\"))"
+},
+
+{
+    "location": "custom.html#Performing-the-screen-1",
+    "page": "Custom Simulations",
+    "title": "Performing the screen",
+    "category": "section",
+    "text": "Now, we'll actually perform the screen. We'll first perform the transection via Simulation.transfect, followed by the selection process via Simulation.select:cells, cell_phenotypes = transfect(s, lib, guides, guide_freqs_dist)\nbin_cells = select(s, cells, cell_phenotypes, guides)\nfreqs = counts_to_freqs(bin_cells, length(guides));Lets look at what the observed phenotype distribution looks like when the selection was performed:df = DataFrame(Dict(\n    :phenotype=>map(x->x.theo_phenotype, guides),\n    :class=>map(x->x.class, guides),\n    :obs_freq=>map(x->x.obs_phenotype, guides)\n))\nplot(df, x=:obs_freq, Geom.density, Guide.xlabel(\"Observed phenotype on FACS machine\"),\nGuide.title(\"Kernel density estimate of guide observed phenotypes\"), Guide.ylabel(\"ρ\"))As you can see, this looks like many FACS plots, e.g. when looking at density along the fluorescence channel. A quick sanity check is that we should see a slight enrichment of the frequency of :increasing genes on the right sideplot(df, x=:obs_freq, color=:class, Geom.density, Guide.xlabel(\"Observed phenotype on FACS machine\"),\nGuide.title(\"Kernel density estimate of guide observed phenotypes\"), Guide.ylabel(\"ρ\"))And that is what we see. The change is really small (this is pretty usual), but the later analysis will be able to pull out the increasing genes."
+},
+
+{
+    "location": "custom.html#Sequencing-and-Analysis-1",
+    "page": "Custom Simulations",
+    "title": "Sequencing and Analysis",
+    "category": "section",
+    "text": "Now we'll use Simulation.sequencing to simulate sequencing by transforming the guide frequencies into a Categorical distribution and drawing a random sample of reads from this distribution. Finally, we'll use the Simulation.differences_between_bins function to compute the differences between bins on a per-guide level (guide_data) and per-gene level (gene_data).raw_data = sequencing(Dict(:bin1=>s.seq_depth, :bin2=>s.seq_depth), guides, freqs)\nguide_data, gene_data = differences_between_bins(raw_data);Here's what the per-guide data looks like:head(guide_data) # hidetip: Tip\nSee Simulation.differences_between_bins for details on what each column means.And the gene level datahead(gene_data) # hideWe can generate standard pooled screen plots from this dataset. Like a count scatterplot:nopseudo = guide_data[(guide_data[:counts_bin1] .> 0.5) .& (guide_data[:counts_bin2] .> 0.5), :]\nplot(nopseudo, x=:counts_bin1, y=:counts_bin2, color=:class, Scale.x_log10,\nScale.y_log10, Theme(highlight_width=0pt), Coord.cartesian(fixed=true),\nGuide.xlabel(\"log counts bin1\"), Guide.ylabel(\"log counts bin2\"))And a volcano plot:plot(gene_data, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt),\nGuide.xlabel(\"mean log2 fold change\"), Guide.ylabel(\"-log10 pvalue\"))And finally we can see how well we can differentiate between the different classes using Area Under the Precision-Recall Curve (Simulation.auprc)auprc(gene_data[:pvalmeanprod], gene_data[:class], Set([:increasing]))[1]Simulation.auroc and Simulation.venn are also good summary statistics."
 },
 
 {
@@ -157,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Simulation Internals",
     "title": "Simulation.Library",
     "category": "Type",
-    "text": "Wrapper containing all library construction parameters\n\nknockdown_dist\nDistribution of guide knockdown efficiencies\nknockdown_probs\nmax_phenotype_dists\nMaximum phenotype categories mapped to their probability of being selected and the distribution to draw from if they are selected\n\nphenotype_probs\nkd_phenotype_relationships\nKnockdown-phenotype relationships mapped to their probability of being selected and their respective KDPhenotypeRelationship\n\nrelationship_probs\ncas9_behavior\nWhether this library is CRISPRi or CRISPR cutting.\n\n\n\n"
+    "text": "Wrapper containing all library construction parameters\n\nknockdown_dist\nDistribution of guide knockdown efficiencies\nknockdown_probs\nmax_phenotype_dists\nMaximum phenotype categories mapped to their probability of being selected and the distribution to draw from if they are selected\n\nphenotype_probs\nkd_phenotype_relationships\nKnockdown-phenotype relationships mapped to their probability of being selected and their respective Simulation.KDPhenotypeRelationship\n\nrelationship_probs\ncas9_behavior\nWhether this library is Simulation.CRISPRi or Simulation.CRISPRn\n\n\n\n"
 },
 
 {
@@ -201,11 +313,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "internals.html#Simulation.Delta",
+    "page": "Simulation Internals",
+    "title": "Simulation.Delta",
+    "category": "Type",
+    "text": "type Delta <: Distributions.Sampleable{Distributions.Univariate,Distributions.Discrete}\n\nConstructs a delta function at a given δ value. This distribution always emits the same value.\n\n\n\n"
+},
+
+{
     "location": "internals.html#Miscellaneous-Types-1",
     "page": "Simulation Internals",
     "title": "Miscellaneous Types",
     "category": "section",
-    "text": "Simulation.Library\nSimulation.Barcode\nSimulation.KDPhenotypeRelationship\nSimulation.Cas9Behavior\nSimulation.CRISPRn\nSimulation.CRISPRi"
+    "text": "Simulation.Library\nSimulation.Barcode\nSimulation.KDPhenotypeRelationship\nSimulation.Cas9Behavior\nSimulation.CRISPRn\nSimulation.CRISPRi\nSimulation.Delta"
 },
 
 {
