@@ -24,7 +24,7 @@ function select(setup::FacsScreen,
     end
     indices = sortperm(observed)
     cells = cells[indices]
-    results = Dict{Symbol, Vector{Int}}()
+    results = OrderedDict{Symbol, Vector{Int}}()
 
     for (binname, cutoffs) in bins
         left = clamp(round(Int, cutoffs[1]*n_cells), 1, n_cells)
@@ -82,5 +82,5 @@ function select(setup::GrowthScreen,
         copy!(view(cellmat, :), view(output_c, picked))
         copy!(view(cpmat, :), view(output_p, picked))
     end
-    return Dict(:bin1 => initial_cells, :bin2 => cellmat)
+    return OrderedDict(:bin1 => initial_cells, :bin2 => cellmat)
 end

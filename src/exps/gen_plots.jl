@@ -37,7 +37,7 @@ function gen_plots(filepath; debug=false, quiet=false)
                 Guide.xlabel("log counts t0"), Guide.ylabel("log counts t1")))
                 new_filename = joinpath(curr_dir, "$(basename(filepath))_$(typeof(crisprtype))_$(typeof(screentype))_volcano.svg")
                 draw(SVG(new_filename, 10cm, 10cm), plot(genes,
-                x=:mean, y=:pvalue, color=:class,
+                x=:mean_bin2_div_bin1, y=:pvalue_bin2_div_bin1, color=:class,
                 Scale.color_discrete_manual(colors..., levels=sort(unique(genes[:class]))),
                 Theme(highlight_width=0pt),
                 Guide.title("$(typeof(crisprtype)) $(typeof(screentype))"),

@@ -197,7 +197,7 @@ Guide.xlabel("log counts bin1"), Guide.ylabel("log counts bin2"))
 And a volcano plot:
 
 ```@example 1
-plot(gene_data, x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt),
+plot(gene_data, x=:mean_bin2_div_bin1, y=:pvalue_bin2_div_bin1, color=:class, Theme(highlight_width=0pt),
 Guide.xlabel("mean log2 fold change"), Guide.ylabel("-log10 pvalue"))
 ```
 
@@ -205,7 +205,7 @@ And finally we can see how well we can differentiate between the different
 classes using Area Under the Precision-Recall Curve ([`Simulation.auprc`](@ref))
 
 ```@example 1
-auprc(gene_data[:pvalmeanprod], gene_data[:class], Set([:increasing]))[1]
+auprc(gene_data[:pvalmeanprod_bin2_div_bin1], gene_data[:class], Set([:increasing]))[1]
 ```
 
 [`Simulation.auroc`](@ref) and [`Simulation.venn`](@ref) are also good summary

@@ -11,7 +11,9 @@ module Simulation
                 :DataFrames,
                 :HypothesisTests,
                 :IterTools,
-                :DocStringExtensions]
+                :DocStringExtensions,
+                :Combinatorics,
+                :DataStructures]
 
     for package in packages
         eval(:(using $package))

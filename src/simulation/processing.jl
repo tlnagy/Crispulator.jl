@@ -70,10 +70,7 @@ A typical `gene_data` DataFrame contains the following data:
     *Proc Natl Acad Sci U S A*. 2013;110:E2317–26.
 
 """
-function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
-                                  first_bin=:bin1,
-                                  last_bin=maximum(keys(raw_data)))
-
+function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
     for (bin, seq_data) in raw_data
         sort!(seq_data, cols=[:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
@@ -89,31 +86,40 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame};
         seq_data[:rel_freqs] = seq_data[:freqs] ./ med
     end
 
-    combined = copy(raw_data[first_bin])
-    rename!(combined, Dict(:freqs => Symbol("freqs_", first_bin),
-                           :counts => Symbol("counts_", first_bin),
-                           :rel_freqs => Symbol("rel_freqs_", first_bin)))
+    bin1 = first(raw_data)[2]
+    cols_to_copy = [col for col in names(bin1) if !(col in (:counts, :freqs, :rel_freqs))]
+    guide_data = bin1[cols_to_copy]
+    gene_data = DataFrame()
 
-    for (bin, seq_data) in raw_data
-        (bin == first_bin) && continue
+    # processed bins; so we don't re-add bins when doing all combos
+    proc_bins = Set{Symbol}()
 
-        combined[Symbol("freqs_", bin)] = seq_data[:freqs]
-        combined[Symbol("counts_", bin)] = seq_data[:counts]
-        combined[Symbol("rel_freqs_", bin)] = seq_data[:rel_freqs]
-        combined[Symbol("log2fc_", bin)] =
-        log2(combined[Symbol("rel_freqs_", bin)]./combined[Symbol("rel_freqs_", first_bin)])
+    # compute pairwise log 2 fold changes between every combination of bins
+    for bins in combinations(collect(keys(raw_data)), 2)
+        for bin in bins
+            (bin in proc_bins) && continue
+            push!(proc_bins, bin)
+            guide_data[[Symbol("counts_", bin), Symbol("freqs_", bin), Symbol("rel_freqs_", bin)]] =
+                raw_data[bin][[:counts, :freqs, :rel_freqs]]
+        end
+        suffix = "_$(bins[2])_div_$(bins[1])"
+        log2fc_col = Symbol(:log2fc, suffix)
+        guide_data[log2fc_col] = log2(guide_data[Symbol(:rel_freqs_, bins[2])]
+                                        ./guide_data[Symbol(:rel_freqs_, bins[1])])
+
+        nonnegs = guide_data[guide_data[:class] .!= :negcontrol, :]
+        negcontrols = guide_data[guide_data[:class] .== :negcontrol, log2fc_col]
+
+        tmp = by(nonnegs, [:gene, :behavior, :class]) do barcodes
+            log2fcs = barcodes[log2fc_col]
+            result = MannWhitneyUTest(log2fcs, negcontrols)
+            DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
+        end
+        gene_data[[:gene, :behavior, :class, Symbol(:pvalue, suffix), Symbol(:mean, suffix)]] = tmp[[:gene, :behavior, :class, :pvalue, :mean]]
+        gene_data[Symbol(:absmean, suffix)] = abs(gene_data[Symbol(:mean, suffix)])
+        gene_data[Symbol(:pvalmeanprod, suffix)] = gene_data[Symbol(:mean, suffix)] .* gene_data[Symbol(:pvalue, suffix)]
+
     end
 
-    nonnegs = combined[combined[:class] .!= :negcontrol, :]
-    negcontrols = combined[combined[:class] .== :negcontrol, Symbol("log2fc_", last_bin)]
-
-    genes = by(nonnegs, [:gene, :behavior, :class]) do barcodes
-        log2fcs = barcodes[Symbol("log2fc_", last_bin)]
-        result = MannWhitneyUTest(log2fcs, negcontrols)
-        DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
-    end
-    genes[:absmean] = abs(genes[:mean])
-    genes[:pvalmeanprod] = genes[:mean] .* genes[:pvalue]
-
-    combined, genes
+    guide_data, gene_data
 end

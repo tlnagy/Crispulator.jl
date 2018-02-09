@@ -16,6 +16,7 @@ println("Running tests:")
 filenames = ["kdrelationships.jl",
              "qualitymetrics.jl",
              "diffcrisprtransfection.jl",
+             "processing.jl",
              "growth.jl",
              "selectionmethods.jl",
              "cmdline.jl"]

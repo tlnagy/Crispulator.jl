@@ -43,8 +43,8 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
     function compute_auprc(barcodes, genes)
-        i = auprc(genes[:pvalmeanprod], genes[:class], Set([:increasing]))[1]
-        d = auprc(genes[:pvalmeanprod], genes[:class], Set([:decreasing]), rev=false)[1]
+        i = auprc(genes[:pvalmeanprod_bin2_div_bin1], genes[:class], Set([:increasing]))[1]
+        d = auprc(genes[:pvalmeanprod_bin2_div_bin1], genes[:class], Set([:decreasing]), rev=false)[1]
         (i, d)
     end
 

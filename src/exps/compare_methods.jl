@@ -24,7 +24,7 @@ function compare_methods(filepath; debug=false, quiet=false)
         screen.bottleneck_representation = representation
         screen.seq_depth = representation
         if screentype[1] == FacsScreen
-            screen.bin_info = Dict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0.0, 0.25), :bin2 => (0.75, 1.0))
+            screen.bin_info = OrderedDict{Symbol, Tuple{Float64, Float64}}(:bin1 => (0.0, 0.25), :bin2 => (0.75, 1.0))
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (0.75, Delta(0.0)),
                 :negcontrol => (0.05, Delta(0.0)),
@@ -79,9 +79,9 @@ function compare_methods(filepath; debug=false, quiet=false)
     compare_reduction_methods = (bc_counts, genes) -> begin
         sig, noi = signal(bc_counts), noise(bc_counts)
 
-        pvalmeanprod = auprc(abs(genes[:pvalmeanprod]), genes[:class], Set([:increasing, :decreasing]))[1]
-        pvalue = auprc(genes[:pvalue], genes[:class], Set([:increasing, :decreasing]))[1]
-        effectsize = auprc(genes[:absmean], genes[:class], Set([:increasing, :decreasing]))[1]
+        pvalmeanprod = auprc(abs(genes[:pvalmeanprod_bin2_div_bin1]), genes[:class], Set([:increasing, :decreasing]))[1]
+        pvalue = auprc(genes[:pvalue_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
+        effectsize = auprc(genes[:absmean_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
 
         (sig, noi, pvalmeanprod, pvalue, effectsize)
     end

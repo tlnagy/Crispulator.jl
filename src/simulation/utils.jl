@@ -128,10 +128,15 @@ end
 $(SIGNATURES)
 
 Computes the noise in an experiment, where noise is defined to be the
-standard deviation of log2 fold change in the negative controls
+standard deviation of log2 fold change in the negative controls. If more than 2
+bins are used then the name of log2 fold change information can be provided to
+differentiate between multiple log 2 fold changes.
 """
-function noise(bc_counts::DataFrame)
-    negcontrols = bc_counts[bc_counts[:class] .== :negcontrol, :log2fc_bin2]
+function noise(guide_data::DataFrame; log2fc_col=nothing)
+    if log2fc_col == nothing
+        log2fc_col=first(name for name in names(guide_data) if contains(string(name), "log2fc"))
+    end
+    negcontrols = guide_data[guide_data[:class] .== :negcontrol, log2fc_col]
     std(negcontrols)
 end
 
@@ -151,10 +156,13 @@ a guide targeting a specific gene to the guide's theoretical phenotype.
 where ``N_{true}`` is the number of true hit genes and ``k`` is the number of
 genes.
 """
-function signal(bc_counts::DataFrame)
-    true_hits = bc_counts[(bc_counts[:class] .!= :inactive) .& (bc_counts[:class] .!= :negcontrol), :]
+function signal(guide_data::DataFrame; log2fc_col=nothing)
+    if log2fc_col == nothing
+        log2fc_col=first(name for name in names(guide_data) if contains(string(name), "log2fc"))
+    end
+    true_hits = guide_data[(guide_data[:class] .!= :inactive) .& (guide_data[:class] .!= :negcontrol), :]
     signal_df = by(true_hits, [:gene, :class, :behavior]) do guides
-        signal = guides[:log2fc_bin2] ./ guides[:theo_phenotype]
+        signal = guides[log2fc_col] ./ guides[:theo_phenotype]
         DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))
     end
     median(abs(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
