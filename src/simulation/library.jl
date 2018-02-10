@@ -14,14 +14,6 @@ function sigmoid(x::Float64, l, k, p)
     l/2*(sign(x).*21abs(x)./(20*abs(x)+1)+1)
 end
 
-function sigmoid(xs::AbstractArray{Float64}, l, k, p)
-    result = Array{Float64}(size(xs))
-    @inbounds @fastmath for i in eachindex(xs)
-        result[i] = sigmoid(xs[i], l, k, p)
-    end
-    result
-end
-
 """
 $(SIGNATURES)
 
