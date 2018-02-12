@@ -10,3 +10,5 @@ ArgParse
 Compat v0.17.0
 YAML
 DocStringExtensions
+Combinatorics
+DataStructures

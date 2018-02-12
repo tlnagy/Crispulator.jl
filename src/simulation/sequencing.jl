@@ -4,7 +4,7 @@ $(SIGNATURES)
 Converts raw counts to frequencies by dividing by the total number of reads
 for each sample.
 """
-function counts_to_freqs(bin_cells::Dict{Symbol, Vector{Int}}, guide_count::Int)
+function counts_to_freqs(bin_cells::Associative{Symbol, Vector{Int}}, guide_count::Int)
     results = Dict{Symbol, Vector{Float64}}()
     for (bin, cells) in bin_cells
         counts = StatsBase.counts(cells, 1:guide_count)
@@ -23,7 +23,7 @@ dict of DataFrames with the bin names as the keys. This object can then be passe
 through [`Simulation.counts_to_freqs`](@ref) followed by
 [`Simulation.differences_between_bins`](@ref).
 """
-function sequencing(depths::Dict{Symbol, Int}, guides::Vector{Barcode}, samples::Dict{Symbol, Vector{Float64}})
+function sequencing(depths::Associative{Symbol, Int}, guides::Vector{Barcode}, samples::Associative{Symbol, Vector{Float64}})
     @assert all(Bool[haskey(depths, key) for key in keys(samples)]) "Supply exactly one sequencing depth per sample"
     sequencing_results = Dict{Symbol, DataFrame}()
     colnames = [fld for fld in fieldnames(Barcode) if fld != :obs_phenotype]

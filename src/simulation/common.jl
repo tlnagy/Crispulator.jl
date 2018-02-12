@@ -102,7 +102,7 @@ type FacsScreen <: ScreenSetup
     The 5th percentile of cells sorted according to their phenotype (fluorescence,
     size, etc) will be compared to the 95th percentile.
     """
-    bin_info::Dict{Symbol, Tuple{Float64, Float64}}
+    bin_info::Associative{Symbol, Tuple{Float64, Float64}}
 
     "Number of cells sorted expressed as an integer multiple of the number of guides"
     bottleneck_representation::Int
@@ -113,7 +113,7 @@ type FacsScreen <: ScreenSetup
     seq_depth::Int
 
     function FacsScreen()
-        new(500, 5, 100, 0.25, 1.0, Dict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 1000, 1000)
+        new(500, 5, 100, 0.25, 1.0, OrderedDict(:bin1 => (0.0, 1/3), :bin2 => (2/3, 1.0)), 1000, 1000)
     end
 end
 

@@ -29,7 +29,7 @@ function runconfig(setup::ScreenSetup,
         Guide.xlabel("log counts t0"), Guide.ylabel("log counts t1")))
         new_filename = joinpath(output_dir, "volcano.svg")
         draw(SVG(new_filename, 10cm, 10cm), plot(genes,
-        x=:mean, y=:pvalue, color=:class, Theme(highlight_width=0pt),
+        x=:mean_bin2_div_bin1, y=:pvalue_bin2_div_bin1, color=:class, Theme(highlight_width=0pt),
         Guide.title("$(typeof(crisprtype)) $(typeof(setup))"),
         Guide.xlabel("mean log2 fold change"), Guide.ylabel("-log10 pvalue")))
         test_methods_snr(bc_counts, genes, methods, measures, genetypes)
