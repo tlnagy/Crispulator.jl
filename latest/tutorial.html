@@ -38,9 +38,9 @@ INFO: Saving results in test_output
 
 Quick results:
 ##############
-Venn score = 1.0, 95% conf int (1.0, 1.0)
-AUPRC score = 0.926, 95% conf int (0.902, 0.95)
-SNR score = 4.014 +/- 0.313</code></pre></div><p>The <code>test_output/</code> directory should now be populated with all the files</p><div><pre><code class="language-none">counts.svg
+Venn score = 0.996, 95% conf int (0.987, 1.006)
+AUPRC score = 0.914, 95% conf int (0.895, 0.933)
+SNR score = 3.905 +/- 0.5</code></pre></div><p>The <code>test_output/</code> directory should now be populated with all the files</p><div><pre><code class="language-none">counts.svg
 results_table.csv
 volcano.svg</code></pre></div><h2><a class="nav-anchor" id="Output-1" href="#Output-1">Output</a></h2><p>The folder contains one of the raw count scatterplots (left) and a volcano plot of mean log2 fold change versus significance of each gene (right)</p><p><img src="test_output/counts.svg" alt/> <img src="test_output/volcano.svg" alt/></p><p>It also has a useful table that contains all the summary statistic information.</p><div><pre><code class="language-none">6×8 DataFrames.DataFrame
 │ Row │ method │ measure │ genetype    │ std_score │ mean_score │ conf_max │
@@ -49,7 +49,7 @@ volcano.svg</code></pre></div><h2><a class="nav-anchor" id="Output-1" href="#Out
 │ 2   │ &quot;venn&quot; │ &quot;inc&quot;   │ &quot;linear&quot;    │ NaN       │ NaN        │ NaN      │
 │ 3   │ &quot;venn&quot; │ &quot;inc&quot;   │ &quot;all&quot;       │ NaN       │ NaN        │ NaN      │
 │ 4   │ &quot;venn&quot; │ &quot;dec&quot;   │ &quot;sigmoidal&quot; │ 0.0       │ 1.0        │ 1.0      │
-│ 5   │ &quot;venn&quot; │ &quot;dec&quot;   │ &quot;linear&quot;    │ 0.0197642 │ 0.99375    │ 1.00988  │
+│ 5   │ &quot;venn&quot; │ &quot;dec&quot;   │ &quot;linear&quot;    │ 0.0       │ 1.0        │ 1.0      │
 │ 6   │ &quot;venn&quot; │ &quot;dec&quot;   │ &quot;all&quot;       │ 0.0       │ 1.0        │ 1.0      │
 
 │ Row │ conf_min │ n  │
@@ -58,5 +58,5 @@ volcano.svg</code></pre></div><h2><a class="nav-anchor" id="Output-1" href="#Out
 │ 2   │ NaN      │ 10 │
 │ 3   │ NaN      │ 10 │
 │ 4   │ 1.0      │ 10 │
-│ 5   │ 0.977625 │ 10 │
+│ 5   │ 1.0      │ 10 │
 │ 6   │ 1.0      │ 10 │</code></pre></div><p>The table below describes each column</p><table><tr><th>Column Name</th><th>Meaning</th></tr><tr><td><code>method</code></td><td>Which summary statistic was used (e.g. <a href="internals.html#Simulation.auprc"><code>Simulation.auprc</code></a>)</td></tr><tr><td><code>measure</code></td><td>Whether the score is only for increasing genes (<code>inc</code>), decreasing (<code>dec</code>) or both (<code>incdec</code>). Allows independent evaluation on which type of genes the screen can accurately evaluate.</td></tr><tr><td><code>genetype</code></td><td>Whether the score is for linear, sigmoidal, or all genes (see <a href="internals.html#Simulation.KDPhenotypeRelationship"><code>Simulation.KDPhenotypeRelationship</code></a>). Helps determine if CRISPRn or CRISPRi is better for this design.</td></tr><tr><td><code>mean_score</code></td><td>Average score</td></tr><tr><td><code>std_score</code></td><td>Standard deviation in scores</td></tr><tr><td><code>conf_max</code></td><td>Upper limit of 95% confidence interval</td></tr><tr><td><code>conf_min</code></td><td>Lower limit of 95% confidence interval</td></tr><tr><td><code>n</code></td><td>Number of independent replicates</td></tr></table><footer><hr/><a class="previous" href="index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="custom.html"><span class="direction">Next</span><span class="title">Custom Simulations</span></a></footer></article></body></html>
