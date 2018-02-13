@@ -1,0 +1,29 @@
+# This is an example configuration file. Whitespace is important.
+
+# Settings pertaining to the library design
+library:
+    genome:
+        num-genes: 500
+        num-guides-per-gene: 5
+        frac-increasing-genes: 0.0 # fraction of genes with a positive phenotype
+        frac-decreasing-genes: 0.1 # fraction of genes with a negative phenotype
+
+    guides:
+        crispr-type: CRISPRn # either CRISPRi or CRISPRn
+        frac-high-quality: 0.9 # fraction of high quality guides
+        mean-high-quality-kd: 0.85 # mean knockdown by a high quality guide (CRISPRi only)
+
+screen:
+    type: facs # either facs or growth
+    num-runs: 10 # how many independent runs
+
+    representation: # integer value, how much larger are samples than the library
+        - transfection: 100
+        - selection: 100
+        - sequencing: 100
+
+# screen-type specific parameters
+
+    bin-size: 0.25 # size of tail to sample from, must be between 0 and 0.5 (FACS only)
+    std-noise: 1 # (FACS only)
+    num-bottlenecks: 10 # (Growth only)
