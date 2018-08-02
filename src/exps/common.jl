@@ -87,7 +87,7 @@ end
         end
         local result = 0.0
         if measure == :incdec
-            result = method(abs(subgene[:pvalmeanprod_bin2_div_bin1]), subgene[:class], Set([:increasing, :decreasing]))
+            result = method(abs.(subgene[:pvalmeanprod_bin2_div_bin1]), subgene[:class], Set([:increasing, :decreasing]))
         elseif measure == :dec
             result = method(subgene[:pvalmeanprod_bin2_div_bin1], subgene[:class], Set([:decreasing]), rev=false)
         else

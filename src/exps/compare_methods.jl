@@ -79,7 +79,7 @@ function compare_methods(filepath; debug=false, quiet=false)
     compare_reduction_methods = (bc_counts, genes) -> begin
         sig, noi = signal(bc_counts), noise(bc_counts)
 
-        pvalmeanprod = auprc(abs(genes[:pvalmeanprod_bin2_div_bin1]), genes[:class], Set([:increasing, :decreasing]))[1]
+        pvalmeanprod = auprc(abs.(genes[:pvalmeanprod_bin2_div_bin1]), genes[:class], Set([:increasing, :decreasing]))[1]
         pvalue = auprc(genes[:pvalue_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
         effectsize = auprc(genes[:absmean_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
 
