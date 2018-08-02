@@ -25,7 +25,7 @@ total = sum([10, 100, 1000, 0] .+ 0.5)
 @test guide_data[:rel_freqs_low][2] == 100.5/total/(10.5/total)
 
 # make sure the log2 fold changes are correct
-@test all(guide_data[:log2fc_high_div_low] .== log2(guide_data[:rel_freqs_high]./guide_data[:rel_freqs_low]))
+@test all(guide_data[:log2fc_high_div_low] .== log2.(guide_data[:rel_freqs_high]./guide_data[:rel_freqs_low]))
 
 # > 2 bins
 raw_data = OrderedDict{Symbol, DataFrame}()

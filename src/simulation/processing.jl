@@ -55,7 +55,7 @@ A typical `gene_data` DataFrame contains the following data:
 """
 function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
     for (bin, seq_data) in raw_data
-        sort!(seq_data, cols=[:barcodeid])
+        sort!(seq_data, [:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
         # taking the log
         seq_data[:counts] += 0.5
@@ -87,7 +87,7 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
         end
         suffix = "_$(bins[2])_div_$(bins[1])"
         log2fc_col = Symbol(:log2fc, suffix)
-        guide_data[log2fc_col] = log2(guide_data[Symbol(:rel_freqs_, bins[2])]
+        guide_data[log2fc_col] = log2.(guide_data[Symbol(:rel_freqs_, bins[2])]
                                         ./guide_data[Symbol(:rel_freqs_, bins[1])])
 
         nonnegs = guide_data[guide_data[:class] .!= :negcontrol, :]
@@ -99,7 +99,7 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
             DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
         end
         gene_data[[:gene, :behavior, :class, Symbol(:pvalue, suffix), Symbol(:mean, suffix)]] = tmp[[:gene, :behavior, :class, :pvalue, :mean]]
-        gene_data[Symbol(:absmean, suffix)] = abs(gene_data[Symbol(:mean, suffix)])
+        gene_data[Symbol(:absmean, suffix)] = abs.(gene_data[Symbol(:mean, suffix)])
         gene_data[Symbol(:pvalmeanprod, suffix)] = gene_data[Symbol(:mean, suffix)] .* gene_data[Symbol(:pvalue, suffix)]
 
     end

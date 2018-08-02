@@ -165,5 +165,5 @@ function signal(guide_data::DataFrame; log2fc_col=nothing)
         signal = guides[log2fc_col] ./ guides[:theo_phenotype]
         DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))
     end
-    median(abs(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
+    median(abs.(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
 end
