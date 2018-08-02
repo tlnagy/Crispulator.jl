@@ -43,5 +43,5 @@ function growth_bottleneck_snr(filepath; debug=false, quiet=false)
     new_names = [[:technique, :score]...; fieldnames(GrowthScreen)...; :run_idx; :crisprtype;]
 
     results = construct_hierarchical_label(hierarchy, results, new_names)
-    writetable(filepath, results)
+    CSV.write(filepath, results)
 end

@@ -97,5 +97,5 @@ function compare_methods(filepath; debug=false, quiet=false)
     new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; array_names(Library)...; :run_idx]
     hierarchy = reshape([:signal, :noise, :product, :pvalue, :effectsize], 5, 1)
     results = construct_hierarchical_label(hierarchy, results, new_names)
-    writetable(filepath, results)
+    CSV.write(filepath, results)
 end

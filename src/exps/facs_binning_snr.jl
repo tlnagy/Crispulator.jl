@@ -38,5 +38,5 @@ function facs_binning_snr(filepath; debug=false, quiet=false)
 
     results = construct_hierarchical_label(hierarchy, results, new_names)
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
-    writetable(filepath, results)
+    CSV.write(filepath, results)
 end

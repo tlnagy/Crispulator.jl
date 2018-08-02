@@ -59,5 +59,5 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
 
     data = construct_hierarchical_label(hierarchy, data, new_names)
 
-    writetable(filepath, data)
+    CSV.write(filepath, data)
 end

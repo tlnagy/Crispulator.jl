@@ -40,5 +40,5 @@ function growth_representation(filepath; debug=false, quiet=false)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
 
     data = construct_hierarchical_label(hierarchy, data, new_names)
-    writetable(filepath, data)
+    CSV.write(filepath, data)
 end

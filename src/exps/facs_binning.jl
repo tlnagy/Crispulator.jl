@@ -42,5 +42,5 @@ function facs_binning(filepath; debug=false, quiet=false)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(FacsScreen)...; :run; :crisprtype]
     results = construct_hierarchical_label(hierarchy, results, new_names)
     results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
-    writetable(filepath, results)
+    CSV.write(filepath, results)
 end

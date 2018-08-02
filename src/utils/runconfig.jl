@@ -89,6 +89,6 @@ function runconfig(setup::ScreenSetup,
         )
     end
     info("Saving results in $output_dir")
-    writetable(joinpath(output_dir, "results_table.csv"), grouped_info)
+    CSV.write(joinpath(output_dir, "results_table.csv"), grouped_info)
     println("\nQuick results:\n##############\n$venn_result\n$auprc_result\n$snr_result")
 end

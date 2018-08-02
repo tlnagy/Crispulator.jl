@@ -10,6 +10,7 @@ using DataStructures
 using ColorBrewer
 using Gadfly
 using Compat
+using CSV
 import Compat: UTF8String, ASCIIString, view
 
 println("Running tests:")

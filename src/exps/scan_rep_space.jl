@@ -65,5 +65,5 @@ function scan_rep_space(filepath; debug=false, quiet=false)
     hierarchy = vcat([hcat(item...) for item in IterTools.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score, :screen]...; overlap...; :run; :crisprtype]
     results = construct_hierarchical_label(hierarchy, results, new_names)
-    writetable(filepath, results)
+    CSV.write(filepath, results)
 end
