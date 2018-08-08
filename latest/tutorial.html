@@ -27,7 +27,49 @@ screen:
 
     bin-size: 0.25 # size of tail to sample from, must be between 0 and 0.5 (FACS only)
     std-noise: 1 # (FACS only)
-    num-bottlenecks: 10 # (Growth only)</code></pre><p>This gives access to most dials in the simulation, if something is missing than see <a href="custom.html#Custom-Simulations-1">Custom Simulations</a>.</p><p>Now, lets remove all genes that have a positive phenotype by changing line 8 to 0.0:</p><pre><code class="language-yaml">        frac-increasing-genes: 0.0 # fraction of genes with a positive phenotype</code></pre><h2><a class="nav-anchor" id="Running-simulation-1" href="#Running-simulation-1">Running simulation</a></h2><p>Now, we can actually run the code by executing the following command</p><pre><code class="language-julia">julia src/run.jl config example_config.yml test_output</code></pre><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>Here <code>config</code> tells <code>CRISPulator</code> to use the provided config <code>example_config.yml</code> and <code>test_output</code> is the directory where the results will be saved. This directory will be created if it doesn&#39;t exist.</p></div></div><p>The output should look like</p><pre><code class="language-">output = readstring(`julia ../../src/run.jl config example_config.yml test_output`) # hide
-println(output) # hide</code></pre><p>The <code>test_output/</code> directory should now be populated with all the files</p><div><pre><code class="language-none">counts.svg
-volcano.svg</code></pre></div><h2><a class="nav-anchor" id="Output-1" href="#Output-1">Output</a></h2><p>The folder contains one of the raw count scatterplots (left) and a volcano plot of mean log2 fold change versus significance of each gene (right)</p><p><img src="test_output/counts.svg" alt/> <img src="test_output/volcano.svg" alt/></p><p>It also has a useful table that contains all the summary statistic information.</p><pre><code class="language-">using DataFrames # hide
-head(readtable(joinpath(&quot;test_output&quot;, &quot;results_table.csv&quot;))) # hide</code></pre><p>The table below describes each column</p><table><tr><th>Column Name</th><th>Meaning</th></tr><tr><td><code>method</code></td><td>Which summary statistic was used (e.g. <a href="internals.html#Simulation.auprc"><code>Simulation.auprc</code></a>)</td></tr><tr><td><code>measure</code></td><td>Whether the score is only for increasing genes (<code>inc</code>), decreasing (<code>dec</code>) or both (<code>incdec</code>). Allows independent evaluation on which type of genes the screen can accurately evaluate.</td></tr><tr><td><code>genetype</code></td><td>Whether the score is for linear, sigmoidal, or all genes (see <a href="internals.html#Simulation.KDPhenotypeRelationship"><code>Simulation.KDPhenotypeRelationship</code></a>). Helps determine if CRISPRn or CRISPRi is better for this design.</td></tr><tr><td><code>mean_score</code></td><td>Average score</td></tr><tr><td><code>std_score</code></td><td>Standard deviation in scores</td></tr><tr><td><code>conf_max</code></td><td>Upper limit of 95% confidence interval</td></tr><tr><td><code>conf_min</code></td><td>Lower limit of 95% confidence interval</td></tr><tr><td><code>n</code></td><td>Number of independent replicates</td></tr></table><footer><hr/><a class="previous" href="index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="custom.html"><span class="direction">Next</span><span class="title">Custom Simulations</span></a></footer></article></body></html>
+    num-bottlenecks: 10 # (Growth only)</code></pre><p>This gives access to most dials in the simulation, if something is missing than see <a href="custom.html#Custom-Simulations-1">Custom Simulations</a>.</p><p>Now, lets remove all genes that have a positive phenotype by changing line 8 to 0.0:</p><pre><code class="language-yaml">        frac-increasing-genes: 0.0 # fraction of genes with a positive phenotype</code></pre><h2><a class="nav-anchor" id="Running-simulation-1" href="#Running-simulation-1">Running simulation</a></h2><p>Now, we can actually run the code by executing the following command</p><pre><code class="language-julia">julia src/run.jl config example_config.yml test_output</code></pre><div class="admonition tip"><div class="admonition-title">Tip</div><div class="admonition-text"><p>Here <code>config</code> tells <code>CRISPulator</code> to use the provided config <code>example_config.yml</code> and <code>test_output</code> is the directory where the results will be saved. This directory will be created if it doesn&#39;t exist.</p></div></div><p>The output should look like</p><div><pre><code class="language-none">INFO: Directory test_output does not exist, attempting to create
+INFO: Using 1 thread(s)
+INFO: Loading simulation framework
+INFO: Parsing config
+INFO: Running config
+INFO: Generating plots
+INFO: Analyzing results
+INFO: Saving results in test_output
+
+Quick results:
+##############
+Venn score = 0.996, 95% conf int (0.987, 1.006)
+AUPRC score = 0.929, 95% conf int (0.917, 0.942)
+SNR score = 3.921 +/- 0.369</code></pre></div><p>The <code>test_output/</code> directory should now be populated with all the files</p><div><pre><code class="language-none">counts.svg
+results_table.csv
+volcano.svg</code></pre></div><h2><a class="nav-anchor" id="Output-1" href="#Output-1">Output</a></h2><p>The folder contains one of the raw count scatterplots (left) and a volcano plot of mean log2 fold change versus significance of each gene (right)</p><p><img src="test_output/counts.svg" alt/> <img src="test_output/volcano.svg" alt/></p><p>It also has a useful table that contains all the summary statistic information.</p><div><pre><code class="language-none">WARNING: readtable is deprecated, use CSV.read from the CSV package instead
+Stacktrace:
+ [1] depwarn(::String, ::Symbol) at ./deprecated.jl:70
+ [2] #readtable#232(::Bool, ::Char, ::Array{Char,1}, ::Char, ::Array{String,1}, ::Array{String,1}, ::Array{String,1}, ::Bool, ::Int64, ::Array{Symbol,1}, ::Array{Any,1}, ::Bool, ::Char, ::Bool, ::Int64, ::Array{Int64,1}, ::Bool, ::Symbol, ::Bool, ::Bool, ::DataFrames.#readtable, ::String) at /home/travis/.julia/v0.6/DataFrames/src/deprecated.jl:1045
+ [3] readtable(::String) at /home/travis/.julia/v0.6/DataFrames/src/deprecated.jl:1045
+ [4] cd(::Documenter.Expanders.##8#10{Module}, ::String) at ./file.jl:70
+ [5] (::Documenter.Utilities.##19#20{Documenter.Expanders.##7#9{Documenter.Documents.Page,Module},Base.PipeEndpoint,Base.PipeEndpoint,Pipe,Array{UInt8,1}})() at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:593
+ [6] withoutput(::Documenter.Expanders.##7#9{Documenter.Documents.Page,Module}) at /home/travis/.julia/v0.6/Documenter/src/Utilities/Utilities.jl:591
+ [7] runner(::Type{Documenter.Expanders.ExampleBlocks}, ::Base.Markdown.Code, ::Documenter.Documents.Page, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:478
+ [8] dispatch(::Type{Documenter.Expanders.ExpanderPipeline}, ::Base.Markdown.Code, ::Vararg{Any,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
+ [9] expand(::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Expanders.jl:31
+ [10] runner(::Type{Documenter.Builder.ExpandTemplates}, ::Documenter.Documents.Document) at /home/travis/.julia/v0.6/Documenter/src/Builder.jl:178
+ [11] dispatch(::Type{Documenter.Builder.DocumentPipeline}, ::Documenter.Documents.Document, ::Vararg{Documenter.Documents.Document,N} where N) at /home/travis/.julia/v0.6/Documenter/src/Selectors.jl:168
+ [12] cd(::Documenter.##2#3{Documenter.Documents.Document}, ::String) at ./file.jl:70
+ [13] #makedocs#1(::Bool, ::Array{Any,1}, ::Function) at /home/travis/.julia/v0.6/Documenter/src/Documenter.jl:203
+ [14] (::Documenter.#kw##makedocs)(::Array{Any,1}, ::Documenter.#makedocs) at ./&lt;missing&gt;:0
+ [15] include_from_node1(::String) at ./loading.jl:576
+ [16] include(::String) at ./sysimg.jl:14
+ [17] eval(::Module, ::Any) at ./boot.jl:235
+ [18] process_options(::Base.JLOptions) at ./client.jl:286
+ [19] _start() at ./client.jl:371
+while loading /home/travis/.julia/v0.6/Crispulator/docs/make.jl, in expression starting on line 35
+6×8 DataFrames.DataFrame. Omitted printing of 2 columns
+│ Row │ method │ measure │ genetype  │ std_score │ mean_score │ conf_max │
+├─────┼────────┼─────────┼───────────┼───────────┼────────────┼──────────┤
+│ 1   │ venn   │ inc     │ sigmoidal │ NaN       │ NaN        │ NaN      │
+│ 2   │ auprc  │ inc     │ sigmoidal │ NaN       │ NaN        │ NaN      │
+│ 3   │ venn   │ dec     │ sigmoidal │ 0.0       │ 1.0        │ 1.0      │
+│ 4   │ auprc  │ dec     │ sigmoidal │ 0.0382112 │ 0.955199   │ 0.986374 │
+│ 5   │ venn   │ incdec  │ sigmoidal │ 0.0       │ 1.0        │ 1.0      │
+│ 6   │ auprc  │ incdec  │ sigmoidal │ 0.0489821 │ 0.924908   │ 0.964871 │</code></pre></div><p>The table below describes each column</p><table><tr><th>Column Name</th><th>Meaning</th></tr><tr><td><code>method</code></td><td>Which summary statistic was used (e.g. <a href="internals.html#Simulation.auprc"><code>Simulation.auprc</code></a>)</td></tr><tr><td><code>measure</code></td><td>Whether the score is only for increasing genes (<code>inc</code>), decreasing (<code>dec</code>) or both (<code>incdec</code>). Allows independent evaluation on which type of genes the screen can accurately evaluate.</td></tr><tr><td><code>genetype</code></td><td>Whether the score is for linear, sigmoidal, or all genes (see <a href="internals.html#Simulation.KDPhenotypeRelationship"><code>Simulation.KDPhenotypeRelationship</code></a>). Helps determine if CRISPRn or CRISPRi is better for this design.</td></tr><tr><td><code>mean_score</code></td><td>Average score</td></tr><tr><td><code>std_score</code></td><td>Standard deviation in scores</td></tr><tr><td><code>conf_max</code></td><td>Upper limit of 95% confidence interval</td></tr><tr><td><code>conf_min</code></td><td>Lower limit of 95% confidence interval</td></tr><tr><td><code>n</code></td><td>Number of independent replicates</td></tr></table><footer><hr/><a class="previous" href="index.html"><span class="direction">Previous</span><span class="title">Home</span></a><a class="next" href="custom.html"><span class="direction">Next</span><span class="title">Custom Simulations</span></a></footer></article></body></html>
