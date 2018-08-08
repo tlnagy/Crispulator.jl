@@ -1,5 +1,6 @@
 include(normpath(joinpath(@__FILE__, "..", "..", "exps", "common.jl")))
 using IterTools
+using CSV
 
 function runconfig(setup::ScreenSetup,
                    lib::Library,
@@ -63,7 +64,7 @@ function runconfig(setup::ScreenSetup,
     grouped_info = by(results, [:method, :measure, :genetype]) do grouped_df
         n = size(grouped_df, 1)
         mean_score = mean(grouped_df[:score])
-        std_score = std(grouped_df[:score])
+        std_score = std(float.(grouped_df[:score]))
         conf_int = 2.58 * std_score./sqrt(n)
 
         if (grouped_df[1, :measure] == :incdec) &&
