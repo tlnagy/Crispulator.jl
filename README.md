@@ -6,6 +6,8 @@
 
 A pooled genetic screen simulator
 
+> Crispulator does not yet support Julia 1.0! We're still waiting on all the dependencies to be updated, please use Julia v0.6.4 in the mean time.
+
 ## Motivation
 
 Pooled screens are very useful, but they are also extraordinarily complex.
