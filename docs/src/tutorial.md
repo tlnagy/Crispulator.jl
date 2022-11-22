@@ -84,8 +84,8 @@ julia run.jl config example_config.yml test_output
 The output should look like
 
 ```@example
-output = read(`julia ../../run.jl config example_config.yml test_output`, String) # hide
-println(output) # hide
+include(joinpath("..", "..", "commands.jl")) #hide
+bootstrap_config("example_config.yml", "test_output", false) #hide
 ```
 
 The `test_output/` directory should now be populated with all the files
