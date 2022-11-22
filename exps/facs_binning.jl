@@ -30,12 +30,12 @@ function facs_binning(filepath; debug=false, quiet=false)
     results = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
-    results.crisprtype .= "CRISPRi"
+    results[!, :crisprtype] .= "CRISPRi"
     before = time()
     results2 = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRn()), test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
-    results2.crisprtype .= "CRISPRn"
+    results2[!, :crisprtype] .= "CRISPRn"
     results = vcat(results, results2)
 
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)

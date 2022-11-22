@@ -1,22 +1,8 @@
-# Sane behavior when run from the REPL
-using Pkg
-source_dir = typeof(Base.source_dir()) === nothing ? joinpath(Pkg.dir("Crispulator")) : Base.source_dir()
-Pkg.activate(source_dir)
-
-using Distributed
-@info "Loading simulation framework"
-using Crispulator
-using DataFrames
-using Distributions
-using Gadfly
-using YAML
-
-
 """
 List the custom simulation scripts that are available
 """
 function ls()
-    files = readdir(joinpath(source_dir, "exps"))
+    files = readdir(joinpath(@__DIR__, "exps"))
     filter(file -> file != "common.jl", files)
 end
 
@@ -36,13 +22,13 @@ function bootstrap_exp(analysis_file::String,
 
     # load simulation code on all cores
     print("Loading analysis code...")
-    analysis_full_path = joinpath(source_dir, "exps", analysis_file)
+    analysis_full_path = joinpath(@__DIR__, "exps", analysis_file)
 
     (!isfile(analysis_full_path)) && error("Please provide a valid analysis file to run")
     (!isdir(dirname(abspath(output_dir)))) && error("Please provide a valid directory for output")
 
     # load common analysis code
-    include(joinpath(source_dir, "exps", "common.jl"))
+    include(joinpath(@__DIR__, "exps", "common.jl"))
 
     # load specific analysis
     include(analysis_full_path)
@@ -82,8 +68,8 @@ function bootstrap_config(config_file::String,
     @info "Using $(nprocs()) thread(s)"
 
     # load analysis files and simulation
-    include(joinpath(source_dir, "utils", "parse_yaml.jl"))
-    include(joinpath(source_dir, "utils", "runconfig.jl"))
+    include(joinpath(@__DIR__, "utils", "parse_yaml.jl"))
+    include(joinpath(@__DIR__, "utils", "runconfig.jl"))
 
     # run
     Base.invokelatest(runconfig, Base.invokelatest(parse, config)..., output_dir, suppress_graph)

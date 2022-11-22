@@ -20,7 +20,7 @@ First, navigate to the Crispulator directory.
     You can find the directory by running
 
     ```sh
-    $ julia -e 'println(Pkg.dir("Crispulator"))'
+    $ julia -e 'import Crispulator; println(normpath(pathof(Crispulator), "..", ".."))'
     ```
 
 There should be a [YAML file](https://learnxinyminutes.com/docs/yaml/) called
@@ -84,8 +84,7 @@ julia run.jl config example_config.yml test_output
 The output should look like
 
 ```@example
-include(joinpath("..", "..", "commands.jl")) #hide
-bootstrap_config("example_config.yml", "test_output", false) #hide
+read(`julia ../../run.jl config example_config.yml test_output`, String) #hide
 ```
 
 The `test_output/` directory should now be populated with all the files

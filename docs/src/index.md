@@ -7,6 +7,12 @@ necessary parameters *a priori*. This work aims to explore the importance
 of various screen parameters and the relevance of design choices on the
 downstream analysis and interpretation.
 
+!!! compat "Paper"
+    Nagy, T. & Kampmann, M. CRISPulator: a discrete simulation tool for pooled
+    genetic screens. BMC Bioinformatics 18, 347 (2017).
+    https://doi.org/10.1186/s12859-017-1759-9 (Preprint also
+    [available](https://doi.org/10.1101/119131)) 
+
 ## Setup
 
 To run the simulation, you will need a recent version of

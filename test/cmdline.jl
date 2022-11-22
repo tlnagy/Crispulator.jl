@@ -1,7 +1,7 @@
 # ensure consistency in the command line interface
 using ArgParse
 
-include(normpath(joinpath(Base.source_dir(),"..", "parsing.jl")))
+include(normpath(joinpath(@__DIR__,"..", "parsing.jl")))
 
 let s = build_arg_table()
 

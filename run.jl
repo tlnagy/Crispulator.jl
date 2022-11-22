@@ -1,9 +1,17 @@
-# Sane behavior when run from the REPL
 using Pkg
-source_dir = typeof(Base.source_dir()) === nothing ? joinpath(Pkg.dir("Crispulator")) : Base.source_dir()
-Pkg.activate(source_dir)
+@info "Activating simulation environment"
+Pkg.activate(@__DIR__)
+@info "Instantiating environment"
+Pkg.instantiate()
+
+@info "Loading simulation framework"
+using Crispulator
 
 using ArgParse
+using Distributed
+using DataFrames
+using Distributions
+using Gadfly
 using YAML
 
 include("parsing.jl")

@@ -1,5 +1,3 @@
-using YAML
-
 function build_arg_table()
     settings = ArgParseSettings(
         description="\033[32mPooled Screen Optimizer\033[0m\n\n\n\n" *
@@ -56,9 +54,7 @@ function build_arg_table()
 
     settings["config"].description
 
-    if typeof(Base.source_dir()) !== nothing
-        settings.epilog = read(normpath(joinpath(Base.source_dir(),"LICENSE")), String)
-    end
+    settings.epilog = read(normpath(joinpath(@__DIR__,"LICENSE")), String)
 
     return settings
 end

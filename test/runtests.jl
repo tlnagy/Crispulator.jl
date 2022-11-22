@@ -9,14 +9,13 @@ using Distributions
 using StatsBase
 using Random
 
-# filenames = ["kdrelationships.jl",
-#              "qualitymetrics.jl",
-#              "diffcrisprtransfection.jl",
-#              "processing.jl",
-#              "growth.jl",
-#              "selectionmethods.jl",
-#              "cmdline.jl"]
-filenames = []
+filenames = ["kdrelationships.jl",
+             "qualitymetrics.jl",
+             "diffcrisprtransfection.jl",
+             "processing.jl",
+             "growth.jl",
+             "selectionmethods.jl",
+             "cmdline.jl"]
 
 for filename in filenames
     @testset "$filename" begin
@@ -24,7 +23,7 @@ for filename in filenames
     end
 end
 
-analyses_path = normpath(joinpath(Base.source_dir(),"..", "exps"))
+analyses_path = joinpath(@__DIR__, "..", "exps")
 analyses = readdir(analyses_path)
 analyses = analyses[findall(x -> x != "common.jl", analyses)]
 # load common file first
