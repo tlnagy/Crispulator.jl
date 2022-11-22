@@ -25,19 +25,19 @@ function growth_representation(filepath; debug=false, quiet=false)
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (1-0.1-0.05, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
-        :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+        :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
     )
     libs = [Library(max_phenotype_dists, CRISPRi()), Library(max_phenotype_dists, CRISPRn())]
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
     before = time()
-    results = pmap(args -> run_exp(args[1], args[2], test_method_wrapper;
-                   run_idx=args[3], flatten_func=flatten_both), runs)
+    results = pmap(args -> Crispulator.run_exp(args[1], args[2], test_method_wrapper;
+                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs)
     (!quiet) && println("$(time() - before) seconds")
 
-    data = DataFrame(permutedims(hcat(results...), [2, 1]))
-    hierarchy = vcat([hcat(item...) for item in IterTools.product(map(Symbol, methods), measures, genetypes)]...)
-    new_names = [[:method, :measure, :genetype, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
+    data = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
+    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
+    new_names = [[:method, :measure, :genetype, :score]...; fieldnames(GrowthScreen)...; Crispulator.array_names(Library)...; :run_idx]
 
     data = construct_hierarchical_label(hierarchy, data, new_names)
     CSV.write(filepath, data)

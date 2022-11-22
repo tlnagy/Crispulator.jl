@@ -1,8 +1,11 @@
-function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, num_runs::Int)
+using IterTools
+using Distributed
+
+function build_parameter_space(::T, parameters::Dict{Symbol, Vector}, num_runs::Int) where {T <: ScreenSetup}
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
-    for vals in IterTools.product([parameters[field] for field in fields]...)
+    for vals in Iterators.product([parameters[field] for field in fields]...)
         for run in 1:num_runs
             setup = T()
             for idx in 1:n_fields
@@ -14,8 +17,8 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector},
-                                                 libs::Vector{Library}, num_runs::Int)
+function build_parameter_space(::T, parameters::Dict{Symbol, Vector},
+                                    libs::Vector{Library}, num_runs::Int) where {T <: ScreenSetup}
     fields = collect(keys(parameters))
     n_fields = length(fields)
     runs = []
@@ -33,16 +36,16 @@ function build_parameter_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, V
     runs
 end
 
-function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector},
-                                               libs::Vector{Library},
-                                               dists::Vector{Symbol}, num_runs::Int)
+function grouped_param_space(::T, parameters::Dict{Symbol, Vector},
+                                  libs::Vector{Library},
+                                  dists::Vector{Symbol}, num_runs::Int) where {T <: ScreenSetup}
     fields = collect(keys(parameters))
     n_fields = length(fields)
-    deleteat!(fields, findin(fields, dists))
+    deleteat!(fields, findall(in(dists), fields))
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
     (length(dists) > 0) && push!(fields, dists...)
-    for vals in IterTools.product(grouped_params, [parameters[dist] for dist in dists]...)
+    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
         vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for lib in libs
             for run in 1:num_runs
@@ -57,14 +60,15 @@ function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vec
     runs
 end
 
-function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vector}, dists::Vector{Symbol}, num_runs::Int)
+function grouped_param_space(::T, parameters::Dict{Symbol, Vector}, 
+                                  dists::Vector{Symbol}, num_runs::Int) where {T <: ScreenSetup}
     fields = collect(keys(parameters))
     n_fields = length(fields)
-    deleteat!(fields, findin(fields, dists))
+    deleteat!(fields, findall(in(dists), fields))
     runs = []
     grouped_params = zip([parameters[field] for field in fields]...)
     (length(dists) > 0) && push!(fields, dists...)
-    for vals in IterTools.product(grouped_params, [parameters[dist] for dist in dists]...)
+    for vals in Iterators.product(grouped_params, [parameters[dist] for dist in dists]...)
         vals = Any[vals[1]...; [vals[i+1] for i in 1:length(dists)]...]
         for run in 1:num_runs
             setup = T()
@@ -77,34 +81,34 @@ function grouped_param_space{T <: ScreenSetup}(::T, parameters::Dict{Symbol, Vec
     runs
 end
 
-@everywhere function test_methods(genes, methods, measures, genetypes)
+function test_methods(genes, methods, measures, genetypes)
     local results = []
-    for (method, measure, genetype) in IterTools.product(methods, measures, genetypes)
+    for (method, measure, genetype) in Iterators.product(methods, measures, genetypes)
         if genetype != :all
-            subgene = genes[genes[:behavior] .== genetype, :]
+            subgene = genes[genes[!, :behavior] .== genetype, :]
         else
             subgene = genes
         end
         local result = 0.0
         if measure == :incdec
-            result = method(abs.(subgene[:pvalmeanprod_bin2_div_bin1]), subgene[:class], Set([:increasing, :decreasing]))
+            result = method(abs.(subgene[!, :pvalmeanprod_bin2_div_bin1]), subgene[!, :class], Set([:increasing, :decreasing]))
         elseif measure == :dec
-            result = method(subgene[:pvalmeanprod_bin2_div_bin1], subgene[:class], Set([:decreasing]), rev=false)
+            result = method(subgene[!, :pvalmeanprod_bin2_div_bin1], subgene[!, :class], Set([:decreasing]), rev=false)
         else
-            result = method(subgene[:pvalmeanprod_bin2_div_bin1], subgene[:class], Set([:increasing]))
+            result = method(subgene[!, :pvalmeanprod_bin2_div_bin1], subgene[!, :class], Set([:increasing]))
         end
         (typeof(result) <: Tuple) && (result = result[1])
         push!(results, result)
     end
-    (results...)
+    (results..., )
 end
 
-@everywhere function test_methods_snr(bc_counts, genes, methods, measures, genetypes)
-    (test_methods(genes, methods, measures, genetypes)..., signal(bc_counts), noise(bc_counts))
+function test_methods_snr(bc_counts, genes, methods, measures, genetypes)
+    (test_methods(genes, methods, measures, genetypes)..., Crispulator.signal(bc_counts), Crispulator.noise(bc_counts))
 end
 
-@everywhere function compute_snr(bc_counts::DataFrame, genes::DataFrame)
-    sig, noi = signal(bc_counts), noise(bc_counts)
+function compute_snr(bc_counts::DataFrame, genes::DataFrame)
+    sig, noi = Crispulator.signal(bc_counts), Crispulator.noise(bc_counts)
     (sig/noi, sig, noi)
 end
 
@@ -119,7 +123,7 @@ function compute_name(filename::AbstractString)
 end
 
 """
-construct_hierarchical_label(hierarchy::Array{Symbol, 2}, df::DataFrame, renames::Vector{Symbol})
+    construct_hierarchical_label(hierarchy::Array{Symbol, 2}, df::DataFrame, renames::Vector{Symbol})
 
 Creates a hierarchical index in the given dataframe
 """
@@ -127,9 +131,9 @@ function construct_hierarchical_label(hierarchy::Array{Symbol, 2}, df::DataFrame
     procs = []
     for i in 1:size(hierarchy, 1)
         row_labels = repeat(hierarchy[i:i, :], inner=[size(df, 1), 1])
-        data = DataFrame(hcat(row_labels, df[i], Array(df[size(hierarchy, 1)+1:end])))
-        names!(data, renames)
+        data = DataFrame(hcat(row_labels, df[!, i], Array(df[!, size(hierarchy, 1)+1:end])), :auto)
+        rename!(data, renames)
         push!(procs, data)
     end
-    vcat(procs...)
+    vcat(procs..., )
 end

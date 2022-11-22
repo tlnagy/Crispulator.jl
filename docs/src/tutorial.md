@@ -20,7 +20,7 @@ First, navigate to the Crispulator directory.
     You can find the directory by running
 
     ```sh
-    $ julia -e 'println(Pkg.dir("Crispulator"))'
+    $ julia -e 'import Crispulator; println(normpath(pathof(Crispulator), "..", ".."))'
     ```
 
 There should be a [YAML file](https://learnxinyminutes.com/docs/yaml/) called
@@ -73,7 +73,7 @@ Now, lets remove all genes that have a positive phenotype by changing line 8 to
 Now, we can actually run the code by executing the following command
 
 ```julia
-julia src/run.jl config example_config.yml test_output
+julia run.jl config example_config.yml test_output
 ```
 
 !!! tip
@@ -84,8 +84,7 @@ julia src/run.jl config example_config.yml test_output
 The output should look like
 
 ```@example
-output = readstring(`julia ../../src/run.jl config example_config.yml test_output`) # hide
-println(output) # hide
+read(`julia ../../run.jl config example_config.yml test_output`, String) #hide
 ```
 
 The `test_output/` directory should now be populated with all the files
@@ -106,16 +105,17 @@ It also has a useful table that contains all the summary statistic information.
 
 ```@example
 using DataFrames # hide
-head(readtable(joinpath("test_output", "results_table.csv"))) # hide
+using CSV # hide
+first(CSV.read(joinpath("test_output", "results_table.csv"), DataFrame), 10) # hide
 ```
 
 The table below describes each column
 
 | Column Name  | Meaning  |
 |:--|:--|
-| `method` | Which summary statistic was used (e.g. [`Simulation.auprc`](@ref))  |
+| `method` | Which summary statistic was used (e.g. [`Crispulator.auprc`](@ref))  |
 | `measure`  | Whether the score is only for increasing genes (`inc`), decreasing (`dec`) or both (`incdec`). Allows independent evaluation on which type of genes the screen can accurately evaluate.  |
-| `genetype`  | Whether the score is for linear, sigmoidal, or all genes (see [`Simulation.KDPhenotypeRelationship`](@ref)). Helps determine if CRISPRn or CRISPRi is better for this design.  |
+| `genetype`  | Whether the score is for linear, sigmoidal, or all genes (see [`Crispulator.KDPhenotypeRelationship`](@ref)). Helps determine if CRISPRn or CRISPRi is better for this design.  |
 | `mean_score`  | Average score  |
 | `std_score`  | Standard deviation in scores  |
 | `conf_max`  | Upper limit of 95% confidence interval  |

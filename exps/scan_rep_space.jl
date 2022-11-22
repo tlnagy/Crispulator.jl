@@ -6,21 +6,21 @@ function scan_rep_space(filepath; debug=false, quiet=false)
 
     if !debug
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int, x), logspace(0, 4, 13)),
-            :bottleneck_representation => map(x->round(Int, x),  logspace(0,4,13)),
-            :seq_depth => map(x->round(Int, x), logspace(0, 4, 13))
+            :representation => map(x->round(Int, x), exp10.(range(0, 4, length = 13))),
+            :bottleneck_representation => map(x->round(Int, x),  exp10.(range(0,4, length = 13))),
+            :seq_depth => map(x->round(Int, x), exp10.(range(0, 4, length=13)))
         )
         num_runs = 10
     else
         parameters = Dict{Symbol, Vector}(
-            :representation => map(x->round(Int, x), logspace(0, 2, 2)),
-            :bottleneck_representation => map(x->round(Int, x),  logspace(0,2,2)),
+            :representation => map(x->round(Int, x), exp10.(range(0, 2, length=2))),
+            :bottleneck_representation => map(x->round(Int, x),  exp10.(range(0,2,length=2))),
             :seq_depth => [10^2]
         )
         num_runs = 1
     end
 
-    const overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
+    overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
     # custom function for handling both growth and a facs screen in the
     # same relational datastructure
     flatten_overlap = (setup, lib) -> begin
@@ -43,8 +43,8 @@ function scan_rep_space(filepath; debug=false, quiet=false)
                 max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                     :inactive => (0.83, Delta(0.0)),
                     :negcontrol => (0.05, Delta(0.0)),
-                    :increasing => (0.02, TruncatedNormal(0.1, 0.1, 0.025, 1)),
-                    :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+                    :increasing => (0.02, truncated(Normal(0.1, 0.1), 0.025, 1)),
+                    :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
                 )
                 lib = Library(max_phenotype_dists, crisprtype)
             else
@@ -54,15 +54,15 @@ function scan_rep_space(filepath; debug=false, quiet=false)
             runs = build_parameter_space(screentype, parameters, num_runs)
 
             before = time()
-            result = pmap(args -> run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
+            result = pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
             (!quiet) && println("$(time() - before) seconds")
-            result = DataFrame(permutedims(hcat(result...), [2, 1]))
-            result[:crisprtype] = typeof(crisprtype)
+            result = DataFrame(permutedims(hcat(result...), [2, 1]), :auto)
+            result[!, :crisprtype] .= typeof(crisprtype)
             push!(results, result)
         end
     end
     results = vcat(results...)
-    hierarchy = vcat([hcat(item...) for item in IterTools.product(map(Symbol, methods), measures, genetypes)]...)
+    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score, :screen]...; overlap...; :run; :crisprtype]
     results = construct_hierarchical_label(hierarchy, results, new_names)
     CSV.write(filepath, results)

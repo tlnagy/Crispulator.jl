@@ -13,7 +13,7 @@ function test_crispri_construction()
     lib = Library(CRISPRi())
     setup = FacsScreen()
     guides, guide_freqs_dist = construct_library(setup, lib)
-    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^6)
+    cells, cell_phenotypes = Crispulator.build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^6)
 
     # In a CRISPRi screen all cells should have the same phenotype
     all(map(length, convert_cells_to_pop(cells, cell_phenotypes, guides)) .== 1)
@@ -24,11 +24,11 @@ function test_crisprko_construction()
     lib = Library(CRISPRn())
     setup = FacsScreen()
     guides, guide_freqs_dist = construct_library(setup, lib)
-    cells, cell_phenotypes = build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^7)
+    cells, cell_phenotypes = Crispulator.build_cells(lib.cas9_behavior, guides, guide_freqs_dist, 10^7)
 
     arr = convert_cells_to_pop(cells, cell_phenotypes, guides)
-    nonzeros = arr[find(x->length(x) != 1, arr)]
-    results = zeros(CRISPRn().knockout_dist.K, length(nonzeros))
+    nonzeros = arr[findall(x->length(x) != 1, arr)]
+    results = zeros(ncategories(CRISPRn().knockout_dist), length(nonzeros))
     for (idx, guide) in enumerate(nonzeros)
         if -0.0 in keys(guide)
             @assert guide[0.0] == 0

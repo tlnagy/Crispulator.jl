@@ -24,8 +24,8 @@ function auroc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
     labels = classes[ordering]
     num_pos, num_neg = count(labels, pos_labels)
 
-    tprs = Array{Float64}(num_scores)
-    fprs = Array{Float64}(num_scores)
+    tprs = Array{Float64}(undef, num_scores)
+    fprs = Array{Float64}(undef, num_scores)
 
     auroc = 0.0
     tp = labels[1] in pos_labels ? 1 : 0
@@ -70,8 +70,8 @@ function auprc(scores::AbstractArray{Float64}, classes::AbstractArray{Symbol},
 
     tn, fn, tp, fp = 0, 0, num_pos, num_neg
 
-    p = Array{Float64}(num_scores)
-    r = Array{Float64}(num_scores)
+    p = Array{Float64}(undef, num_scores)
+    r = Array{Float64}(undef, num_scores)
     p[num_scores] = tp/(tp+fp)
     r[num_scores] = tp/(tp+fn)
     auprc, prev_r = 0.0, r[num_scores]
@@ -133,10 +133,10 @@ bins are used then the name of log2 fold change information can be provided to
 differentiate between multiple log 2 fold changes.
 """
 function noise(guide_data::DataFrame; log2fc_col=nothing)
-    if log2fc_col == nothing
+    if log2fc_col === nothing
         log2fc_col=first(name for name in names(guide_data) if contains(string(name), "log2fc"))
     end
-    negcontrols = guide_data[guide_data[:class] .== :negcontrol, log2fc_col]
+    negcontrols = guide_data[guide_data[!, :class] .== :negcontrol, log2fc_col]
     std(negcontrols)
 end
 
@@ -157,13 +157,12 @@ where ``N_{true}`` is the number of true hit genes and ``k`` is the number of
 genes.
 """
 function signal(guide_data::DataFrame; log2fc_col=nothing)
-    if log2fc_col == nothing
+    if log2fc_col === nothing
         log2fc_col=first(name for name in names(guide_data) if contains(string(name), "log2fc"))
     end
-    true_hits = guide_data[(guide_data[:class] .!= :inactive) .& (guide_data[:class] .!= :negcontrol), :]
-    signal_df = by(true_hits, [:gene, :class, :behavior]) do guides
-        signal = guides[log2fc_col] ./ guides[:theo_phenotype]
-        DataFrame(mean_signal = mean(signal[find(isfinite, signal)]))
-    end
-    median(abs.(signal_df[find(isfinite, signal_df[:mean_signal]), :mean_signal]))
+    true_hits = guide_data[(guide_data[!, :class] .!= :inactive) .& (guide_data[!, :class] .!= :negcontrol), :]
+    signal_df = combine(DataFrames.groupby(true_hits, [:gene, :class, :behavior]),
+                        [Symbol(log2fc_col), :theo_phenotype] => ((x, xₜ) -> mean(filter(isfinite, x ./ xₜ))) => :mean_signal
+                        )
+    median(abs.(signal_df[findall(isfinite, signal_df[!, :mean_signal]), :mean_signal]))
 end

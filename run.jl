@@ -1,7 +1,18 @@
+using Pkg
+@info "Activating simulation environment"
+Pkg.activate(@__DIR__)
+@info "Instantiating environment"
+Pkg.instantiate()
+
+@info "Loading simulation framework"
+using Crispulator
+
 using ArgParse
+using Distributed
+using DataFrames
+using Distributions
+using Gadfly
 using YAML
-using Compat
-import Compat: UTF8String, ASCIIString, view, readstring, foreach
 
 include("parsing.jl")
 include("commands.jl")

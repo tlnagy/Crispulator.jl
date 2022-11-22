@@ -19,13 +19,13 @@ raw_data[:high] = high
 guide_data, gene_data = differences_between_bins(raw_data)
 
 total = sum([10, 100, 1000, 0] .+ 0.5)
-@test guide_data[:freqs_low][1] == 10.5/total
-@test guide_data[:freqs_low][4] == 0.5/total
-@test guide_data[:rel_freqs_low][1] == 1.0 # only a single negative control should it should be divided by itself
-@test guide_data[:rel_freqs_low][2] == 100.5/total/(10.5/total)
+@test guide_data[!, :freqs_low][1] == 10.5/total
+@test guide_data[!, :freqs_low][4] == 0.5/total
+@test guide_data[!, :rel_freqs_low][1] == 1.0 # only a single negative control should it should be divided by itself
+@test guide_data[!, :rel_freqs_low][2] == 100.5/total/(10.5/total)
 
 # make sure the log2 fold changes are correct
-@test all(guide_data[:log2fc_high_div_low] .== log2.(guide_data[:rel_freqs_high]./guide_data[:rel_freqs_low]))
+@test all(guide_data[!, :log2fc_high_div_low] .== log2.(guide_data[!, :rel_freqs_high]./guide_data[!, :rel_freqs_low]))
 
 # > 2 bins
 raw_data = OrderedDict{Symbol, DataFrame}()
@@ -43,4 +43,5 @@ raw_data[:high] = high
 guide_data, gene_data = differences_between_bins(raw_data)
 
 # make sure all the log2fc comparisons are there
-@test all(map(x->contains(==, names(guide_data), x), [:log2fc_mid_div_low, :log2fc_high_div_low, :log2fc_high_div_mid]))
+guide_data_columnnames = Symbol.(names(guide_data))
+@test all([:log2fc_mid_div_low, :log2fc_high_div_low, :log2fc_high_div_mid] .∈ Ref(guide_data_columnnames))

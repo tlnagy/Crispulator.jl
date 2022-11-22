@@ -17,29 +17,29 @@ const param_details = Array[[:librarygenome_num_genes, :num_genes, Int64, :both,
 # TODO: This is shitty. A reworking of this might be nice at some point
 function Base.parse(data::Dict{Any, Any})
 
-    info("Parsing config")
+    @info "Parsing config"
 
     input_dict = unravel(data)
 
-    param_table = DataFrame(permutedims(hcat(param_details...), [2, 1]))
-    names!(param_table, [:yaml_name, :sim_name, :type, :relevance, :usage])
+    param_table = DataFrame(permutedims(hcat(param_details...), [2, 1]), :auto)
+    rename!(param_table, [:yaml_name, :sim_name, :type, :relevance, :usage])
 
     input_mat = [Any[key, value] for (key, value) in input_dict]
-    input_table = DataFrame(permutedims(hcat(input_mat...), [2, 1]))
-    names!(input_table, [:yaml_name, :input])
+    input_table = DataFrame(permutedims(hcat(input_mat...), [2, 1]), :auto)
+    rename!(input_table, [:yaml_name, :input])
 
-    combined = join(param_table, input_table, on=:yaml_name)
+    combined = innerjoin(param_table, input_table, on=:yaml_name)
 
     # get screen type
-    screentype = Symbol(lowercase(combined[combined[:yaml_name] .== :screen_type, :input][1]))
+    screentype = Symbol(lowercase(combined[combined[!, :yaml_name] .== :screen_type, :input][1]))
 
     # get crispr type
-    crisprtype = Symbol(lowercase(combined[combined[:yaml_name] .== :libraryguides_crispr_type, :input][1]))
+    crisprtype = Symbol(lowercase(combined[combined[!, :yaml_name] .== :libraryguides_crispr_type, :input][1]))
 
     screen = screentype == :facs ? FacsScreen() : GrowthScreen()
 
-    screen_fields = combined[(combined[:usage] .== :screen) .& BitArray(map(x->x in [screentype, :both], combined[:relevance])), :]
-    deleterows!(screen_fields, find(screen_fields[:yaml_name] .== :screen_type)[1])
+    screen_fields = combined[(combined[!, :usage] .== :screen) .& BitArray(map(x->x in [screentype, :both], combined[!, :relevance])), :]
+    delete!(screen_fields, findall(screen_fields[!, :yaml_name] .== :screen_type)[1])
 
     lib_vals = Dict()
     curr_field, curr_type = :none, Int64
@@ -56,7 +56,7 @@ function Base.parse(data::Dict{Any, Any})
             setfield!(screen, row[:sim_name], input_val)
         end
 
-        for row in eachrow(combined[combined[:usage] .== :library, :])
+        for row in eachrow(combined[combined[!, :usage] .== :library, :])
             curr_field, curr_type = row[:yaml_name], row[:type]
             (row[:sim_name] == :crisprtype) && continue
             lib_vals[row[:sim_name]] = row[:input]::curr_type
@@ -72,14 +72,14 @@ function Base.parse(data::Dict{Any, Any})
     if crisprtype == :crispri
         cas9_behavior = CRISPRi()
         knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
-            :high => (lib_vals[:frac_hq], TruncatedNormal(lib_vals[:mean_kd], 0.1, 0, 1)),
-            :low => (1-lib_vals[:frac_hq], TruncatedNormal(0.05, 0.07, 0, 1))
+            :high => (lib_vals[:frac_hq], truncated(Normal(lib_vals[:mean_kd], 0.1), 0, 1)),
+            :low => (1-lib_vals[:frac_hq], truncated(Normal(0.05, 0.07), 0, 1))
         )
     elseif crisprtype == :crisprn
         cas9_behavior = CRISPRn()
         knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
             :high => (lib_vals[:frac_hq], Delta(1.0)),
-            :low => (1-lib_vals[:frac_hq], TruncatedNormal(0.05, 0.07, 0, 1))
+            :low => (1-lib_vals[:frac_hq], truncated(Normal(0.05, 0.07), 0, 1))
         )
     else
         error("CRISPR type must be either CRISPRi or CRISPRn")
@@ -89,8 +89,8 @@ function Base.parse(data::Dict{Any, Any})
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (1-frac_inc_genes-frac_dec_genes-0.2, Delta(0.0)),
         :negcontrol => (0.2, Delta(0.0)),
-        :increasing => (frac_inc_genes, TruncatedNormal(0.1, 0.1, 0.025, 1)),
-        :decreasing => (frac_dec_genes, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+        :increasing => (frac_inc_genes, truncated(Normal(0.1, 0.1), 0.025, 1)),
+        :decreasing => (frac_dec_genes, truncated(Normal(-0.55, 0.2), -1, -0.1))
     )
     lib = Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
 
@@ -117,7 +117,7 @@ function unravel(data::Dict)
                 end
             end
         else
-            new_data[Symbol("_", replace(k1, "-", "_"))] = v1
+            new_data[Symbol("_", replace(k1, "-" => "_"))] = v1
         end
     end
     new_data

@@ -1,5 +1,3 @@
-using Compat
-
 """
 $(SIGNATURES)
 
@@ -25,11 +23,11 @@ linear(x, l) = clamp(l.*x, min(0, l), max(0, l))
 A type representing a relationship between degree of knockdown and effect on
 phenotype
 """
-@compat abstract type KDPhenotypeRelationship end
+abstract type KDPhenotypeRelationship end
 
-type Linear <: KDPhenotypeRelationship end
+struct Linear <: KDPhenotypeRelationship end
 
-type Sigmoidal <: KDPhenotypeRelationship
+struct Sigmoidal <: KDPhenotypeRelationship
     "Slopes of the sigmoid are pulled from this distribution"
     width_dist::Distribution
 
@@ -40,7 +38,7 @@ type Sigmoidal <: KDPhenotypeRelationship
         # width of sigmoidal region
         width = Normal(0.1, 0.05)
         # inflections are centered at high KD
-        inflections = TruncatedNormal(0.8, 0.2, 0, 1)
+        inflections = truncated(Normal(0.8, 0.2), 0, 1)
         new(width, inflections)
     end
 end
@@ -54,14 +52,14 @@ end
 """
 A type representing the behavior of different Cas9s
 """
-@compat abstract type Cas9Behavior end
+abstract type Cas9Behavior end
 
 """
 $(TYPEDEF)
 
 CRISPRi behavior is simply determined by the activity of the guide
 """
-type CRISPRi <: Cas9Behavior end
+struct CRISPRi <: Cas9Behavior end
 
 """
 $(TYPEDEF)
@@ -79,7 +77,7 @@ regions encoding conserved residues or domains[^2]
     generation libraries for CRISPR-mediated gene repression and activation.
     *Elife* 2016, 5.
 """
-type CRISPRn <: Cas9Behavior
+struct CRISPRn <: Cas9Behavior
     knockout_dist::Categorical
 
     CRISPRn(dist::Categorical) = new(dist)
@@ -91,7 +89,7 @@ Wrapper containing all library construction parameters
 
 $(FIELDS)
 """
-type Library
+struct Library
     "Distribution of guide knockdown efficiencies"
     knockdown_dist::Dict{Int, Tuple{Symbol, Sampleable}}
     knockdown_probs::Categorical
@@ -112,39 +110,39 @@ type Library
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (0.60, Delta(0.0)),
         :negcontrol => (0.1, Delta(0.0)),
-        :increasing => (0.3, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+        :increasing => (0.3, truncated(Normal(0.1, 0.1), 0.025, 1)),
     );
     Library(max_phenotype_dists, CRISPRi());
     ```
 
     For example, here we are making three different classes of "genes": the
     first group are :inactive, i.e. they have no phenotype, so we'll set their
-    phenotypes to 0.0 using a [`Simulation.Delta`](@ref). We'll also make them
+    phenotypes to 0.0 using a [`Crispulator.Delta`](@ref). We'll also make them
     60% of all the genes. The second group are the negative controls :negcontrol
     (the only required group) which make up 10% of the population of genes and
     also have no effect. The final group is :increasing which makes up 30% of
     all genes and which are represented by a Normal(μ=0.1, σ=0.1) distribution
     clamped between 0.025 and 1.
     """
-    max_phenotype_dists::Dict{Int, Tuple{Symbol, Sampleable}}
+    max_phenotype_dists::Dict{Int, Tuple{Symbol, <: Sampleable}}
     phenotype_probs::Categorical
 
     """
     Knockdown-phenotype relationships mapped to their probability of
-    being selected and their respective [`Simulation.KDPhenotypeRelationship`](@ref)
+    being selected and their respective [`Crispulator.KDPhenotypeRelationship`](@ref)
     """
     kd_phenotype_relationships::Dict{Int, Tuple{Symbol, KDPhenotypeRelationship}}
     relationship_probs::Categorical
 
     """
-    Whether this library is [`Simulation.CRISPRi`](@ref) or [`Simulation.CRISPRn`](@ref)
+    Whether this library is [`Crispulator.CRISPRi`](@ref) or [`Crispulator.CRISPRn`](@ref)
     """
     cas9_behavior::Cas9Behavior
 
     function Library(knockdown_dist::Dict{Symbol, Tuple{Float64, Sampleable}},
-                     max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+                     max_phenotype_dists::Dict{Symbol, Tuple{Float64, T}},
                      kd_phenotype_relationships::Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}},
-                     cas9_behavior::Cas9Behavior)
+                     cas9_behavior::Cas9Behavior) where {T <: Sampleable}
 
         kd = unroll(knockdown_dist)
         max_p = unroll(max_phenotype_dists)
@@ -157,36 +155,36 @@ function Library(cas9_behavior::Cas9Behavior)
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (0.75, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
-        :increasing => (0.1, TruncatedNormal(0.55, 0.2, 0.1, 1)),
-        :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+        :increasing => (0.1, truncated(Normal(0.55, 0.2), 0.1, 1)),
+        :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
     )
     Library(max_phenotype_dists, cas9_behavior)
 end
 
-function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
-                 cas9_behavior::CRISPRi)
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, T}},
+                 cas9_behavior::CRISPRi) where {T <: Sampleable}
     # Assuming a high quality library has mostly good guides with some bad ones
     knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
-        :high => (0.9, TruncatedNormal(0.90, 0.1, 0, 1)),
-        :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+        :high => (0.9, truncated(Normal(0.90, 0.1), 0, 1)),
+        :low => (0.1, truncated(Normal(0.05, 0.07), 0, 1))
     )
     Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
 end
 
-function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
-                 cas9_behavior::CRISPRn)
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, T}},
+                 cas9_behavior::CRISPRn) where {T <: Sampleable}
     # For CRISPR KO assume that if guide is "high quality" than it will a
     # maximum knockdown of 100%
     knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :high => (0.9, Delta(1.0)),
-        :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+        :low => (0.1, truncated(Normal(0.05, 0.07), 0, 1))
     )
     Library(max_phenotype_dists, knockdown_dist, cas9_behavior)
 end
 
-function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, Sampleable}},
+function Library(max_phenotype_dists::Dict{Symbol, Tuple{Float64, T}},
                  knockdown_dist::Dict{Symbol, Tuple{Float64, Sampleable}},
-                 cas9_behavior::Cas9Behavior)
+                 cas9_behavior::Cas9Behavior) where {T <: Sampleable}
 
     kd_phenotype_relationships = Dict{Symbol, Tuple{Float64, KDPhenotypeRelationship}}(
         :linear => (0.75, Linear()),
@@ -223,7 +221,7 @@ end
 
 array_names(::Type{Library}) = [:frac_hq, :mean_hq_kd, :frac_inc, :frac_dec, :cent_inc_phenotype, :relationships, :crisprtype]
 
-function unroll{T}(data::Dict{Symbol, Tuple{Float64, T}})
+function unroll(data::Dict{Symbol, Tuple{Float64, T}}) where {T}
     probs = Float64[]
     results = Dict{Int, Tuple{Symbol, T}}()
     count = 0
@@ -271,7 +269,7 @@ function construct_library(setup::ScreenSetup, lib::Library)
     # the expected z-score for a 90% confidence interval is 2x1.645=3.29
     # construct a normal distribution with a σ = 1/3.29 so that there is
     # a 10-fold difference between the 95th/5th percentiles
-    vals = 10.^rand(Normal(0, 1/3.29), N*coverage)
+    vals = 10 .^ rand(Normal(0, 1/3.29), N*coverage)
     guide_freqs = vals/sum(vals)
     barcodes, Categorical(guide_freqs)
 end
@@ -282,7 +280,7 @@ $(TYPEDEF)
 Constructs a delta function at a given δ value. This distribution always emits
 the same value.
 """
-type Delta <: Distributions.Sampleable{Univariate, Discrete}
+struct Delta <: Distributions.Sampleable{Univariate, Discrete}
     δ::Float64
 end
 

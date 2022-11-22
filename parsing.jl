@@ -6,7 +6,7 @@ function build_arg_table()
         "experimental conditions.\033[0m"
     )
 
-    @add_arg_table settings begin
+    @add_arg_table! settings begin
         "config"
             action = :command
             help = "run simulation using a YAML config file (easy)"
@@ -21,7 +21,7 @@ function build_arg_table()
     settings["ls"].description = "Prints out the available modified simulation " *
     "code. Simply prints out files in src/exps/."
 
-    @add_arg_table settings["exp"] begin
+    @add_arg_table! settings["exp"] begin
         "--debug"
             help = "Use smaller parameter space for diagnosing issues"
             action = :store_true
@@ -40,7 +40,7 @@ function build_arg_table()
     settings["exp"].description = "Run a modified simulation. Much more" *
     " flexible than using the configuration files, but also more complex"
 
-    @add_arg_table settings["config"] begin
+    @add_arg_table! settings["config"] begin
         "--no-graph", "-g"
             help = "Suppress graphical output"
             action = :store_true
@@ -54,9 +54,7 @@ function build_arg_table()
 
     settings["config"].description
 
-    if typeof(Base.source_dir()) != Void
-        settings.epilog = readstring(normpath(joinpath(Base.source_dir(),"..","LICENSE")))
-    end
+    settings.epilog = read(normpath(joinpath(@__DIR__,"LICENSE")), String)
 
     return settings
 end

@@ -24,8 +24,8 @@ classes = [:a, :a, :a, :a, :a, :a, :a, :a, :b, :b, :b]
 # this algorithm is a direct implementation from the Boyd paper
 function compute_auprc_posthoc(p, r)
     unqs = unique(r)
-    pmins = p[[findlast(r, unq) for unq in unqs]]
-    pmaxes = p[[findfirst(r, unq) for unq in unqs]]
+    pmins = p[[findlast(x->x == unq, r) for unq in unqs]]
+    pmaxes = p[[findfirst(x->x == unq, r) for unq in unqs]]
     n = length(unqs)
     auprc = 0.0
     for i in n-1:-1:1
@@ -76,7 +76,7 @@ function compute_bias(recalls, precisions, X, Y)
         cat = rand(cat_dist, 10^3)
         x, y = StatsBase.counts(cat, 1:2)
         scores = [rand(X, x); rand(Y, y)]
-        auprc_sum += auprc(scores, [repmat(classes[1:1], x); repmat(classes[2:2], y)], Set([:b]))[1]
+        auprc_sum += auprc(scores, [repeat(classes[1:1], outer=x); repeat(classes[2:2], outer=y)], Set([:b]))[1]
     end
     isapprox(auprc_sum/num_runs, true_auprc, atol=0.025)
 end
@@ -88,18 +88,18 @@ test_dists = Array[
      [Uniform(0, 1), Uniform(0.5, 1.5)]
 ]
 # true precision, recall functions
-recall(xs, Y) = 1-cdf.(Y, xs)
+recall(xs, Y) = 1 .- cdf.(Y, xs)
 function precision(xs, π, X, Y)
-    res = π*recall(xs, Y)./(π*recall(xs, Y) + (1-π)*(1-cdf.(X, xs)))
-    res[isnan.(res)] = 1
+    res = @. π*recall(xs, Y)./(π*recall(xs, Y) + (1-π)*(1-cdf.(X, xs)))
+    res[isnan.(res)] .= 1
     res
 end
-xs = linspace(-10, 10, 1000)
+xs = range(-10, 10, length=1000)
 
 for dists in test_dists
     X, Y = dists
     recalls = recall(xs, Y)
     precisions = precision(xs, π, X, Y)
-    classes = [:a, :b]
+    global classes = [:a, :b]
     @test compute_bias(recalls, precisions, X, Y)
 end

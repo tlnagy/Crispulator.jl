@@ -1,12 +1,10 @@
-# CRISPulator
+# ✂️ Crispulator.jl
 
-| **Documentation** | **PackageEvaluator** | **Build Status** |
-|:---:|:---:|:---:|
-| [![][docs-latest-img]][docs-latest-url] [![][docs-stable-img]][docs-stable-url] | [![][pkg-0.6-img]][pkg-0.6-url] | [![][travis-img]][travis-url] [![][codecov-img]][codecov-url] |
+| **Stable release** | **Documentation**                 | **Build Status**                                              |
+|:------------------------------------------------------|:-------------------------------------------------------------------------|:--------------------------------------------------------------|
+| ![](https://juliahub.com/docs/Crispulator/version.svg) | [![][docs-stable-img]][docs-stable-url][![][docs-dev-img]][docs-dev-url] | [![][status-img]][status-url] [![][ci-img]][ci-url] [![][codecov-img]][codecov-url] |
 
 A pooled genetic screen simulator
-
-> Crispulator does not yet support Julia 1.0! We're still waiting on all the dependencies to be updated, please use Julia v0.6.4 in the mean time.
 
 ## Motivation
 
@@ -22,20 +20,21 @@ Nagy, T. & Kampmann, M. CRISPulator: a discrete simulation tool for pooled genet
 ## Documentation
 
 - [**STABLE**][docs-stable-url] &mdash; **most recently tagged version of the documentation.**
-- [**LATEST**][docs-latest-url] &mdash; *in-development version of the documentation.*
+- [**DEV**][docs-dev-url] &mdash; *in-development version of the documentation.*
 
 
 
-[docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
-[docs-latest-url]: https://tlnagy.github.io/Crispulator.jl/latest
+[docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
+[docs-dev-url]: https://tlnagy.github.io/Crispulator.jl/latest
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://tlnagy.github.io/Crispulator.jl/stable
 
-[pkg-0.6-img]: http://pkg.julialang.org/badges/Crispulator_0.6.svg
-[pkg-0.6-url]: http://pkg.julialang.org/?pkg=Crispulator
+[ci-img]: https://github.com/tlnagy/Crispulator.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/tlnagy/Crispulator.jl/actions
 
-[travis-img]: http://img.shields.io/travis/tlnagy/Crispulator.jl.svg
-[travis-url]: https://travis-ci.org/tlnagy/Crispulator.jl
 [codecov-img]: https://codecov.io/gh/tlnagy/Crispulator.jl/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/tlnagy/Crispulator.jl
+
+[status-img]: https://www.repostatus.org/badges/latest/inactive.svg
+[status-url]: https://www.repostatus.org/#inactive

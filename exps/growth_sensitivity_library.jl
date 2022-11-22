@@ -15,8 +15,8 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (1-inc-0.1-0.05, Delta(0.0)),
                 :negcontrol => (0.05, Delta(0.0)),
-                :increasing => (inc, TruncatedNormal(cent, 0.1, 0.025, 1)),
-                :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+                :increasing => (inc, truncated(Normal(cent, 0.1), 0.025, 1)),
+                :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
             )
             push!(libs, Library(max_phenotype_dists, crisprtype))
         end
@@ -43,19 +43,19 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
     function compute_auprc(barcodes, genes)
-        i = auprc(genes[:pvalmeanprod_bin2_div_bin1], genes[:class], Set([:increasing]))[1]
-        d = auprc(genes[:pvalmeanprod_bin2_div_bin1], genes[:class], Set([:decreasing]), rev=false)[1]
+        i = auprc(genes[!, :pvalmeanprod_bin2_div_bin1], genes[!, :class], Set([:increasing]))[1]
+        d = auprc(genes[!, :pvalmeanprod_bin2_div_bin1], genes[!, :class], Set([:decreasing]), rev=false)[1]
         (i, d)
     end
 
     before = time()
-    results = pmap(args -> run_exp(args[1], args[2], compute_auprc;
-                   run_idx=args[3], flatten_func=flatten_both), runs)
+    results = pmap(args -> Crispulator.run_exp(args[1], args[2], compute_auprc;
+                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs)
     (!quiet) && println("$(time() - before) seconds")
 
-    data = DataFrame(permutedims(hcat(results...), [2, 1]))
+    data = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     hierarchy = reshape([:inc; :dec], (2, 1))
-    new_names = [[:measure, :score]...; fieldnames(GrowthScreen)...; array_names(Library)...; :run_idx]
+    new_names = [[:measure, :score]...; fieldnames(GrowthScreen)...; Crispulator.array_names(Library)...; :run_idx]
 
     data = construct_hierarchical_label(hierarchy, data, new_names)
 

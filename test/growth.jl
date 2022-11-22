@@ -4,19 +4,19 @@ function test_grow_function(phenotypes, expected)
     @assert length(phenotypes) == length(expected)
     cells = collect(1:length(phenotypes))
     cell_phenotypes = phenotypes
-    output_c = Array{Int}(length(cells)*4)
-    output_p = Array{Float64}(size(output_c))
+    output_c = Array{Int}(undef, length(cells)*4)
+    output_p = Array{Float64}(undef, size(output_c))
 
     num_runs = 10000
-    data = Array{Int}(length(cells), num_runs)
+    data = Array{Int}(undef, length(cells), num_runs)
     setup = GrowthScreen()
     setup.noise = 0.00001
 
     for i in 1:num_runs
-        num_inserted = grow!(cells, cell_phenotypes, output_c, output_p, setup)
+        num_inserted = Crispulator.grow!(cells, cell_phenotypes, output_c, output_p, setup)
         data[:, i] = StatsBase.counts(output_c[1:num_inserted])
     end
-    all(round.(mean(data, 2), 1) .== expected)
+    all(round.(mean(data, dims = 2), digits=1) .== expected)
 end
 
 # test that, averaged over many runs, each phenotype corresponds to the

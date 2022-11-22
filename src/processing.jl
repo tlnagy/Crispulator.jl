@@ -1,7 +1,7 @@
 """
 $(SIGNATURES)
 
-Given the raw data from [`Simulation.sequencing`](@ref) returns two DataFrames
+Given the raw data from [`Crispulator.sequencing`](@ref) returns two DataFrames
 
 1. `guide_data`: This DataFrame contains the per-guide level data including the
     log2 fold change in the normalized frequencies of each guide between each
@@ -23,9 +23,9 @@ A typical 2 bin `guide_data` DataFrame contains the following columns:
 | `knockdown` | activity of the guide on 0 to 1 scale, where 1 is complete knockout|
 | `barcodeid` | the ID of this specific guide|
 | `theo_phenotype` | expected phenotype of this guide, generally a -1 to 1 scale|
-| `behavior` | whether the target gene displays a linear or sigmoidal response to incomplete knockdown (see [`Simulation.Library`](@ref) for more details)|
-| `class` | which phenotype distribution the target gene was drawn from (see [`Simulation.Library`](@ref) for more details). Serves as the "ground truth" label against which screen performance is evaluated, e.g. with [`Simulation.auprc`](@ref) |
-| `initial_freq` | frequency of guide post-transfection (see [`Simulation.transfect`](@ref))|
+| `behavior` | whether the target gene displays a linear or sigmoidal response to incomplete knockdown (see [`Crispulator.Library`](@ref) for more details)|
+| `class` | which phenotype distribution the target gene was drawn from (see [`Crispulator.Library`](@ref) for more details). Serves as the "ground truth" label against which screen performance is evaluated, e.g. with [`Crispulator.auprc`](@ref) |
+| `initial_freq` | frequency of guide post-transfection (see [`Crispulator.transfect`](@ref))|
 | `counts_bin1` | the raw number of reads for each guide in the first bin|
 | `freqs_bin1` | the number of reads for each guide divided by the total number of reads in this bin|
 | `rel_freqs_bin1` | the frequency of each guide divided by the median frequency of negative control guides|
@@ -53,25 +53,25 @@ A typical `gene_data` DataFrame contains the following data:
     *Proc Natl Acad Sci U S A*. 2013;110:E2317–26.
 
 """
-function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
+function differences_between_bins(raw_data::AbstractDict{Symbol, DataFrame})
     for (bin, seq_data) in raw_data
         sort!(seq_data, [:barcodeid])
         # add a pseudocount of 0.5 to every value to prevent -Inf's when
         # taking the log
-        seq_data[:counts] += 0.5
-        seq_data[:freqs] = seq_data[:counts]./sum(seq_data[:counts])
+        seq_data[!, :counts] .+= 0.5
+        seq_data[!, :freqs] = seq_data[!, :counts]./sum(seq_data[!, :counts])
         # normalize to median of negative controls, fixes #19
         # TODO: consider normalizing the std dev
-        negcontrol_freqs = seq_data[seq_data[:class] .== :negcontrol, :freqs]
+        negcontrol_freqs = seq_data[seq_data[!, :class] .== :negcontrol, :freqs]
         (length(negcontrol_freqs) == 0) && error("No negative control guides found. Try increasing "*
             "the frequency of negative controls or increase the number of genes.")
         med = median(negcontrol_freqs)
-        seq_data[:rel_freqs] = seq_data[:freqs] ./ med
+        seq_data[!, :rel_freqs] = seq_data[!, :freqs] ./ med
     end
 
     bin1 = first(raw_data)[2]
     cols_to_copy = [col for col in names(bin1) if !(col in (:counts, :freqs, :rel_freqs))]
-    guide_data = bin1[cols_to_copy]
+    guide_data = bin1[!, cols_to_copy]
     gene_data = DataFrame()
 
     # processed bins; so we don't re-add bins when doing all combos
@@ -82,27 +82,38 @@ function differences_between_bins(raw_data::Associative{Symbol, DataFrame})
         for bin in bins
             (bin in proc_bins) && continue
             push!(proc_bins, bin)
-            guide_data[[Symbol("counts_", bin), Symbol("freqs_", bin), Symbol("rel_freqs_", bin)]] =
-                raw_data[bin][[:counts, :freqs, :rel_freqs]]
+            # println(guide_data)
+            guide_data[!, Symbol("counts_", bin)] = raw_data[bin][!, :counts]
+            guide_data[!, Symbol("freqs_", bin)] = raw_data[bin][!, :freqs]
+            guide_data[!, Symbol("rel_freqs_", bin)] = raw_data[bin][!, :rel_freqs]
         end
         suffix = "_$(bins[2])_div_$(bins[1])"
         log2fc_col = Symbol(:log2fc, suffix)
-        guide_data[log2fc_col] = log2.(guide_data[Symbol(:rel_freqs_, bins[2])]
-                                        ./guide_data[Symbol(:rel_freqs_, bins[1])])
+        guide_data[!, log2fc_col] = log2.(guide_data[!, Symbol(:rel_freqs_, bins[2])]
+                                        ./guide_data[!, Symbol(:rel_freqs_, bins[1])])
 
-        nonnegs = guide_data[guide_data[:class] .!= :negcontrol, :]
-        negcontrols = guide_data[guide_data[:class] .== :negcontrol, log2fc_col]
-
-        tmp = by(nonnegs, [:gene, :behavior, :class]) do barcodes
-            log2fcs = barcodes[log2fc_col]
-            result = MannWhitneyUTest(log2fcs, negcontrols)
-            DataFrame(pvalue = -log10(pvalue(result)), mean= mean(log2fcs))
-        end
-        gene_data[[:gene, :behavior, :class, Symbol(:pvalue, suffix), Symbol(:mean, suffix)]] = tmp[[:gene, :behavior, :class, :pvalue, :mean]]
-        gene_data[Symbol(:absmean, suffix)] = abs.(gene_data[Symbol(:mean, suffix)])
-        gene_data[Symbol(:pvalmeanprod, suffix)] = gene_data[Symbol(:mean, suffix)] .* gene_data[Symbol(:pvalue, suffix)]
+        nonnegs = guide_data[guide_data[!, :class] .!= :negcontrol, :]
+        negcontrols = guide_data[guide_data[!, :class] .== :negcontrol, log2fc_col]
+        
+        grps = DataFrames.groupby(nonnegs, [:gene, :behavior, :class]);
+        tmp = combine(grps, log2fc_col => (x-> _significance(x, negcontrols)) => AsTable)
+        
+        # return gene_data, tmp
+        
+        gene_data[!, :gene] = tmp[!, :gene]
+        gene_data[!, :behavior] = tmp[!, :behavior]
+        gene_data[!, :class] = tmp[!, :class]
+        gene_data[!, Symbol(:pvalue, suffix)] = tmp[!, :pvalue]
+        gene_data[!, Symbol(:mean, suffix)] .= tmp[!, :mean]
+        gene_data[!, Symbol(:absmean, suffix)] = abs.(gene_data[!, Symbol(:mean, suffix)])
+        gene_data[!, Symbol(:pvalmeanprod, suffix)] = gene_data[!, Symbol(:mean, suffix)] .* gene_data[!, Symbol(:pvalue, suffix)]
 
     end
 
     guide_data, gene_data
+end
+
+function _significance(exp, ctrl)
+    result = MannWhitneyUTest(exp, ctrl)
+    (pvalue = -log10(pvalue(result)), mean= mean(exp))
 end
