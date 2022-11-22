@@ -1,4 +1,3 @@
-import Base.Sort: select
 
 """
 $(SIGNATURES)
@@ -46,8 +45,8 @@ function grow!(cells::AbstractArray{Int},
         ρ_noisy = ρ + rand(noise_dist)
         decision = abs(ρ_noisy) < rand() ? 2 : 2^trunc(Int, 1 + sign(ρ_noisy))
         rng = num_inserted+1:num_inserted+decision
-        output_c[rng] = cells[i]
-        output_p[rng] = ρ
+        output_c[rng] .= cells[i]
+        output_p[rng] .= ρ
         num_inserted+=decision
     end
     num_inserted
@@ -69,10 +68,10 @@ function select(setup::GrowthScreen,
     # all cells at all timepoints
     cellmat = zeros(Int, length(guides)*bottleneck_representation)
     cpmat = zeros(Float64, size(cellmat))
-    output_c = Array{Int}(length(initial_cells)*4);
-    output_p = Array{Float64}(size(output_c));
+    output_c = Array{Int}(undef, length(initial_cells)*4);
+    output_p = Array{Float64}(undef, size(output_c));
     cells = initial_cells # 1st timepoint slice
-    picked = Array{Int}(size(cellmat, 1))
+    picked = Array{Int}(undef, size(cellmat, 1))
     cell_phenotypes = initial_cell_phenotypes
 
     for k in 1:num_bottlenecks

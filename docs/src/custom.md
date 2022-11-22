@@ -9,7 +9,7 @@ This is an example of building a custom simulation of a FACS-based screen.
 ## Setup
 
 ```@setup 1
-using Simulation
+using Crispulator
 using Gadfly
 using DataFrames
 using Distributions
@@ -19,13 +19,13 @@ Lets first start the Julia REPL or a Julia session inside of a Jupyter Notebook
 and load the packages we'll need:
 
 ```julia
+using Crispulator
 using Gadfly
-include(joinpath(Pkg.dir("Crispulator"), "src", "simulation", "load.jl"))
 ```
 
 ## Basic screen parameters
 
-First lets design a simple [`Simulation.FacsScreen`](@ref) with 250 genes with
+First lets design a simple [`Crispulator.FacsScreen`](@ref) with 250 genes with
 5 guides per gene. Lets say that we make sure we have 1000x as many cells as
 guides during transfection (`representation`) and sorting
 (`bottleneck_representation`) and 1000x as many reads as guides during sequencing
@@ -52,7 +52,7 @@ all the classes should add up to 1.
 
 For example, here we are making three different classes of "genes": the
 first group are `:inactive`, i.e. they have no phenotype, so we'll set their
-phenotypes to 0.0 using a [`Simulation.Delta`](@ref). We'll also make them 60%
+phenotypes to 0.0 using a [`Crispulator.Delta`](@ref). We'll also make them 60%
 of all the genes. The second group are the negative controls `:negcontrol`
 (the only required group) which make up 10% of the population of genes and also
 have no effect. The final group is `:increasing` which makes up 30% of all
@@ -63,7 +63,7 @@ between 0.025 and 1.
 max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
     :inactive => (0.60, Delta(0.0)),
     :negcontrol => (0.1, Delta(0.0)),
-    :increasing => (0.3, TruncatedNormal(0.1, 0.1, 0.025, 1)),
+    :increasing => (0.3, truncated(Normal(0.1, 0.1), 0.025, 1)),
 );
 ```
 
@@ -75,13 +75,13 @@ max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
     as the null distribution against which the log2 fold changes of guides
     targeting a specific gene are assayed to calculate a statistical
     significance of the shift for each gene. See
-    [`Simulation.differences_between_bins`](@ref) for more details.
+    [`Crispulator.differences_between_bins`](@ref) for more details.
 
 
 ## Library construction
 
 Now, we actually build the library. Here we're making a
-[`Simulation.CRISPRi`](@ref) library and then getting the guides that were built
+[`Crispulator.CRISPRi`](@ref) library and then getting the guides that were built
 from the true phenotype distribution that we constructed above and we also get
 the frequency of each guide in the library.
 
@@ -120,12 +120,12 @@ plot(df, x=:freq, color=:class, Geom.histogram(position=:stack),
 ## Performing the screen
 
 Now, we'll actually perform the screen. We'll first perform the transection via
-[`Simulation.transfect`](@ref), followed by the selection process via
-[`Simulation.select`](@ref):
+[`Crispulator.transfect`](@ref), followed by the selection process via
+[`Crispulator.select`](@ref):
 
 ```@example 1
 cells, cell_phenotypes = transfect(s, lib, guides, guide_freqs_dist)
-bin_cells = select(s, cells, cell_phenotypes, guides)
+bin_cells = Crispulator.select(s, cells, cell_phenotypes, guides)
 freqs = counts_to_freqs(bin_cells, length(guides));
 ```
 
@@ -156,10 +156,10 @@ the later analysis will be able to pull out the `increasing` genes.
 
 ## Sequencing and Analysis
 
-Now we'll use [`Simulation.sequencing`](@ref) to simulate sequencing by
+Now we'll use [`Crispulator.sequencing`](@ref) to simulate sequencing by
 transforming the guide frequencies into a Categorical distribution and drawing
 a random sample of reads from this distribution. Finally, we'll use
-the [`Simulation.differences_between_bins`](@ref) function to compute the
+the [`Crispulator.differences_between_bins`](@ref) function to compute the
 differences between bins on a per-guide level (`guide_data`) and per-gene level
 (`gene_data`).
 
@@ -171,24 +171,24 @@ guide_data, gene_data = differences_between_bins(raw_data);
 Here's what the per-guide data looks like:
 
 ```@example 1
-head(guide_data) # hide
+first(guide_data, 10) # hide
 ```
 
 !!! tip
-    See [`Simulation.differences_between_bins`](@ref) for details on what each
+    See [`Crispulator.differences_between_bins`](@ref) for details on what each
     column means.
 
 And the gene level data
 
 ```@example 1
-head(gene_data) # hide
+first(gene_data, 10) # hide
 ```
 
 We can generate standard pooled screen plots from this dataset. Like a count
 scatterplot:
 
 ```@example 1
-nopseudo = guide_data[(guide_data[:counts_bin1] .> 0.5) .& (guide_data[:counts_bin2] .> 0.5), :]
+nopseudo = guide_data[(guide_data[!, :counts_bin1] .> 0.5) .& (guide_data[!, :counts_bin2] .> 0.5), :]
 plot(nopseudo, x=:counts_bin1, y=:counts_bin2, color=:class, Scale.x_log10,
 Scale.y_log10, Theme(highlight_width=0pt), Coord.cartesian(fixed=true),
 Guide.xlabel("log counts bin1"), Guide.ylabel("log counts bin2"))
@@ -202,11 +202,11 @@ Guide.xlabel("mean log2 fold change"), Guide.ylabel("-log10 pvalue"))
 ```
 
 And finally we can see how well we can differentiate between the different
-classes using Area Under the Precision-Recall Curve ([`Simulation.auprc`](@ref))
+classes using Area Under the Precision-Recall Curve ([`Crispulator.auprc`](@ref))
 
 ```@example 1
-auprc(gene_data[:pvalmeanprod_bin2_div_bin1], gene_data[:class], Set([:increasing]))[1]
+auprc(gene_data[!, :pvalmeanprod_bin2_div_bin1], gene_data[!, :class], Set([:increasing]))[1]
 ```
 
-[`Simulation.auroc`](@ref) and [`Simulation.venn`](@ref) are also good summary
+[`Crispulator.auroc`](@ref) and [`Crispulator.venn`](@ref) are also good summary
 statistics.

@@ -1,4 +1,4 @@
-# Simulation Internals
+# Crispulator Internals
 
 More in-depth documentation on specific types and functions.
 
@@ -17,41 +17,41 @@ Pages = ["internals.md"]
 ## Simulation Types
 
 ```@docs
-Simulation.FacsScreen
-Simulation.GrowthScreen
+Crispulator.FacsScreen
+Crispulator.GrowthScreen
 ```
 
 ## Key functions
 
 ```@docs
-Simulation.construct_library
-Simulation.transfect
-Simulation.select
-Simulation.sequencing
-Simulation.counts_to_freqs
-Simulation.differences_between_bins
+Crispulator.construct_library
+Crispulator.transfect
+Crispulator.select
+Crispulator.sequencing
+Crispulator.counts_to_freqs
+Crispulator.differences_between_bins
 ```
 
 ## Miscellaneous Types
 
 ```@docs
-Simulation.Library
-Simulation.Barcode
-Simulation.KDPhenotypeRelationship
-Simulation.Cas9Behavior
-Simulation.CRISPRn
-Simulation.CRISPRi
-Simulation.Delta
+Crispulator.Library
+Crispulator.Barcode
+Crispulator.KDPhenotypeRelationship
+Crispulator.Cas9Behavior
+Crispulator.CRISPRn
+Crispulator.CRISPRi
+Crispulator.Delta
 ```
 
 ## Miscellaneous functions
 
 ```@docs
-Simulation.signal
-Simulation.noise
-Simulation.linear
-Simulation.sigmoid
-Simulation.auprc
-Simulation.auroc
-Simulation.venn
+Crispulator.signal
+Crispulator.noise
+Crispulator.linear
+Crispulator.sigmoid
+Crispulator.auprc
+Crispulator.auroc
+Crispulator.venn
 ```

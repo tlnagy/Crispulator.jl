@@ -22,21 +22,21 @@ function growth_bottleneck_snr(filepath; debug=false, quiet=false)
     max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
         :inactive => (0.85, Delta(0.0)),
         :negcontrol => (0.05, Delta(0.0)),
-        :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+        :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
     )
 
     lib = Library(max_phenotype_dists, CRISPRi())
     before = time()
-    results = pmap(args -> run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
+    results = pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results = DataFrame(permutedims(hcat(results...), [2, 1]))
-    results[:crisprtype] = "CRISPRi"
+    results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
+    results.crisprtype .= "CRISPRi"
     lib = Library(max_phenotype_dists, CRISPRn())
     before = time()
-    results2 = pmap(args -> run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
+    results2 = pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results2 = DataFrame(permutedims(hcat(results2...), [2, 1]))
-    results2[:crisprtype] = "CRISPRn"
+    results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
+    results2.crisprtype .= "CRISPRn"
     results = vcat(results, results2)
 
     hierarchy = reshape([:snr, :signal, :noise], (3, 1))

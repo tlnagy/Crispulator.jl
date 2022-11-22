@@ -1,3 +1,5 @@
+using Crispulator: KDPhenotypeRelationship, Linear, Sigmoidal
+
 # This experiment will compare the behavior of pvalue, effect size, and
 # product over a wide range of screen and library designs
 
@@ -18,7 +20,7 @@ function compare_methods(filepath; debug=false, quiet=false)
                     (CRISPRi(), CRISPRn()),
                     (Linear(), Sigmoidal()))
 
-    for (screentype, representation, crisprtype, genetype) in IterTools.product(screen_combos...)
+    for (screentype, representation, crisprtype, genetype) in Iterators.product(screen_combos...)
         screen = screentype[1]()
         screen.representation = representation
         screen.bottleneck_representation = representation
@@ -28,15 +30,15 @@ function compare_methods(filepath; debug=false, quiet=false)
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (0.75, Delta(0.0)),
                 :negcontrol => (0.05, Delta(0.0)),
-                :increasing => (0.1, TruncatedNormal(0.55, 0.2, 0.1, 1)),
-                :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+                :increasing => (0.1, truncated(Normal(0.55, 0.2), 0.1, 1)),
+                :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
             )
         else
             screen.num_bottlenecks = screentype[2]
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (0.85, Delta(0.0)),
                 :negcontrol => (0.05, Delta(0.0)),
-                :decreasing => (0.1, TruncatedNormal(-0.55, 0.2, -1, -0.1))
+                :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
             )
         end
 
@@ -47,12 +49,12 @@ function compare_methods(filepath; debug=false, quiet=false)
         if typeof(crisprtype) == CRISPRn
             knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
                     :high => (0.9, Delta(1.0)),
-                    :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+                    :low => (0.1, truncated(Normal(0.05, 0.07), 0, 1))
                 )
         else
             knockdown_dist = Dict{Symbol, Tuple{Float64, Sampleable}}(
-                :high => (0.9, TruncatedNormal(0.90, 0.1, 0, 1)),
-                :low => (0.1, TruncatedNormal(0.05, 0.07, 0, 1))
+                :high => (0.9, truncated(Normal(0.90, 0.1), 0, 1)),
+                :low => (0.1, truncated(Normal(0.05, 0.07), 0, 1))
             )
         end
 
@@ -63,7 +65,7 @@ function compare_methods(filepath; debug=false, quiet=false)
         end
     end
 
-    const overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
+    overlap = intersect(fieldnames(FacsScreen), fieldnames(GrowthScreen))
     # custom function for handling both growth and a facs screen in the
     # same relational datastructure
     flatten_overlap = (setup, lib) -> begin
@@ -72,29 +74,29 @@ function compare_methods(filepath; debug=false, quiet=false)
             push!(results, getfield(setup, name))
         end
         push!(results, typeof(setup) == GrowthScreen ? getfield(setup, :num_bottlenecks) : NaN)
-        push!(results, as_array(lib)...)
+        push!(results, Crispulator.as_array(lib)...)
         results
     end
 
     compare_reduction_methods = (bc_counts, genes) -> begin
-        sig, noi = signal(bc_counts), noise(bc_counts)
+        sig, noi = Crispulator.signal(bc_counts), Crispulator.noise(bc_counts)
 
-        pvalmeanprod = auprc(abs.(genes[:pvalmeanprod_bin2_div_bin1]), genes[:class], Set([:increasing, :decreasing]))[1]
-        pvalue = auprc(genes[:pvalue_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
-        effectsize = auprc(genes[:absmean_bin2_div_bin1], genes[:class], Set([:increasing, :decreasing]))[1]
+        pvalmeanprod = auprc(abs.(genes[!, :pvalmeanprod_bin2_div_bin1]), genes[!, :class], Set([:increasing, :decreasing]))[1]
+        pvalue = auprc(genes[!, :pvalue_bin2_div_bin1], genes[!, :class], Set([:increasing, :decreasing]))[1]
+        effectsize = auprc(genes[!, :absmean_bin2_div_bin1], genes[!, :class], Set([:increasing, :decreasing]))[1]
 
         (sig, noi, pvalmeanprod, pvalue, effectsize)
     end
 
     before = time()
-    results = pmap(args -> run_exp(args[1],
-                                   args[2],
-                                   compare_reduction_methods;
-                                   flatten_func=flatten_overlap,
-                                   run_idx=args[3]), runs)
+    results = pmap(args -> Crispulator.run_exp(args[1],
+                                               args[2],
+                                               compare_reduction_methods;
+                                               flatten_func=flatten_overlap,
+                                               run_idx=args[3]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results = DataFrame(permutedims(hcat(results...), [2,1]))
-    new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; array_names(Library)...; :run_idx]
+    results = DataFrame(permutedims(hcat(results...), [2,1]), :auto)
+    new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; Crispulator.array_names(Library)...; :run_idx]
     hierarchy = reshape([:signal, :noise, :product, :pvalue, :effectsize], 5, 1)
     results = construct_hierarchical_label(hierarchy, results, new_names)
     CSV.write(filepath, results)

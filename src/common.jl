@@ -1,4 +1,3 @@
-using Compat
 
 """
 Any entity that is tracked through the pooled experiment. For CRISPR screens,
@@ -7,7 +6,7 @@ performance of this entity in the screen.
 
 $(FIELDS)
 """
-type Barcode
+mutable struct Barcode
     "The target gene id"
     gene::Int
 
@@ -38,21 +37,23 @@ type Barcode
     end
 end
 
-as_array(bc::Barcode) = [getfield(bc, fld) for fld in fieldnames(bc) if fld != :obs_phenotype]
+const barcodefields = fieldnames(Barcode)
+
+as_array(bc::Barcode) = [getfield(bc, fld) for fld in barcodefields if fld != :obs_phenotype]
 
 """
 A description of screen parameters
 """
-@compat abstract type ScreenSetup end
+abstract type ScreenSetup end
 
-as_array(ss::ScreenSetup) = [getfield(ss, fld) for fld in fieldnames(ss)]
+as_array(ss::S) where {S <: ScreenSetup} = [getfield(ss, fld) for fld in fieldnames(S)]
 
 """
 A type representing the parameters used in a typical FACS screen.
 
 $(FIELDS)
 """
-type FacsScreen <: ScreenSetup
+mutable struct FacsScreen <: ScreenSetup
     "Number of genes targeted by the screen"
     num_genes::Int
 
@@ -65,7 +66,7 @@ type FacsScreen <: ScreenSetup
     representation::Int
 
     """The multiplicity of infection, ``\\lambda``, of the screen. We model this as a Poisson
-    process during transfection (see [`Simulation.transfect`](@ref)).
+    process during transfection (see [`Crispulator.transfect`](@ref)).
 
     !!! note
 
@@ -102,7 +103,7 @@ type FacsScreen <: ScreenSetup
     The 5th percentile of cells sorted according to their phenotype (fluorescence,
     size, etc) will be compared to the 95th percentile.
     """
-    bin_info::Associative{Symbol, Tuple{Float64, Float64}}
+    bin_info::AbstractDict{Symbol, Tuple{Float64, Float64}}
 
     "Number of cells sorted expressed as an integer multiple of the number of guides"
     bottleneck_representation::Int
@@ -122,7 +123,7 @@ A type representing the parameters used in a typical growth-based screen.
 
 $(FIELDS)
 """
-type GrowthScreen <: ScreenSetup
+mutable struct GrowthScreen <: ScreenSetup
     "Number of genes targeted by the screen"
     num_genes::Int
 
@@ -135,7 +136,7 @@ type GrowthScreen <: ScreenSetup
     representation::Int
 
     """The multiplicity of infection, ``\\lambda``, of the screen. We model this as a Poisson
-    process during transfection (see [`Simulation.transfect`](@ref)).
+    process during transfection (see [`Crispulator.transfect`](@ref)).
 
     !!! note
 

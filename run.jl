@@ -1,7 +1,10 @@
+# Sane behavior when run from the REPL
+using Pkg
+source_dir = typeof(Base.source_dir()) === nothing ? joinpath(Pkg.dir("Crispulator")) : Base.source_dir()
+Pkg.activate(source_dir)
+
 using ArgParse
 using YAML
-using Compat
-import Compat: UTF8String, ASCIIString, view, readstring, foreach
 
 include("parsing.jl")
 include("commands.jl")

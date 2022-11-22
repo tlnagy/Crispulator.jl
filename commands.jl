@@ -1,5 +1,11 @@
-# Sane behavior when run from the REPL
-source_dir = typeof(Base.source_dir()) == Void ? joinpath(Pkg.dir("Crispulator"), "src") : Base.source_dir()
+using Distributed
+@info "Loading simulation framework"
+using Crispulator
+using DataFrames
+using Distributions
+using Gadfly
+
+
 """
 List the custom simulation scripts that are available
 """
@@ -9,12 +15,12 @@ function ls()
 end
 
 """
-bootstrap_exp(analysis_file::ASCIIString, output_dir::ASCIIString, proc_count::Int, debug::Bool)
+    bootstrap_exp(analysis_file::String, output_dir::String, proc_count::Int, debug::Bool)
 
 Run custom simulation using one of the scripts in the `exps/` folder
 """
-function bootstrap_exp(analysis_file::Compat.String,
-                       output_dir::Compat.String,
+function bootstrap_exp(analysis_file::String,
+                       output_dir::String,
                        proc_count::Int,
                        debug::Bool)
 
@@ -23,7 +29,6 @@ function bootstrap_exp(analysis_file::Compat.String,
     println("Using $(nprocs()) threads")
 
     # load simulation code on all cores
-    include(joinpath(source_dir, "simulation", "load.jl"))
     print("Loading analysis code...")
     analysis_full_path = joinpath(source_dir, "exps", analysis_file)
 
@@ -51,14 +56,14 @@ bootstrap_config(config_file::String, output_dir::String, suppress_graph::Bool)
 
 Run simulation using parameters supplied in a YAML configuration file
 """
-function bootstrap_config(config_file::Compat.String,
-                          output_dir::Compat.String,
+function bootstrap_config(config_file::String,
+                          output_dir::String,
                           suppress_graph::Bool)
     # load config
     config = YAML.load_file(config_file)
 
     if !isdir(output_dir)
-        info("Directory $output_dir does not exist, attempting to create")
+        @info "Directory $output_dir does not exist, attempting to create"
         try
             mkdir(output_dir)
         catch ex
@@ -68,10 +73,9 @@ function bootstrap_config(config_file::Compat.String,
         end
     end
 
-    info("Using $(nprocs()) thread(s)")
+    @info "Using $(nprocs()) thread(s)"
 
     # load analysis files and simulation
-    include(joinpath(source_dir, "simulation", "load.jl"))
     include(joinpath(source_dir, "utils", "parse_yaml.jl"))
     include(joinpath(source_dir, "utils", "runconfig.jl"))
 

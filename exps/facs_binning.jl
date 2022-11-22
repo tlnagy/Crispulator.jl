@@ -27,20 +27,20 @@ function facs_binning(filepath; debug=false, quiet=false)
     test_method_wrapper = (bc_counts, genes) -> test_methods(genes, methods, measures, genetypes)
 
     before = time()
-    results = pmap(args -> run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
+    results = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRi()), test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results = DataFrame(permutedims(hcat(results...), [2, 1]))
-    results[:crisprtype] = "CRISPRi"
+    results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
+    results.crisprtype .= "CRISPRi"
     before = time()
-    results2 = pmap(args -> run_exp(args[1], Library(CRISPRn()), test_method_wrapper; run_idx=args[2]), runs)
+    results2 = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRn()), test_method_wrapper; run_idx=args[2]), runs)
     (!quiet) && println("$(time() - before) seconds")
-    results2 = DataFrame(permutedims(hcat(results2...), [2, 1]))
-    results2[:crisprtype] = "CRISPRn"
+    results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
+    results2.crisprtype .= "CRISPRn"
     results = vcat(results, results2)
 
-    hierarchy = vcat([hcat(item...) for item in IterTools.product(map(Symbol, methods), measures, genetypes)]...)
+    hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)
     new_names = [[:method, :measure, :genetype, :score]...; fieldnames(FacsScreen)...; :run; :crisprtype]
     results = construct_hierarchical_label(hierarchy, results, new_names)
-    results[:bin_info] = Float64[el[:bin1][2] for el in results[:bin_info]]
+    results[!, :bin_info] = Float64[el[:bin1][2] for el in results[!, :bin_info]]
     CSV.write(filepath, results)
 end

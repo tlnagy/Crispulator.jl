@@ -1,3 +1,5 @@
+using Crispulator: response, Linear, Sigmoidal
+
 linear_response = response(Linear())
 
 @test linear_response(0.0, 1.0) == 0.0

@@ -36,5 +36,5 @@ For most simple cases, no writing of Julia code is necessary. See the
 ## Advanced
 
 See the [Custom Simulations](@ref) for a step-by-step guide to writing a custom
-simulation on top of Crispulator. Additionally, the [Simulation Internals](@ref)
+simulation on top of Crispulator. Additionally, the [Crispulator Internals](@ref)
 page has in-depth documentation needed for more advanced usage
