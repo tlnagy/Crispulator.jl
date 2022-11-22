@@ -6,3 +6,4 @@ data/
 *.ipynb
 !meta/*.ipynb
 Manifest.toml
+test_output/

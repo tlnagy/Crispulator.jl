@@ -73,7 +73,7 @@ Now, lets remove all genes that have a positive phenotype by changing line 8 to
 Now, we can actually run the code by executing the following command
 
 ```julia
-julia src/run.jl config example_config.yml test_output
+julia run.jl config example_config.yml test_output
 ```
 
 !!! tip

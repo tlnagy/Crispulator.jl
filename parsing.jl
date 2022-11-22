@@ -1,3 +1,5 @@
+using YAML
+
 function build_arg_table()
     settings = ArgParseSettings(
         description="\033[32mPooled Screen Optimizer\033[0m\n\n\n\n" *

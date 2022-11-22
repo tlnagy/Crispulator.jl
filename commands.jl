@@ -1,9 +1,15 @@
+# Sane behavior when run from the REPL
+using Pkg
+source_dir = typeof(Base.source_dir()) === nothing ? joinpath(Pkg.dir("Crispulator")) : Base.source_dir()
+Pkg.activate(source_dir)
+
 using Distributed
 @info "Loading simulation framework"
 using Crispulator
 using DataFrames
 using Distributions
 using Gadfly
+using YAML
 
 
 """

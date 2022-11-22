@@ -1,4 +1,4 @@
-# CRISPulator
+# ✂️ Crispulator.jl
 
 | **Documentation** | **PackageEvaluator** | **Build Status** |
 |:---:|:---:|:---:|
