@@ -25,7 +25,7 @@ Nagy, T. & Kampmann, M. CRISPulator: a discrete simulation tool for pooled genet
 
 
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://tlnagy.github.io/Crispulator.jl/latest
+[docs-dev-url]: https://tlnagy.github.io/Crispulator.jl/dev
 
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
 [docs-stable-url]: https://tlnagy.github.io/Crispulator.jl/stable
