@@ -30,10 +30,9 @@ function growth_representation(filepath; debug=false, quiet=false)
     libs = [Library(max_phenotype_dists, CRISPRi()), Library(max_phenotype_dists, CRISPRn())]
     runs = grouped_param_space(GrowthScreen(), parameters, libs, [:num_bottlenecks], num_runs);
 
-    before = time()
-    results = pmap(args -> Crispulator.run_exp(args[1], args[2], test_method_wrapper;
-                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs)
-    (!quiet) && println("$(time() - before) seconds")
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1], args[2], test_method_wrapper;
+                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs; progress = p)
 
     data = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     hierarchy = vcat([hcat(item...) for item in Iterators.product(map(Symbol, methods), measures, genetypes)]...)

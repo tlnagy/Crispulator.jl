@@ -3,8 +3,7 @@ using Crispulator: KDPhenotypeRelationship, Linear, Sigmoidal
 # This experiment will compare the behavior of pvalue, effect size, and
 # product over a wide range of screen and library designs
 
-function compare_methods(filepath; debug=false, quiet=false)
-
+function compare_methods(filepath::String; debug=false, quiet=false)
     runs = []
 
     if !debug
@@ -88,13 +87,13 @@ function compare_methods(filepath; debug=false, quiet=false)
         (sig, noi, pvalmeanprod, pvalue, effectsize)
     end
 
-    before = time()
-    results = pmap(args -> Crispulator.run_exp(args[1],
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1],
                                                args[2],
                                                compare_reduction_methods;
                                                flatten_func=flatten_overlap,
-                                               run_idx=args[3]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+                                               run_idx=args[3]), runs, progress = p)
+    @info "Constructing CSV"
     results = DataFrame(permutedims(hcat(results...), [2,1]), :auto)
     new_names = [:method; :score; :screentype; overlap...; :num_bottlenecks; Crispulator.array_names(Library)...; :run_idx]
     hierarchy = reshape([:signal, :noise, :product, :pvalue, :effectsize], 5, 1)

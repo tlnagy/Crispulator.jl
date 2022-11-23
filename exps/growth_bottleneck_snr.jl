@@ -26,15 +26,14 @@ function growth_bottleneck_snr(filepath; debug=false, quiet=false)
     )
 
     lib = Library(max_phenotype_dists, CRISPRi())
-    before = time()
-    results = pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs; progress = p)
     results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     results[!, :crisprtype] .= "CRISPRi"
     lib = Library(max_phenotype_dists, CRISPRn())
-    before = time()
-    results2 = pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results2 = progress_pmap(args -> Crispulator.run_exp(args[1], lib, compute_snr; run_idx=args[2]), runs; progress = p)
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
     results2[!, :crisprtype] .= "CRISPRn"
     results = vcat(results, results2)

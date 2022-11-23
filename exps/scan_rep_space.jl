@@ -53,9 +53,8 @@ function scan_rep_space(filepath; debug=false, quiet=false)
 
             runs = build_parameter_space(screentype, parameters, num_runs)
 
-            before = time()
-            result = pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs)
-            (!quiet) && println("$(time() - before) seconds")
+            p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+            result = progress_pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2], flatten_func=flatten_overlap), runs; progress = p)
             result = DataFrame(permutedims(hcat(result...), [2, 1]), :auto)
             result[!, :crisprtype] .= typeof(crisprtype)
             push!(results, result)

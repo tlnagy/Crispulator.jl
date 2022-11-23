@@ -1,18 +1,31 @@
-using Pkg
-@info "Activating simulation environment"
-Pkg.activate(@__DIR__)
-@info "Instantiating environment"
-Pkg.instantiate()
+if Base.current_project() != joinpath(@__DIR__, "Project.toml") || (get(ENV, "CI", nothing) == "true")
+    @info "Activating simulation environment"
+    using Pkg
+    Pkg.activate(@__DIR__)
+    @info "Instantiating environment"
+    Pkg.instantiate()
+end
+using Distributed
+
+@everywhere begin
+    using Pkg
+    Pkg.activate(@__DIR__)
+    Pkg.instantiate()
+end
 
 @info "Loading simulation framework"
-using Crispulator
+@everywhere begin
+    using Crispulator
 
-using ArgParse
-using Distributed
-using DataFrames
-using Distributions
-using Gadfly
-using YAML
+    using ArgParse
+    using DataFrames
+    using Distributions
+    using DataStructures
+    using CSV
+    using Gadfly
+    using YAML
+    using ProgressMeter
+end
 
 include("parsing.jl")
 include("commands.jl")

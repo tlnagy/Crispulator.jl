@@ -1,6 +1,8 @@
 using IterTools
 using Distributed
 
+is_logging(io) = isa(io, Base.TTY) == false || (get(ENV, "CI", nothing) == "true")
+
 function build_parameter_space(::T, parameters::Dict{Symbol, Vector}, num_runs::Int) where {T <: ScreenSetup}
     fields = collect(keys(parameters))
     n_fields = length(fields)
@@ -115,9 +117,9 @@ end
 function compute_name(filename::AbstractString)
     front, back = splitext(filename)
     # commit of the code that generated this data
-    commit = strip(readstring(`git rev-parse --short HEAD`))
+    commit = strip(read(`git rev-parse --short HEAD`, String))
     # whether there are any uncommitted changes
-    n = length(split(readstring(`git status --porcelain`), "\n"))
+    n = length(split(read(`git status --porcelain`, String), "\n"))
     status = n > 1 ? "dirty" : "clean"
     string(join([front; commit; status], "_"), back)
 end
