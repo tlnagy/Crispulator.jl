@@ -21,13 +21,13 @@ navigate into the root directory of the project and run `julia`. Run the
 following command:
 
 ```sh
-$ julia -e 'Pkg.update(); Pkg.add("Crispulator")'
+$ julia -e 'using Pkg; Pkg.develop(url="https://github.com/tlnagy/Crispulator.jl.git")'
 ```
 
-this copies `Crispulator` over to the Julia package directory and installs
-all of its dependencies. Note the `$` just represents the prompt, you don't need
-to type it. Make sure to run the tests and verify that everything
-is passing
+this downloads `Crispulator` and installs it into the Julia package directory
+with all of its dependencies. Note the `$` just represents the prompt, you don't
+need to type it. Make sure to run the tests and verify that everything is
+passing 
 
 ```sh
 $ julia -e 'Pkg.test("Crispulator")'
