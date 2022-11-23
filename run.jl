@@ -6,7 +6,6 @@ if Base.current_project() != joinpath(@__DIR__, "Project.toml") || (get(ENV, "CI
     Pkg.instantiate()
 end
 using Distributed
-using ProgressMeter
 
 @everywhere begin
     using Pkg
@@ -25,6 +24,7 @@ end
     using CSV
     using Gadfly
     using YAML
+    using ProgressMeter
 end
 
 include("parsing.jl")
