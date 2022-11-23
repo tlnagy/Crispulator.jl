@@ -1,7 +1,7 @@
 name = "Crispulator"
 uuid = "39046a72-5a6f-4d18-ae88-b64c04dba158"
 authors = ["Tamas Nagy <tamas@tamasnagy.com>"]
-version = "0.4.0"
+version = "0.4.1"
 
 [deps]
 ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
@@ -35,6 +35,7 @@ Gadfly = "1"
 HypothesisTests = "0.10"
 IterTools = "1"
 Measures = "0.3"
+ProgressMeter = "1"
 StatsBase = "0.33"
 YAML = "0.4"
 julia = "1"
