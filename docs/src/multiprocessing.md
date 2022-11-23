@@ -17,7 +17,8 @@ julia -p 1 run.jl exp growth_sensitivity_library.jl growth_sensitivity_lib.csv
 ```@example
 io = IOBuffer(); #hide
 run(pipeline(`julia -p 1 ../../run.jl exp growth_sensitivity_library.jl growth_sensitivity_lib.csv --debug`; stdout = io)) #hide
-println(String(take!(io))) #hide
+s = String(take!(io))
+println(join(filter(x->occursin("[ Info:",x), split(s, "\n")), "\n")) #hide
 ```
 
 So in this case we'll be using 1+1 cores to run the simulation. Naturally, on a
