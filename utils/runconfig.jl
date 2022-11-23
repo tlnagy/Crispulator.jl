@@ -1,8 +1,11 @@
-include(normpath(joinpath(@__FILE__, "..", "..", "exps", "common.jl")))
-using IterTools
-using CSV
-using Measures
-using Compose
+@everywhere begin
+    include(normpath(joinpath(@__FILE__, "..", "..", "exps", "common.jl")))
+
+    using IterTools
+    using CSV
+    using Measures
+    using Compose
+end
 
 function runconfig(setup::ScreenSetup,
                    lib::Library,
@@ -22,7 +25,6 @@ function runconfig(setup::ScreenSetup,
 
     # a little abuse of lexical scoping
     gen_plots = (bc_counts, genes) -> begin
-        @info "Generating plots"
         new_filename = joinpath(output_dir, "counts.svg")
         nopseudo = bc_counts[(bc_counts[!, :counts_bin1] .> 0.5) .& (bc_counts[!, :counts_bin2] .> 0.5), :]
         draw(SVG(new_filename, 10cm, 10cm), plot(nopseudo,
@@ -48,7 +50,8 @@ function runconfig(setup::ScreenSetup,
     # setup up runs
     runs = [(setup, lib, funcs[i], i) for i in 1:num_runs]
 
-    results = pmap(args -> Crispulator.run_exp(args[1], args[2], args[3]; run_idx=args[4]), runs)
+    p = Progress(num_runs; showspeed = true, enabled = !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1], args[2], args[3]; run_idx=args[4]), runs; progress = p)
 
     @info "Analyzing results"
 

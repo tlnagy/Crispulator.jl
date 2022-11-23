@@ -6,11 +6,11 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
 
     if !debug
 
-        inc_space = linspace(0.02, 0.1, 5)
-        cent_space = linspace(0.1, 0.55, 5)
+        inc_space = range(0.02, 0.1, length=5)
+        cent_space = range(0.1, 0.55, length = 5)
 
         libs = Library[]
-        for (inc, cent, crisprtype) in IterTools.product(inc_space, cent_space, [CRISPRi(), CRISPRn()])
+        for (inc, cent, crisprtype) in Iterators.product(inc_space, cent_space, [CRISPRi(), CRISPRn()])
 
             max_phenotype_dists = Dict{Symbol, Tuple{Float64, Sampleable}}(
                 :inactive => (1-inc-0.1-0.05, Delta(0.0)),
@@ -48,11 +48,10 @@ function growth_sensitivity_library(filepath; debug=false, quiet=false)
         (i, d)
     end
 
-    before = time()
-    results = pmap(args -> Crispulator.run_exp(args[1], args[2], compute_auprc;
-                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs)
-    (!quiet) && println("$(time() - before) seconds")
-
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1], args[2], compute_auprc;
+                   run_idx=args[3], flatten_func=Crispulator.flatten_both), runs, progress = p)
+    @info "Constructing CSV"
     data = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     hierarchy = reshape([:inc; :dec], (2, 1))
     new_names = [[:measure, :score]...; fieldnames(GrowthScreen)...; Crispulator.array_names(Library)...; :run_idx]

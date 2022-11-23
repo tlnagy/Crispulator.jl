@@ -10,7 +10,7 @@ downstream analysis and interpretation.
 !!! compat "Paper"
     Nagy, T. & Kampmann, M. CRISPulator: a discrete simulation tool for pooled
     genetic screens. BMC Bioinformatics 18, 347 (2017).
-    https://doi.org/10.1186/s12859-017-1759-9 (Preprint also
+    <https://doi.org/10.1186/s12859-017-1759-9> (Preprint also
     [available](https://doi.org/10.1101/119131)) 
 
 ## Setup

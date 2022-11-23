@@ -18,10 +18,10 @@ function bootstrap_exp(analysis_file::String,
 
     # add additional threads
     addprocs(proc_count)
-    println("Using $(nprocs()) threads")
+    @info "Using $(nprocs()) threads"
 
     # load simulation code on all cores
-    print("Loading analysis code...")
+    @info "Loading analysis code"
     analysis_full_path = joinpath(@__DIR__, "exps", analysis_file)
 
     (!isfile(analysis_full_path)) && error("Please provide a valid analysis file to run")
@@ -32,15 +32,16 @@ function bootstrap_exp(analysis_file::String,
 
     # load specific analysis
     include(analysis_full_path)
-    println("Done.")
 
     # compute output filename
-    output_file = compute_name(output_dir)
+    output_file = Base.invokelatest(compute_name, output_dir)
 
     # Run
-    println("Running $analysis_file and saving output in $output_file")
+    @info "Running $analysis_file and saving output in $output_file"
     func_name = Symbol(splitext(analysis_file)[1])
-    getfield(Main, func_name)(output_file, debug=debug)
+    # getfield(Main, func_name)(output_file; debug=debug, quiet = false)
+    Base.invokelatest(getfield(Main, func_name), output_file; debug = debug)
+    @info "Done"
 end
 
 """

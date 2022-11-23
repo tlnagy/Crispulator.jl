@@ -5,7 +5,7 @@ function facs_binning_snr(filepath; debug=false, quiet=false)
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [10, 100, 1000],
             :σ => [1.0, 1.0, 0.5],
-            :bin_info => [OrderedDict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0)) for p in linspace(0.5, 0.025, 30)]
+            :bin_info => [OrderedDict(:bin1 => (0.0, p), :bin2 => (1.0-p, 1.0)) for p in range(0.5, 0.025, length=30)]
         )
         num_runs = 100
     else
@@ -21,14 +21,13 @@ function facs_binning_snr(filepath; debug=false, quiet=false)
 
     runs = grouped_param_space(FacsScreen(), parameters, [:bin_info], num_runs)
 
-    before = time()
-    results = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRi()), compute_snr; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_map(args -> Crispulator.run_exp(args[1], Library(CRISPRi()), compute_snr; run_idx=args[2]), runs, progress = p)
     results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     results[!, :crisprtype] .= "CRISPRi"
-    before = time()
-    results2 = pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRn()), compute_snr; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results2 = progress_pmap(args -> Crispulator.run_exp(args[1], Library(CRISPRn()), compute_snr; run_idx=args[2]), runs, progress = p)
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
     results2[!, :crisprtype] .= "CRISPRn"
     results = vcat(results, results2)

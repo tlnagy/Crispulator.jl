@@ -6,7 +6,7 @@ function growth_bottlenecks(filepath; debug=false, quiet=false)
             :bottleneck_representation => [10, 100, 1000],
             :seq_depth => [100, 100, 1000],
             :num_bottlenecks => collect(1:20),
-            :noise => collect(linspace(0.001, 0.1, 5))
+            :noise => collect(range(0.001, 0.1, length = 5))
         )
         num_runs = 25
     else
@@ -34,16 +34,15 @@ function growth_bottlenecks(filepath; debug=false, quiet=false)
         :decreasing => (0.1, truncated(Normal(-0.55, 0.2), -1, -0.1))
     )
 
-    before = time()
     lib = Library(max_phenotype_dists, CRISPRi())
-    results = pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results = progress_pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs; progress = p)
     results = DataFrame(permutedims(hcat(results...), [2, 1]), :auto)
     results[!, :crisprtype] .= "CRISPRi"
-    before = time()
+
     lib = Library(max_phenotype_dists, CRISPRn())
-    results2 = pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs)
-    (!quiet) && println("$(time() - before) seconds")
+    p = Progress(length(runs); showspeed = true, enabled = !quiet && !is_logging(stdout))
+    results2 = progress_pmap(args -> Crispulator.run_exp(args[1], lib, test_method_wrapper; run_idx=args[2]), runs; progress = p)
     results2 = DataFrame(permutedims(hcat(results2...), [2, 1]), :auto)
     results2[!, :crisprtype] .= "CRISPRn"
     results = vcat(results, results2)

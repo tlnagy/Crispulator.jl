@@ -121,3 +121,35 @@ The table below describes each column
 | `conf_max`  | Upper limit of 95% confidence interval  |
 | `conf_min`  | Lower limit of 95% confidence interval  |
 | `n`  | Number of independent replicates  |
+
+## Experiments from the paper
+
+This repository also includes a collection of experiments that were run for the
+paper. You can view the full list by running
+
+```julia
+julia run.jl ls
+```
+
+They are located in the `exps/` directory and also listed here for convenience:
+
+```@eval
+using Markdown
+io = IOBuffer();
+run(pipeline(`julia ../../run.jl ls`; stdout = io))
+s = String(take!(io))
+Markdown.Table(vcat([["Experiment File"]], map(x->[x], split(s))), fill(:l, length(split(s))+1))
+```
+
+You can run them as follows:
+
+```julia
+julia run.jl exp growth_sensitivity_library.jl output.csv
+```
+
+where the simulation result will be saved to `output.csv`.
+
+!!! warning
+    Many of the experiments are quite computationally expensive so I recommend
+    using [Multiprocessing](@ref) to accelerate the process.
+

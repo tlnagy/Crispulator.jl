@@ -8,6 +8,7 @@ using CSV
 using Distributions
 using StatsBase
 using Random
+using ProgressMeter
 
 filenames = ["kdrelationships.jl",
              "qualitymetrics.jl",

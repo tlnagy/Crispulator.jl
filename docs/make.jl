@@ -12,6 +12,7 @@ makedocs(
         "Home" => "index.md",
         "Tutorial" => "tutorial.md",
         "Custom Simulations" => "custom.md",
+        "Multiprocessing" => "multiprocessing.md",
         "Crispulator Internals" => "internals.md"
     ]
 )
