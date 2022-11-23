@@ -1,7 +1,9 @@
-if Base.current_project() != joinpath(@__DIR__, "Project.toml")
+if Base.current_project() != joinpath(@__DIR__, "Project.toml") || (get(ENV, "CI", nothing) == "true")
     @info "Activating simulation environment"
     using Pkg
     Pkg.activate(@__DIR__)
+    @info "Instantiating environment"
+    Pkg.instantiate()
 end
 using Distributed
 using ProgressMeter
