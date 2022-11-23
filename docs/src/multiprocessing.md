@@ -16,8 +16,8 @@ julia -p 1 run.jl exp growth_sensitivity_library.jl growth_sensitivity_lib.csv
 
 ```@example
 io = IOBuffer(); #hide
-run(pipeline(`julia -p 1 ../../run.jl exp growth_sensitivity_library.jl growth_sensitivity_lib.csv --debug`; stdout = io)) #hide
-s = String(take!(io))
+run(pipeline(`julia -p 1 ../../run.jl exp growth_sensitivity_library.jl growth_sensitivity_lib.csv --debug`; stdout = io, stderr = io)) #hide
+s = String(take!(io)) #hide
 println(join(filter(x->occursin("[ Info:",x), split(s, "\n")), "\n")) #hide
 ```
 
