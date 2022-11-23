@@ -1,9 +1,0 @@
-measure,score,num_genes,coverage,representation,moi,seq_depth,bottleneck_representation,num_bottlenecks,noise,frac_hq,mean_hq_kd,frac_inc,frac_dec,cent_inc_phenotype,relationships,crisprtype,run_idx
-inc,0.9552081856759009,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-inc,1.0000000000000002,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-inc,0.8582054391083559,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-inc,0.8676045661328196,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-dec,0.825012610668323,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-dec,0.8646619340402157,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-dec,0.06111089725803557,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-dec,0.07309194544762397,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
