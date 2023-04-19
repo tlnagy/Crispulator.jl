@@ -5,7 +5,10 @@ makedocs(
     modules = [Crispulator],
     clean = false,
     format = Documenter.HTML(
-        prettyurls = true
+        prettyurls=get(ENV, "CI", "false") == "true",
+        assets =[
+                asset("https://analytics.tamasnagy.com/js/script.js", class=:js, attributes=Dict(Symbol("data-domain") => "tamasnagy.com", :defer => ""))
+            ],
     ),
     sitename = "Crispulator.jl",
     pages = [
