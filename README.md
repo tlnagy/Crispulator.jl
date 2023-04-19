@@ -2,7 +2,7 @@
 
 | **Stable release** | **Documentation**                 | **Build Status**                                              |
 |:------------------------------------------------------|:-------------------------------------------------------------------------|:--------------------------------------------------------------|
-| ![](https://juliahub.com/docs/Crispulator/version.svg) | [![][docs-stable-img]][docs-stable-url][![][docs-dev-img]][docs-dev-url] | [![][status-img]][status-url] [![][ci-img]][ci-url] [![][codecov-img]][codecov-url] |
+| ![](https://juliahub.com/docs/Crispulator/version.svg) | [![][docs-dev-img]][docs-dev-url] | [![][status-img]][status-url] [![][ci-img]][ci-url] [![][codecov-img]][codecov-url] |
 
 A pooled genetic screen simulator
 
