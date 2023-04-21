@@ -8,6 +8,7 @@ using IterTools
 using DocStringExtensions
 using Combinatorics
 using DataStructures
+using Random
 
 include("common.jl")
 include("utils.jl")
