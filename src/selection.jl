@@ -115,11 +115,14 @@ function select(setup::GrowthScreen,
             sample!(1:num_cells, picked, replace=false)
             @debug "Selecting $(length(picked))"
         else
-            # if we have room to grow, don't subsample, just shuffle and grow
-            # the available space
+            # if we have room to grow, don't subsample, just shuffle
             picked .= 0
             picked[1:num_cells] .= shuffle(1:num_cells)
+        end
 
+        # if next doubling could exceed the space available, grow the
+        # preallocated arrays
+        if num_cells * 4 > length(output_c)
             resize!(output_c, num_cells * 4)
             resize!(output_p, num_cells * 4)
         end
