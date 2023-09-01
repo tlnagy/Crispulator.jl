@@ -1,9 +1,9 @@
 measure,score,num_genes,coverage,representation,moi,seq_depth,bottleneck_representation,num_bottlenecks,noise,frac_hq,mean_hq_kd,frac_inc,frac_dec,cent_inc_phenotype,relationships,crisprtype,run_idx
-inc,0.9818664515891059,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-inc,0.9992232277526398,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-inc,0.9235081780384203,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-inc,0.8107947355661694,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-dec,0.8590452053585721,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-dec,0.7665997235625741,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
-dec,0.06214365100295302,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
-dec,0.07826129451762709,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
+inc,0.994784693538431,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
+inc,0.9863936904423458,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
+inc,0.8689655343841969,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
+inc,0.9048395384002349,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
+dec,0.8338486967588812,500,5,100,0.25,100,100,7,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
+dec,0.6448136320664051,500,5,100,0.25,100,100,7,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
+dec,0.07272709012222191,500,5,100,0.25,100,100,20,0.01,0.9,0.9,0.1,0.1,0.55,linearsigmoidal,CRISPRi,1
+dec,0.04732898129803663,500,5,100,0.25,100,100,20,0.01,0.9,NaN,0.1,0.1,0.55,linearsigmoidal,CRISPRn,1
